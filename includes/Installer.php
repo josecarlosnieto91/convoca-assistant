@@ -26,7 +26,9 @@ class Installer {
 			'log_retention_days'    => 90,
 			'enable_analytics'      => true,
 			'index_post_types'      => array( 'post', 'page', 'convoca_faq', 'convoca_kb' ),
-			'fuse_threshold'        => 0.4,
+			'source_post'        => true,
+			'source_page'        => true,
+			'fuse_threshold'     => 0.4,
 			'fuse_distance'         => 100,
 			'session_window_minutes'=> 10,
 		);
