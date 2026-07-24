@@ -45,8 +45,8 @@
 			       autocomplete="off" />
 			<button id="convoca-chat-send" class="convoca-chat-send"
 			        aria-label="<?php esc_attr_e( 'Enviar', 'convoca-assistant' ); ?>">
-				<svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg" style="display:block;margin:auto;">
-					<path d="M2 21L23 12 2 3v6l15 3-15 3v6z"/>
+				<svg width="22" height="22" viewBox="0 0 24 24" fill="#ffffff" xmlns="http://www.w3.org/2000/svg" style="display:block;margin:auto;">
+					<path d="M2 21L23 12 2 3v6l15 3-15 3v6z" fill="#ffffff"/>
 				</svg>
 			</button>
 		</div>
