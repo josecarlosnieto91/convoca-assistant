@@ -122,7 +122,7 @@ class Widget {
 					'copied'         => __( '¡Copiado!', 'convoca-assistant' ),
 					'helpful'        => __( '¿Te ha servido?', 'convoca-assistant' ),
 					'thanks'         => __( '¡Gracias por tu feedback!', 'convoca-assistant' ),
-					'maintenance'    => $settings['maintenance_message'] ?? '',
+					'maintenance'    => ! empty( $settings['maintenance_mode'] ) ? ( $settings['maintenance_message'] ?? '' ) : '',
 				),
 			)
 		);
