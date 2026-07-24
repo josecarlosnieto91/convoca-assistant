@@ -13,6 +13,26 @@ namespace Convoca\Assistant;
 class Installer {
 
 	/**
+	 * Get default settings.
+	 */
+	public static function default_settings(): array {
+		return array(
+			'widget_title'          => 'Asistente Virtual',
+			'widget_greeting'       => '¡Hola! Soy el asistente virtual. ¿En qué puedo ayudarte?',
+			'widget_primary_color'  => '#2563eb',
+			'widget_position'       => 'bottom-right',
+			'maintenance_mode'      => false,
+			'maintenance_message'   => '',
+			'log_retention_days'    => 90,
+			'enable_analytics'      => true,
+			'index_post_types'      => array( 'post', 'page', 'convoca_faq', 'convoca_kb' ),
+			'fuse_threshold'        => 0.4,
+			'fuse_distance'         => 100,
+			'session_window_minutes'=> 10,
+		);
+	}
+
+	/**
 	 * Run on plugin activation.
 	 */
 	public static function activate(): void {
