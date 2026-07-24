@@ -118,6 +118,20 @@
 			this.hideSuggestions();
 
 			this.addMessage(query, 'user');
+
+			// Greeting detection — respond without search.
+			const greetings = [
+				'hola', 'buenos días', 'buenos dias', 'buenas tardes', 'buenas noches',
+				'hey', 'hello', 'hi', 'saludos', 'qué tal', 'que tal', 'buenass',
+			];
+			const normalized = query.toLowerCase().trim().replace(/[¿?!¡,.]/g, '');
+			if (greetings.includes(normalized) || greetings.some(g => normalized === g) || greetings.some(g => normalized.startsWith(g + ' '))) {
+				const name = this.config.settings?.title || 'Asistente Virtual';
+				this.addBotMessage(`¡${name}! 😊 ¿En qué puedo ayudarte hoy?`, '');
+				this.logInteraction(query, [], 0);
+				return;
+			}
+
 			const typingMsg = this.showTyping();
 
 			const start = performance.now();
