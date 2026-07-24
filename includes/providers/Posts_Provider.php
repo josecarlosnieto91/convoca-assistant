@@ -191,7 +191,7 @@ class Posts_Provider implements Knowledge_Provider_Interface {
 	 * @param int      $max_content Max content length.
 	 * @return array<string, mixed>
 	 */
-	private function build_entry( \WP_Post $post, int $max_content ): array {
+	protected function build_entry( \WP_Post $post, int $max_content ): array {
 		$raw     = get_the_content( null, false, $post );
 		$content = self::clean_content( $raw ?? '' );
 		$content = mb_substr( $content, 0, $max_content );

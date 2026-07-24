@@ -56,8 +56,8 @@ describe('SessionMemory', () => {
 });
 
 describe('ConvocaChat n-grams and lemmatization', () => {
-	beforeEach(() => {
-		delete window.ConvocaChat;
+	beforeAll(() => {
+		require('../assets/js/assistant-chat.js');
 	});
 
 	test('normalize removes accents', () => {
