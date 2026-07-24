@@ -198,7 +198,7 @@ class Posts_Provider implements Knowledge_Provider_Interface {
 
 		return array(
 			'id'         => $post->ID,
-			'type'       => 'post',
+			'type'       => $post->post_type,
 			'title'      => $post->post_title,
 			'content'    => $content,
 			'excerpt'    => self::clean_content( (string) get_the_excerpt( $post ) ),
