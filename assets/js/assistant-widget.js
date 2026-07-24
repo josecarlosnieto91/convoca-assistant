@@ -246,20 +246,21 @@
 
 			const div = document.createElement('div');
 			div.className = 'convoca-message convoca-message-bot convoca-related-section';
-			let html = `<div class="convoca-message-text"><p>🔗 <strong>Contenido relacionado:</strong></p></div>`;
+			div.innerHTML = '<div class="convoca-message-text"><p>🔗 <strong>También te puede interesar:</strong></p></div>';
 
+			const chips = document.createElement('div');
+			chips.className = 'convoca-chips';
 			for (const rel of related) {
-				const relType = rel.type === 'same_category' ? 'misma categoría' :
-				                rel.type === 'same_tag' ? 'mismas etiquetas' :
-				                rel.type === 'internal_link' ? 'enlace interno' : 'relacionado';
-				html += `<div class="convoca-related-entry">
-					<a href="${this.escapeHtml(rel.entry.url || '#')}" target="_blank" rel="noopener">
-					📎 ${this.escapeHtml(rel.entry.title)}</a>
-					<span class="convoca-related-meta">(${relType})</span>
-				</div>`;
+				const btn = document.createElement('button');
+				btn.className = 'convoca-suggestion-chip';
+				btn.dataset.query = rel.entry.title;
+				btn.textContent = rel.entry.title;
+				btn.addEventListener('click', () => {
+					this.send(rel.entry.title);
+				});
+				chips.appendChild(btn);
 			}
-
-			div.innerHTML = html;
+			div.appendChild(chips);
 			this.dom.messages.appendChild(div);
 			this.scrollToBottom();
 		}
