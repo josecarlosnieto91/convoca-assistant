@@ -30,11 +30,44 @@ class Graph_Builder {
 
 		$edges = Provider_Registry::collect_relations();
 		$nodes = array();
+		$seen  = array();
 
 		// Collect unique node IDs.
 		foreach ( $edges as $edge ) {
 			$nodes[ $edge['from'] ] = true;
 			$nodes[ $edge['to'] ]   = true;
+		}
+
+		// Fallback: add edges between same-type entries from the index.
+		$index_path = Indexer::get_index_path();
+		if ( file_exists( $index_path ) ) {
+			$index_data = json_decode( file_get_contents( $index_path ), true ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
+			$by_type    = array();
+			if ( ! empty( $index_data['entries'] ) ) {
+				foreach ( $index_data['entries'] as $entry ) {
+					$type = $entry['type'] ?? 'unknown';
+					$by_type[ $type ][] = $entry['id'];
+				}
+				foreach ( $by_type as $type => $ids ) {
+					if ( ! empty( $nodes[ $ids[0] ] ?? false ) ) {
+						continue; // Already has edges from provider.
+					}
+					for ( $i = 1; $i < count( $ids ); $i++ ) {
+						$edge_key = min( $ids[ $i - 1 ], $ids[ $i ] ) . '-' . max( $ids[ $i - 1 ], $ids[ $i ] );
+						if ( ! isset( $seen[ $edge_key ] ) ) {
+							$edges[] = array(
+								'from'   => $ids[ $i - 1 ],
+								'to'     => $ids[ $i ],
+								'type'   => 'same_type_' . $type,
+								'weight' => 0.15,
+							);
+							$nodes[ $ids[ $i - 1 ] ] = true;
+							$nodes[ $ids[ $i ] ]     = true;
+							$seen[ $edge_key ]       = true;
+						}
+					}
+				}
+			}
 		}
 
 		/**
