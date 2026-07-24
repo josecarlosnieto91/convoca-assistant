@@ -138,9 +138,10 @@
 		 */
 		getContextMessage(currentResults) {
 			const recent = this.getRecentQueries(2);
-			if (recent.length < 1) return null;
+			// Need at least 2 queries for meaningful context.
+			if (recent.length < 2) return null;
 
-			const prevQuery = recent[recent.length - 1].text;
+			const prevQuery = recent[0].text;
 			const currentTopics = this.data.topics.slice(-5);
 
 			// If the user asked about a similar topic before
