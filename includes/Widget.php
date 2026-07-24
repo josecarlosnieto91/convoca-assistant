@@ -37,6 +37,10 @@ class Widget {
 			return;
 		}
 
+		// Render widget HTML directly here (wp_enqueue_scripts fires in <head>,
+		// but the output ends up in the final page).
+		self::render_floating_widget();
+
 		// Fuse.js bundled.
 		wp_enqueue_script(
 			'convoca-assistant-fuse',
