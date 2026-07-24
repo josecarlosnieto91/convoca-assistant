@@ -466,16 +466,26 @@
 			let html = this.escapeHtml(text);
 
 			// Bold **text**
-			html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+			html = html.replace( /\*\*(.+?)\*\*/g, '<strong>$1</strong>' );
 
 			// Italic *text*
-			html = html.replace(/\*(.+?)\*/g, '<em>$1</em>');
+			html = html.replace( /\*(.+?)\*/g, '<em>$1</em>' );
 
 			// Inline code `code`
-			html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
+			html = html.replace( /`([^`]+)`/g, '<code>$1</code>' );
 
-			// Links [text](url)
-			html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
+			// Links [text](url) — only allow http/https/mailto
+			html = html.replace(
+				/\[([^\]]+)\]\(([^)]+)\)/g,
+				function ( match, text, url ) {
+					url = url.trim();
+					if ( /^(https?:\/\/|mailto:|\/|#)/.test( url ) ) {
+						return '<a href="' + url + '" target="_blank" rel="noopener noreferrer">' + text + '</a>';
+					}
+					// Unsafe URL → render as plain text
+					return text + ' (' + url + ')';
+				}
+			);
 
 			// Unordered lists
 			html = html.replace(/^[\s]*[-*+]\s+(.+)$/gm, '<li>$1</li>');

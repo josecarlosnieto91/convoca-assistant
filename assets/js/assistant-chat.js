@@ -318,11 +318,23 @@
 			// 4. Expand with synonyms + lemmas
 			const expanded = this.expandSemantic(tokens, synonyms);
 
-			// 5. Build search queries (trigram > bigram > unigram)
+			// 5. Build search queries — original query first, then expanded.
 			const searchQueries = [];
-			if (ngrams.trigrams?.length) searchQueries.push(...ngrams.trigrams);
-			if (ngrams.bigrams?.length) searchQueries.push(...ngrams.bigrams);
-			searchQueries.push(expanded.join(' '));
+
+			// Always search the original query first (most reliable).
+			searchQueries.push( normalized );
+			searchQueries.push( tokens.join( ' ' ) );
+
+			// Also try original tokens (without synonym expansion).
+			const originalTokens = this.expandSemantic( tokens, {} );
+			searchQueries.push( originalTokens.join( ' ' ) );
+
+			// n-grams as additional queries.
+			if ( ngrams.trigrams?.length ) searchQueries.push( ...ngrams.trigrams );
+			if ( ngrams.bigrams?.length ) searchQueries.push( ...ngrams.bigrams );
+
+			// Expanded query (with synonyms + lemmas) as final fallback.
+			searchQueries.push( expanded.join( ' ' ) );
 
 			// 6. Run Fuse.js with each query, collect unique results
 			const seen = new Set();
