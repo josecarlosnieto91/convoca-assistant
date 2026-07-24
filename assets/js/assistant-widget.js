@@ -40,7 +40,20 @@
 			// Initialize session memory
 			this.session = new window.ConvocaSession();
 
-			if (!this.dom.widget) return;
+			// Create widget DOM if not present (theme may not fire wp_footer)
+			if (!this.dom.widget) {
+				this.buildWidgetDOM();
+			}
+
+			// Re-query DOM after potential creation
+			this.dom.toggle    = document.getElementById('convoca-assistant-toggle');
+			this.dom.container = document.getElementById('convosa-chat-container');
+			this.dom.close     = document.querySelector('.convoca-chat-close');
+			this.dom.messages  = document.querySelector('.convoca-chat-messages');
+			this.dom.input     = document.getElementById('convoca-chat-input');
+			this.dom.send      = document.getElementById('convoca-chat-send');
+			this.dom.suggestions = document.querySelector('.convoca-chat-suggestions');
+			this.dom.status    = document.querySelector('.convoca-chat-status');
 
 			// Check maintenance mode
 			if (this.config.i18n?.maintenance) {
@@ -625,6 +638,57 @@
 					score, clicked: vote === 'up', time_ms: 0, page_url: window.location.href,
 				}),
 			}); } catch (e) { /* silent */ }
+		}
+
+		/**
+		 * Build widget DOM dynamically when PHP hooks don't render it.
+		 */
+		buildWidgetDOM() {
+			const color = this.config.settings?.primaryColor || '#2563eb';
+			const title = this.config.settings?.title || 'Asistente Virtual';
+
+			const w = document.createElement('div');
+			w.id = 'convoca-assistant-widget';
+			w.className = 'convoca-assistant-widget convoca-idle';
+			w.style.setProperty('--convoca-primary', color);
+			w.dataset.position = 'bottom-right';
+
+			w.innerHTML = `
+				<button id="convoca-assistant-toggle" class="convoca-assistant-toggle"
+				        aria-label="Abrir asistente virtual" aria-expanded="false"
+				        aria-controls="convosa-chat-container">
+					<svg width="36" height="36" viewBox="0 0 24 24" fill="none"
+					     stroke="currentColor" stroke-width="1.8"
+					     stroke-linecap="round" stroke-linejoin="round">
+						<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+						<path d="M8 10h8M8 14h5"/>
+					</svg>
+				</button>
+				<div id="convosa-chat-container" class="convoca-chat-container" role="dialog"
+				     aria-label="${title}" aria-hidden="true" aria-modal="true">
+					<div class="convoca-chat-header">
+						<span class="convoca-chat-title">${title}</span>
+						<button class="convoca-chat-close" aria-label="Cerrar">&times;</button>
+					</div>
+					<div class="convoca-chat-messages" role="log" aria-live="polite"
+					     aria-relevant="additions" aria-atomic="false">
+						<div class="convoca-message convoca-message-bot">
+							${this.config.i18n?.greeting || '¡Hola! ¿En qué puedo ayudarte?'}
+						</div>
+					</div>
+					<div class="convoca-chat-suggestions"></div>
+					<div class="convoca-chat-input-area">
+						<input type="text" id="convoca-chat-input" class="convoca-chat-input"
+						       placeholder="Escribe tu pregunta aquí..." aria-label="Pregunta"
+						       autocomplete="off" />
+						<button id="convoca-chat-send" class="convoca-chat-send"
+						        aria-label="Enviar">&#9654;</button>
+					</div>
+				</div>
+			`;
+
+			document.body.appendChild(w);
+			this.dom.widget = w;
 		}
 	}
 
