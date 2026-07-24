@@ -61,6 +61,7 @@
 	justify-content: center;
 	transition: transform 0.2s, box-shadow 0.2s;
 	position: relative;
+	padding: 0;
 }
 
 .convoca-assistant-toggle svg {
