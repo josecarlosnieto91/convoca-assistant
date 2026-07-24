@@ -64,8 +64,8 @@
 }
 
 .convoca-assistant-toggle svg {
-	width: 36px;
-	height: 36px;
+	width: 36px !important;
+	height: 36px !important;
 	display: block;
 	flex-shrink: 0;
 }
