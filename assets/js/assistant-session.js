@@ -141,12 +141,11 @@
 			// Need at least 2 queries for meaningful context.
 			if (recent.length < 2) return null;
 
-			// Only show context if queries are within the last 60 minutes.
+			// Only show context if at least 2 queries in the last 10 minutes.
 			const now = Date.now();
-			const lastQueryTime = recent[recent.length - 1].timestamp || 0;
-			if (now - lastQueryTime > 3600000) return null;
-
-			const prevQuery = recent[0].text;
+			const recentQueries = this.data.queries.filter( q => ( now - q.timestamp ) < 600000 );
+			if ( recentQueries.length < 2 ) return null;
+			const prevQuery = recentQueries[recentQueries.length - 2].text;
 			const currentTopics = this.data.topics.slice(-5);
 
 			// If the user asked about a similar topic before
