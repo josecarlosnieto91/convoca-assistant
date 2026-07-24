@@ -19,6 +19,7 @@ class Widget {
 	 */
 	public static function init(): void {
 		add_action( 'wp_enqueue_scripts', array( __CLASS__, 'enqueue_assets' ) );
+		add_action( 'wp_enqueue_scripts', array( __CLASS__, 'render_floating_widget' ), 999 );
 		add_action( 'wp_body_open', array( __CLASS__, 'render_floating_widget' ), 999 );
 		add_action( 'wp_footer', array( __CLASS__, 'render_floating_widget' ) );
 		add_shortcode( 'convoca_assistant', array( __CLASS__, 'shortcode' ) );
