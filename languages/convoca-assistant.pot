@@ -1,0 +1,115 @@
+# Convoca Assistant POT file
+
+msgid ""
+msgstr ""
+"Project-Id-Version: Convoca Assistant 0.1.0\n"
+"Report-Msgid-Bugs-To: https://getconvoca.app\n"
+"Last-Translator: Jose Carlos Nieto Ramos\n"
+"Language-Team: Spanish\n"
+"Language: es_ES\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2026-07-24 20:00+0000\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Convoca Assistant\n"
+
+#: admin.php:...
+msgid "Funciones y responsabilidades"
+msgstr "Funciones y responsabilidades"
+
+#: class-admin.php:...
+msgid "Convoca Assistant"
+msgstr "Convoca Assistant"
+
+#: class-admin.php:...
+msgid "Dashboard"
+msgstr "Dashboard"
+
+#: class-admin.php:...
+msgid "Conocimiento"
+msgstr "Conocimiento"
+
+#: class-admin.php:...
+msgid "Sinónimos"
+msgstr "Sinónimos"
+
+#: class-admin.php:...
+msgid "Analytics"
+msgstr "Analytics"
+
+#: class-admin.php:...
+msgid "Sin respuesta"
+msgstr "Sin respuesta"
+
+#: class-admin.php:...
+msgid "Ajustes"
+msgstr "Ajustes"
+
+#: class-admin.php:...
+msgid "Herramientas"
+msgstr "Herramientas"
+
+#: class-installer.php:...
+msgid "Asistente Virtual"
+msgstr "Asistente Virtual"
+
+#: class-installer.php:...
+msgid "¡Hola! Soy el asistente virtual. ¿En qué puedo ayudarte?"
+msgstr "¡Hola! Soy el asistente virtual. ¿En qué puedo ayudarte?"
+
+#: class-installer.php:...
+msgid "El asistente está en mantenimiento. Vuelve pronto."
+msgstr "El asistente está en mantenimiento. Vuelve pronto."
+
+#: class-knowledge-base.php:...
+msgid "FAQs"
+msgstr "FAQs"
+
+#: class-knowledge-base.php:...
+msgid "FAQ"
+msgstr "FAQ"
+
+#: class-knowledge-base.php:...
+msgid "Base de Conocimiento"
+msgstr "Base de Conocimiento"
+
+#: class-knowledge-base.php:...
+msgid "Palabras clave extra (separadas por coma)"
+msgstr "Palabras clave extra (separadas por coma)"
+
+#: class-knowledge-base.php:...
+msgid "Peso en búsquedas (0-10). 0 = peso por defecto del tipo"
+msgstr "Peso en búsquedas (0-10). 0 = peso por defecto del tipo"
+
+#: class-knowledge-base.php:...
+msgid "Excluir del índice del asistente"
+msgstr "Excluir del índice del asistente"
+
+#: class-rest-controller.php:...
+msgid "Demasiadas solicitudes. Inténtalo de nuevo en un minuto."
+msgstr "Demasiadas solicitudes. Inténtalo de nuevo en un minuto."
+
+#: class-rest-controller.php:...
+msgid "La consulta debe tener al menos 2 caracteres."
+msgstr "La consulta debe tener al menos 2 caracteres."
+
+#: class-widget.php:...
+msgid "Escribe tu pregunta aquí..."
+msgstr "Escribe tu pregunta aquí..."
+
+#: class-widget.php:...
+msgid "Ver fuente"
+msgstr "Ver fuente"
+
+#: class-widget.php:...
+msgid "No encontré una respuesta. Reformula la pregunta o contacta con nosotros."
+msgstr "No encontré una respuesta. Reformula la pregunta o contacta con nosotros."
+
+#: class-export-import.php:...
+msgid "No tienes permisos."
+msgstr "No tienes permisos."
+
+#: class-export-import.php:...
+msgid "El archivo excede el tamaño máximo permitido por el servidor."
+msgstr "El archivo excede el tamaño máximo permitido por el servidor."

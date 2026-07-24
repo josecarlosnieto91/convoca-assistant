@@ -1,0 +1,10 @@
+vendor/
+tests/node_modules/
+node_modules/
+*.log
+.DS_Store
+*.gz
+!assets/js/fuse.bundle.js
+tests/.phpunit.result.cache
+*.tar.gz
+*.backup

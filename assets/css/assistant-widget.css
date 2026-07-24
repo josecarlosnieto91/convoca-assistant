@@ -1,0 +1,194 @@
+/**
+ * Convoca Assistant — Widget CSS
+ *
+ * Floating button, suggestion chips, pulse animation,
+ * maintenance mode, and responsive container.
+ */
+
+:root {
+	--convoca-primary: #2563eb;
+	--convoca-primary-hover: #1d4ed8;
+	--convoca-primary-light: rgba(37,99,235,0.1);
+	--convoca-bg: #ffffff;
+	--convoca-text: #1f2937;
+	--convoca-border: #e5e7eb;
+	--convoca-muted: #6b7280;
+	--convoca-success: #46b450;
+	--convoca-error: #dc3232;
+	--convoca-warning: #f0ad4e;
+}
+
+@media (prefers-color-scheme: dark) {
+	:root {
+		--convoca-bg: #1f2937;
+		--convoca-text: #f9fafb;
+		--convoca-border: #4b5563;
+		--convoca-primary-light: rgba(59,130,246,0.2);
+	}
+}
+
+/* ── Widget position ────────────────────────────── */
+
+.convoca-assistant-widget {
+	position: fixed;
+	bottom: 20px;
+	right: 20px;
+	z-index: 99999;
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+	font-size: 14px;
+	line-height: 1.5;
+	color: var(--convoca-text);
+}
+
+.convoca-assistant-widget[data-position="bottom-left"] {
+	right: auto;
+	left: 20px;
+}
+
+/* ── Floating button ──────────────────────────── */
+
+.convoca-assistant-toggle {
+	width: 56px;
+	height: 56px;
+	border: none;
+	border-radius: 50%;
+	background: var(--convoca-primary);
+	color: #fff;
+	cursor: pointer;
+	box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition: transform 0.2s, box-shadow 0.2s;
+	position: relative;
+}
+
+.convoca-assistant-toggle:hover,
+.convoca-assistant-toggle:focus {
+	transform: scale(1.08);
+	box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+}
+
+.convoca-assistant-toggle:focus-visible {
+	outline: 3px solid var(--convoca-primary);
+	outline-offset: 3px;
+}
+
+/* ── Pulse animation ──────────────────────────── */
+
+@keyframes convoca-pulse {
+	0%, 100% { box-shadow: 0 4px 12px rgba(37,99,235,0.2); }
+	50% { box-shadow: 0 4px 20px rgba(37,99,235,0.45); }
+}
+
+.convoca-assistant-widget.convoca-idle .convoca-assistant-toggle {
+	animation: convoca-pulse 3s ease-in-out infinite;
+}
+
+@keyframes convoca-ring {
+	0% { transform: scale(1); }
+	25% { transform: scale(1.1); }
+	50% { transform: scale(1); }
+	75% { transform: scale(1.05); }
+	100% { transform: scale(1); }
+}
+
+.convoca-assistant-widget.convoca-idle .convoca-assistant-toggle {
+	animation: convoca-pulse 3s ease-in-out infinite;
+}
+
+/* ── Suggestion chips ─────────────────────────── */
+
+.convoca-chat-suggestions {
+	display: none;
+	padding: 8px 16px 12px;
+	border-top: 1px solid var(--convoca-border);
+}
+
+.convoca-suggestions-label {
+	font-size: 11px;
+	color: var(--convoca-muted);
+	margin-bottom: 6px;
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+}
+
+.convoca-suggestion-chip {
+	display: inline-block;
+	padding: 6px 14px;
+	margin: 3px 4px 3px 0;
+	border: 1px solid var(--convoca-border);
+	border-radius: 16px;
+	background: var(--convoca-bg);
+	color: var(--convoca-primary);
+	font-size: 13px;
+	cursor: pointer;
+	transition: all 0.15s;
+}
+
+.convoca-suggestion-chip:hover,
+.convoca-suggestion-chip:focus-visible {
+	background: var(--convoca-primary-light);
+	border-color: var(--convoca-primary);
+}
+
+.convoca-related-chip {
+	display: inline-block;
+	padding: 5px 12px;
+	margin: 2px 3px 2px 0;
+	border: 1px solid var(--convoca-border);
+	border-radius: 12px;
+	background: var(--convoca-bg);
+	color: var(--convoca-muted);
+	font-size: 12px;
+	cursor: pointer;
+	transition: all 0.15s;
+}
+
+.convoca-related-chip:hover {
+	background: var(--convoca-primary-light);
+	color: var(--convoca-primary);
+	border-color: var(--convoca-primary);
+}
+
+/* ── Maintenance message ───────────────────────── */
+
+.convoca-maintenance-msg {
+	position: fixed;
+	bottom: 20px;
+	right: 20px;
+	z-index: 99999;
+	background: var(--convoca-warning);
+	color: #fff;
+	padding: 12px 20px;
+	border-radius: 12px;
+	font-size: 13px;
+	box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+	max-width: 300px;
+}
+
+/* ── Responsive ─────────────────────────────────── */
+
+@media (max-width: 480px) {
+	.convoca-assistant-widget {
+		bottom: 12px;
+		right: 12px;
+	}
+
+	.convoca-maintenance-msg {
+		right: 12px;
+		bottom: 12px;
+		left: 12px;
+		max-width: none;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.convoca-assistant-toggle,
+	.convoca-assistant-widget.convoca-idle .convoca-assistant-toggle,
+	.convoca-suggestion-chip,
+	.convoca-related-chip {
+		transition: none;
+		animation: none;
+	}
+}

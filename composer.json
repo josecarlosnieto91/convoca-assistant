@@ -1,0 +1,39 @@
+{
+    "name": "convoca/assistant",
+    "type": "wordpress-plugin",
+    "license": "GPL-2.0-or-later",
+    "description": "Asistente conversacional local sin IA para WordPress. Búsqueda difusa con Fuse.js.",
+    "require": {
+        "php": ">=8.1"
+    },
+    "require-dev": {
+        "phpstan/phpstan": "^2.2",
+        "dealerdirect/phpcodesniffer-composer-installer": "^1.0",
+        "wp-coding-standards/wpcs": "^3.1",
+        "php-stubs/wordpress-stubs": "^7.0",
+        "phpunit/phpunit": "^10.5",
+        "wp-phpunit/wp-phpunit": "^7.0",
+        "yoast/phpunit-polyfills": "^2.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Convoca\\Assistant\\": "includes/"
+        }
+    },
+    "scripts": {
+        "phpcs": "phpcs --standard=dev-tools/phpcs.xml.dist --runtime-set ignore_warnings_on_exit 1",
+        "phpcbf": "phpcbf --standard=dev-tools/phpcs.xml.dist",
+        "phpstan": "phpstan analyse --configuration=dev-tools/phpstan.neon.dist --memory-limit=4G",
+        "phpunit": "phpunit",
+        "test": [
+            "@phpcs",
+            "@phpstan",
+            "@phpunit"
+        ]
+    },
+    "config": {
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        }
+    }
+}

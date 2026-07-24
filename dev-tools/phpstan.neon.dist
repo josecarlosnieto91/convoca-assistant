@@ -1,0 +1,12 @@
+parameters:
+	level: 8
+	treatPhpDocTypesAsCertain: false
+	paths:
+		- ../includes/
+		- ../convoca-assistant.php
+	scanFiles:
+		- %currentWorkingDirectory%/vendor/php-stubs/wordpress-stubs/wordpress-stubs.php
+	parallel:
+		maximumNumberOfProcesses: 4
+	excludePaths:
+		- ../vendor/*

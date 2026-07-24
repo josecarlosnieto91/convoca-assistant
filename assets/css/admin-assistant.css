@@ -1,0 +1,83 @@
+/**
+ * Convoca Assistant — Admin CSS
+ *
+ * Styles for the admin dashboard and settings pages.
+ */
+
+.convoca-assistant-admin .convoca-stats-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+	gap: 16px;
+	margin: 20px 0;
+}
+
+.convoca-assistant-admin .convoca-stat-card {
+	background: #fff;
+	border: 1px solid #e5e7eb;
+	border-radius: 12px;
+	padding: 20px;
+	text-align: center;
+	box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
+
+.convoca-assistant-admin .convoca-stat-value {
+	display: block;
+	font-size: 32px;
+	font-weight: 700;
+	color: #2563eb;
+	line-height: 1.2;
+}
+
+.convoca-assistant-admin .convoca-stat-label {
+	display: block;
+	font-size: 13px;
+	color: #6b7280;
+	margin-top: 4px;
+}
+
+.convoca-assistant-admin .convoca-admin-row {
+	display: flex;
+	gap: 20px;
+	margin: 20px 0;
+	flex-wrap: wrap;
+}
+
+.convoca-assistant-admin .convoca-admin-col {
+	flex: 1;
+	min-width: 280px;
+}
+
+.convoca-assistant-admin .convoca-admin-card {
+	background: #fff;
+	border: 1px solid #e5e7eb;
+	border-radius: 12px;
+	padding: 20px;
+	margin-bottom: 20px;
+	box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
+
+.convoca-assistant-admin .convoca-admin-card h2 {
+	margin-top: 0;
+	font-size: 16px;
+	font-weight: 600;
+	color: #1f2937;
+	padding-bottom: 12px;
+	border-bottom: 1px solid #f3f4f6;
+	margin-bottom: 16px;
+}
+
+.convoca-assistant-admin .convoca-status-table td {
+	padding: 6px 16px 6px 0;
+	font-size: 13px;
+}
+
+.convoca-assistant-admin .convoca-status-table td:first-child {
+	font-weight: 600;
+	color: #6b7280;
+	white-space: nowrap;
+}
+
+.convoca-assistant-admin #convoca-top-queries li {
+	padding: 4px 0;
+	font-size: 13px;
+}
