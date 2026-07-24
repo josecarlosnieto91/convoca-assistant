@@ -1,113 +1,158 @@
-# Convoca Assistant
+# Convoca Assistant 🗣️
 
-> Asistente conversacional local sin IA para WordPress.
+**Asistente conversacional local sin IA para WordPress.**
 
-Convoca Assistant es un plugin de WordPress que añade un asistente virtual a tu sitio web. A diferencia de los chatbots con IA, este funciona **sin APIs externas, sin modelos LLM, sin cloud**. Utiliza búsqueda difusa (Fuzzy Search) con Fuse.js sobre tu propia base de conocimiento generada automáticamente desde tu contenido.
+Búsqueda difusa con Fuse.js sobre tu base de conocimiento. Sin APIs externas, sin cloud, compatible GDPR.
 
-**Sin costes recurrentes. Sin dependencias externas. Sin datos fuera de tu servidor. 100% GDPR friendly.**
+## Requisitos
 
-## 🚀 Características
+- WordPress 6.4+
+- PHP 8.1+
+- Convoca Core (opcional — fallback a Logger local)
 
-- 🔍 **Búsqueda difusa** — Fuse.js v7.1 en el cliente, Levenshtein en el servidor
-- 📦 **Sin IA** — Totalmente local, sin APIs externas, sin llamadas cloud
-- ⚡ **Rápido** — Búsquedas en cliente <5ms con el índice precargado
-- 🧠 **Indexación automática** — El índice JSON se genera desde tu contenido (posts, pages, FAQs, KB, WooCommerce)
-- 🎨 **Widget flotante** — Interfaz conversacional moderna, responsive, modo oscuro, WCAG accesible
-- 🔤 **Sinónimos inteligentes** — Diccionario de sinónimos configurable para mejorar las búsquedas
-- 📊 **Analytics** — Estadísticas de consultas, tasa de resolución, preguntas sin respuesta
-- 🛡️ **GDPR** — Logging anónimo, retención configurable, sin almacenamiento externo
-- 🧩 **Integrable** — Shortcode `[convoca_assistant]`, CSS personalizable, hooks y filtros
+## Instalación
 
-## 📦 Requisitos
+```bash
+# Desde el repositorio
+cd wp-content/plugins/
+git clone https://github.com/josecarlosnieto91/convoca-assistant.git
+cd convoca-assistant
+composer install --no-dev
 
-| Requisito | Mínimo |
-|-----------|--------|
-| WordPress | 6.4+ |
-| PHP | 8.1+ |
-| Convoca Core | Opcional (mejora logging) |
+# Activar
+wp plugin activate convoca-assistant
+```
 
-## 🔧 Instalación
-
-1. Sube la carpeta `convoca-assistant` a `/wp-content/plugins/`
-2. Activa el plugin desde el panel de administración
-3. Ve a **Convoca Assistant > Ajustes** para configurar el asistente
-4. El widget aparecerá automáticamente en la esquina inferior derecha
-
-## ⚙️ Uso
+## Uso
 
 ### Widget flotante
 
-El widget se muestra automáticamente en todas las páginas. Configurable desde:
+El asistente se muestra como un botón flotante en la esquina inferior derecha. Al hacer clic, se abre el chat.
 
-**Convoca Assistant > Ajustes**:
-- Posición (derecha/izquierda)
-- Color primario
-- Título y mensaje de bienvenida
-- Auto-apertura (nunca/siempre/al hacer scroll)
-- Modo mantenimiento
+### Shortcodes
 
-### Shortcode
-
-```php
-[convoca_assistant]
+```
+[convoca_assistant_widget]           — Widget flotante (se añade automáticamente en footer)
+[convoca_assistant_search]           — Buscador embebido
+[convoca_assistant_chat]             — Chat embebido
 ```
 
-Inserta el chat en línea en cualquier entrada, página o widget.
+### REST API
 
-### Bases de conocimiento
+| Endpoint | Método | Descripción |
+|----------|--------|-------------|
+| `/wp-json/convoca/v1/assistant/search` | POST | Búsqueda semántica |
+| `/wp-json/convoca/v1/assistant/log` | POST | Registrar interacción |
+| `/wp-json/convoca/v1/assistant/stats` | GET | Estadísticas |
+| `/wp-json/convoca/v1/assistant/unanswered` | GET | Consultas sin respuesta |
+| `/wp-json/convoca/v1/assistant/rebuild-index` | POST | Reconstruir índice |
+| `/wp-json/convoca/v1/assistant/clear-logs` | POST | Limpiar logs |
 
-El plugin genera automáticamente un índice con:
+**Ejemplo de búsqueda:**
 
-- **Entradas** (`post`)
-- **Páginas** (`page`)
-- **FAQ** (`convoca_faq`) — CPT propio
-- **Base de Conocimiento** (`convoca_kb`) — CPT propio
-- **Productos WooCommerce** (opcional)
+```bash
+curl -X POST https://tudominio.com/wp-json/convoca/v1/assistant/search \
+  -H "Content-Type: application/json" \
+  -d '{"query":"¿cómo hacerse socio?"}'
+```
+
+## Configuración
+
+### Ajustes (Admin → Convoca Assistant → Ajustes)
+
+| Opción | Descripción | Default |
+|--------|-------------|---------|
+| `widget_title` | Nombre del asistente en el chat | `Asistente Virtual` |
+| `widget_greeting` | Mensaje de bienvenida | `¡Hola! Soy el asistente virtual...` |
+| `widget_primary_color` | Color primario del widget | `#2563eb` |
+| `widget_position` | Posición del widget | `bottom-right` |
 
 ### Sinónimos
 
-Gestiona sinónimos desde **Convoca Assistant > Sinónimos** para mejorar la precisión de las búsquedas.
+Los sinónimos por defecto incluyen:
 
 ```
-ordenador → computadora, pc, equipo
-cuota     → tarifa, suscripción, membresía
+contactar → contacto, escribir, llamar, email, correo, mensaje
+hacerse   → hacer, hago, hace, haz, registrarse, apuntarse, darse, inscribirse
+socio     → socia, asociado, miembro, asociacion
+cuota     → cuotas, membresía, tarifa, precio, coste, pago, mensualidad
+actividad → actividades, taller, talleres, curso, evento, excursion
+reservar  → reserva, inscripcion, apuntarse
+funciona  → funcionar, funcionamiento, como funciona, que es, explicacion
+informacion → información, info, datos, saber
 ```
 
-### API REST
+Se gestionan desde el panel de administración.
 
-| Método | Endpoint | Uso |
-|--------|----------|-----|
-| GET | `/wp-json/convoca/v1/assistant/index` | Obtener índice de conocimiento |
-| POST | `/wp-json/convoca/v1/assistant/search` | Búsqueda servidor |
-| POST | `/wp-json/convoca/v1/assistant/log` | Registrar interacción |
-| GET | `/wp-json/convoca/v1/assistant/stats` | Estadísticas (admin) |
-| GET | `/wp-json/convoca/v1/assistant/unanswered` | Consultas sin respuesta (admin) |
-| POST | `/wp-json/convoca/v1/assistant/rebuild-index` | Regenerar índice (admin) |
+## Arquitectura
 
-## 🧪 Tests
-
-```bash
-# PHPCS
-composer run phpcs
-
-# PHPUnit (requiere WP test suite)
-composer run phpunit
-
-# Jest (JS tests)
-cd tests && npm install && npx jest
-
-# Todo junto
-composer run test
+```
+convoca-assistant/
+├── assets/
+│   ├── css/                  # Estilos del widget y chat
+│   ├── js/
+│   │   ├── assistant-chat.js     # Motor de búsqueda y chat (Fuse.js + expansión)
+│   │   ├── assistant-session.js  # Memoria de sesión en localStorage
+│   │   ├── assistant-widget.js   # Widget flotante (UI)
+│   │   ├── assistant-admin.js    # Panel de administración
+│   │   └── lib/fuse.bundle.js    # Fuse.js (búsqueda difusa)
+│   └── templates/            # Plantillas HTML del widget
+├── includes/
+│   ├── class-indexer.php         # Generación del índice JSON
+│   ├── class-searcher.php        # Motor de búsqueda server-side
+│   ├── class-rest-controller.php # API REST
+│   ├── class-widget.php          # Widget y shortcodes
+│   ├── class-admin.php           # Panel de administración
+│   ├── class-settings.php        # Opciones y configuración
+│   ├── class-knowledge-base.php  # CPT y taxonomías
+│   ├── class-statistics.php      # Estadísticas y logging
+│   ├── class-synonyms.php        # Gestión de sinónimos
+│   ├── class-export-import.php   # Import/Export
+│   ├── class-graph-builder.php   # Grafo de conocimiento
+│   └── providers/
+│       ├── class-knowledge-provider-interface.php
+│       ├── class-provider-registry.php
+│       ├── class-posts-provider.php
+│       ├── class-pages-provider.php
+│       ├── class-faq-provider.php
+│       ├── class-taxonomies-provider.php
+│       └── class-shortcodes-provider.php
+├── convoca-assistant.php      # Plugin principal
+├── CHANGELOG.md
+└── README.md
 ```
 
-## 📄 Changelog
+### Providers
 
-Ver [CHANGELOG.md](CHANGELOG.md).
+El sistema de providers permite extender las fuentes de conocimiento:
 
-## 📝 Licencia
+| Provider | Fuente | Prioridad |
+|----------|--------|-----------|
+| FAQ_Provider | CPT `convoca_faq` | Alta |
+| Pages_Provider | Páginas publicadas | Media |
+| Posts_Provider | Entradas publicadas | Media |
+| Taxonomies_Provider | Taxonomy archive descriptions | Baja |
+| Shortcodes_Provider | Shortcodes registrados | Baja |
 
-GPL-2.0-or-later — Ver [LICENSE](LICENSE).
+Para crear un provider personalizado, implementa `Knowledge_Provider_Interface`.
 
----
+### Motor de búsqueda
 
-Desarrollado por [José Carlos Nieto Ramos](https://getconvoca.app)
+1. El usuario escribe una consulta.
+2. Se normaliza (minúsculas, sin tildes, stop words).
+3. Se expande semánticamente (sinónimos + lemas + n-gramas).
+4. Se busca en el índice JSON con Fuse.js (threshold 0.4).
+5. Se calcula un score compuesto: Fuse.js (80%) + graph (20%).
+6. Se agrupan resultados por cluster semántico.
+7. Se muestran con contexto de sesión si hay 2+ consultas en 10 min.
+8. Se ofrece contenido relacionado del grafo de conocimiento.
+
+### Saludos
+
+El asistente detecta automáticamente saludos y responde sin buscar en la KB:
+
+`hola`, `buenos días`, `buenas tardes`, `buenas noches`, `hey`, `hello`, `hi`, `saludos`, `qué tal`
+
+## Licencia
+
+GPL-2.0-or-later

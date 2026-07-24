@@ -4,7 +4,7 @@ Tags: chatbot, assistant, fuzzy-search, conversational, support, knowledge-base,
 Requires at least: 6.4
 Tested up to: 7.0
 Requires PHP: 8.1
-Stable tag: 0.1.0
+Stable tag: 0.2.0
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -83,6 +83,20 @@ Yes. If WooCommerce is active, you can enable products as a knowledge source fro
 5. Ajustes del widget
 
 == Changelog ==
+
+= 0.2.0 =
+* Nuevo: Saludos automáticos (hola, buenos días, hey, qué tal)
+* Nuevo: Contenido relacionado como chips clickables
+* Nuevo: Sinónimos expandidos (7 grupos: contactar, hacerse, socio, cuota, actividad, informacion)
+* Nuevo: README.md y CHANGELOG.md
+* Fix: Icono enviar (SVG → Unicode ►)
+* Fix: Orden de carga JS para evitar ReferenceError
+* Fix: Búsqueda prioriza query original antes que expansión semántica
+* Fix: Grafo con edges por tipo de contenido
+* Fix: XSS en markdown links
+* Fix: Sesión contexto solo con 2+ consultas en últimos 10 min
+* Fix: Tipo de entrada en índice (era 'post' siempre, ahora usa post_type real)
+* Fix: Eliminada compresión gzip del índice JSON
 
 = 0.1.0 =
 * Primera versión de desarrollo.

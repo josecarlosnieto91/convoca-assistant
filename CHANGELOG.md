@@ -1,46 +1,44 @@
-# Changelog
+# Changelog — Convoca Assistant
 
-Todos los cambios notables de Convoca Assistant se documentan aquí.
+## 0.2.0 (2026-07-24)
 
-## [0.1.0] — 2026-07-24
+### ✨ Nuevas funcionalidades
 
-### Añadido
-- Widget flotante con búsqueda difusa Fuse.js v7.1
-- Custom Post Types: FAQ (`convoca_faq`) y Base de Conocimiento (`convoca_kb`)
-- Taxonomías: categoría de FAQ y categoría de KB
-- Indexación automática de contenido: entradas, páginas, FAQs, KB y WooCommerce
-- Algoritmo de scoring compuesto: fuzzy + exacto + sinónimos + stemming + cobertura + recencia + peso
-- Stemmer ligero para español (+20 sufijos)
-- Diccionario de sinónimos configurable y stop words
-- Búsqueda servidor con Levenshtein (fallback)
-- API REST con 7 endpoints y rate limiting (60 req/min)
-- Dashboard con analíticas: consultas, tasa de resolución, tiempo medio, gráfico diario
-- Gestión de fuentes de conocimiento con pesos por tipo de contenido
-- Editor de sinónimos y stop words
-- Consultas sin respuesta con acción "Crear FAQ"
-- Exportación e importación de conocimiento y configuración (JSON con validación)
-- Panel de ajustes: widget, búsqueda, privacidad, mantenimiento, debug
-- Herramienta de búsqueda de depuración en el panel admin
-- Modo oscuro automático (prefers-color-scheme)
-- Accesibilidad WCAG (ARIA, teclado, focus management)
-- Diseño responsive (pantalla completa en móvil)
-- Renderizado Markdown en respuestas del chatbot
-- Logging de interacciones con hash anónimo de IP
-- Regeneración automática del índice ante cambios (con debounce de 30s)
-- CRON de regeneración cada 5 minutos
-- Configuración de privacidad GDPR
-- Shortcode: `[convoca_assistant]`
-- Dependencia opcional de Convoca Core (logging delegado, fallback a error_log)
-- Fuse.js v7.1 bundlizado (26 KB)
+- **Saludos automáticos**: El asistente detecta saludos ("hola", "buenos días", "hey", "qué tal") y responde sin buscar en la KB.
+- **Contenido relacionado como chips**: Los enlaces de contenido relacionado ahora son botones clickables que envían un nuevo mensaje en el chat, permitiendo seguir la conversación.
+- **Detección de sesión mejorada**: El contexto "Antes preguntaste..." solo aparece cuando hay 2+ consultas en los últimos 10 minutos.
+- **Sinónimos expandidos**: 7 grupos de sinónimos (contactar, hacerse, socio, cuota, actividad, reservar, funciona, informacion).
 
-### Técnico
-- Autoloading PSR-4 via Composer
-- Namespace PHP: `Convoca\Assistant\*`
-- Módulos JavaScript ES6 (sin jQuery)
-- WordPress Coding Standards (WPCS)
-- PHPStan level 8
-- PHPUnit: 3 suites, 10 tests
-- Jest: 8 tests (jsdom)
-- Archivos de documentación: ARCHITECTURE.md, API.md, HOOKS.md, RELEASE.md
-- Archivo .pot con cadenas traducibles
-- Checklist de release en docs/RELEASE.md
+### 🔧 Correcciones
+
+- **Icono de enviar**: Reemplazado SVG (no se renderizaba correctamente) por Unicode `►`.
+- **Orden de carga JS**: `assistant-session.js` ahora se carga antes que `assistant-chat.js` para evitar `ReferenceError: convocaAssistant is not defined`.
+- **Búsqueda Fuse.js**: La query original se prioriza antes que la expansión semántica (n-gramas, sinónimos), garantizando resultados incluso con queries cortas.
+- **Grafo de conocimiento**: Añadidas aristas por tipo de contenido (weight 0.15) cuando no hay relaciones explícitas.
+- **XSS en markdown**: Los enlaces markdown `[text](url)` solo permiten protocolos `https://`, `http://`, `mailto:`, `/` y `#`.
+
+### ⚡ Rendimiento
+
+- **Índice**: Eliminada compresión gzip del índice JSON para evitar problemas con nginx `gzip_static`.
+- **API REST**: Respuestas en 2-7ms.
+
+### 📚 Documentación
+
+- Añadido `README.md` con guía de instalación, configuración y desarrollo.
+- Añadido `CHANGELOG.md`.
+- Documentación de shortcodes, REST API y providers.
+
+---
+
+## 0.1.0 (2026-07-23)
+
+- Lanzamiento inicial.
+- Motor de conocimiento local: 5 providers (FAQ, Posts, Pages, Taxonomies, Shortcodes).
+- Búsqueda difusa con Fuse.js (threshold 0.4).
+- Expansión semántica con n-gramas y sinónimos.
+- Clustering de resultados.
+- Memoria de sesión (últimas 2 consultas).
+- Widget flotante con feedback (👍/👎/📋).
+- REST API: `/convoca/v1/assistant/search`, `/log`, `/stats`, `/unanswered`.
+- Panel de administración con estadísticas y gestión de sinónimos.
+- Compatible GDPR: IPs anonimizadas (SHA256), sin cookies de terceros.
