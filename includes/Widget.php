@@ -19,7 +19,6 @@ class Widget {
 	 */
 	public static function init(): void {
 		add_action( 'wp_enqueue_scripts', array( __CLASS__, 'enqueue_assets' ) );
-		add_action( 'wp_enqueue_scripts', array( __CLASS__, 'render_floating_widget' ), 999 );
 		add_shortcode( 'convoca_assistant', array( __CLASS__, 'shortcode' ) );
 	}
 
@@ -41,7 +40,7 @@ class Widget {
 			CONVOCA_ASSISTANT_ASSETS_URL . 'js/fuse.bundle.js',
 			array(),
 			'7.1.0',
-			false
+			true
 		);
 
 		// Session memory.
@@ -50,7 +49,7 @@ class Widget {
 			CONVOCA_ASSISTANT_ASSETS_URL . 'js/assistant-session.js',
 			array(),
 			CONVOCA_ASSISTANT_VERSION,
-			false
+			true
 		);
 
 		// Chat engine.
@@ -59,7 +58,7 @@ class Widget {
 			CONVOCA_ASSISTANT_ASSETS_URL . 'js/assistant-chat.js',
 			array( 'convoca-assistant-fuse', 'convoca-assistant-session' ),
 			CONVOCA_ASSISTANT_VERSION,
-			false
+			true
 		);
 
 		// Widget UI.
@@ -68,7 +67,7 @@ class Widget {
 			CONVOCA_ASSISTANT_ASSETS_URL . 'js/assistant-widget.js',
 			array( 'convoca-assistant-chat' ),
 			CONVOCA_ASSISTANT_VERSION,
-			false
+			true
 		);
 
 		// Styles.
