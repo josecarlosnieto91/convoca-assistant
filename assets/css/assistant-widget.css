@@ -63,6 +63,12 @@
 	position: relative;
 }
 
+.convoca-assistant-toggle svg {
+	width: 32px;
+	height: 32px;
+	display: block;
+}
+
 .convoca-assistant-toggle:hover,
 .convoca-assistant-toggle:focus {
 	transform: scale(1.08);
