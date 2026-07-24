@@ -20,8 +20,6 @@ class Widget {
 	public static function init(): void {
 		add_action( 'wp_enqueue_scripts', array( __CLASS__, 'enqueue_assets' ) );
 		add_action( 'wp_enqueue_scripts', array( __CLASS__, 'render_floating_widget' ), 999 );
-		add_action( 'wp_body_open', array( __CLASS__, 'render_floating_widget' ), 999 );
-		add_action( 'wp_footer', array( __CLASS__, 'render_floating_widget' ) );
 		add_shortcode( 'convoca_assistant', array( __CLASS__, 'shortcode' ) );
 	}
 
@@ -36,10 +34,6 @@ class Widget {
 		if ( ! empty( $settings['maintenance_mode'] ) ) {
 			return;
 		}
-
-		// Render widget HTML directly here (wp_enqueue_scripts fires in <head>,
-		// but the output ends up in the final page).
-		self::render_floating_widget();
 
 		// Fuse.js bundled.
 		wp_enqueue_script(
