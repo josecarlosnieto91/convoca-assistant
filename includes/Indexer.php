@@ -179,10 +179,9 @@ class Indexer {
 			return array( 'success' => false, 'error' => 'Could not write index.json.' );
 		}
 
-		// Write compressed GZIP.
-		if ( ! empty( $settings['index_compress'] ) ) {
-			$gz = gzencode( $json_final, 6 );
-			file_put_contents( $dir . 'index.json.gz', $gz ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents
+		// Clean up any leftover .gz files from previous versions.
+		if ( file_exists( $dir . 'index.json.gz' ) ) {
+			wp_delete_file( $dir . 'index.json.gz' );
 		}
 
 		update_option( 'convoca_assistant_index_hash', $hash );
