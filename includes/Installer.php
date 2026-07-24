@@ -66,6 +66,15 @@ class Installer {
 	public static function activate(): void {
 		self::db_init();
 		flush_rewrite_rules();
+
+		// Regenerate index on activation so the assistant has content immediately.
+		if ( class_exists( 'Convoca\\Assistant\\Indexer' ) ) {
+			try {
+				Indexer::regenerate();
+			} catch ( \Throwable $e ) {
+				// Silently fail — index can be rebuilt from admin.
+			}
+		}
 	}
 
 	/**
