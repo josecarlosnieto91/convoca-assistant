@@ -212,73 +212,20 @@ class Indexer {
 	/* ── Content Collection ────────────────────── */
 
 	/**
-	 * Collect all eligible entries from active sources.
+	 * Collect all eligible entries from active sources via Provider_Registry.
 	 *
 	 * @return array<int, array<string, mixed>>
 	 */
 	private static function collect_entries(): array {
-		$sources     = Knowledge_Base::get_active_sources();
-		$entries     = array();
 		$settings    = get_option( 'convoca_assistant_settings', Installer::default_settings() );
 		$max_content = (int) ( $settings['index_max_content'] ?? 5000 );
-		$id_seen     = array();
-
-		foreach ( $sources as $post_type ) {
-			$query = new \WP_Query(
-				array(
-					'post_type'      => $post_type,
-					'post_status'    => 'publish',
-					'posts_per_page' => -1,
-					'fields'         => 'ids',
-					'meta_query'     => array( // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
-						'relation' => 'OR',
-						array(
-							'key'     => '_convoca_assistant_exclude',
-							'compare' => 'NOT EXISTS',
-						),
-						array(
-							'key'     => '_convoca_assistant_exclude',
-							'value'   => '0',
-							'compare' => '=',
-						),
-					),
-					'no_found_rows'  => true,
-				)
-			);
-
-			foreach ( $query->posts as $post_id ) {
-				// Deduplicate (a post could appear in multiple queries).
-				if ( isset( $id_seen[ $post_id ] ) ) {
-					continue;
-				}
-				$id_seen[ $post_id ] = true;
-
-				$post = get_post( $post_id );
-				if ( ! $post ) {
-					continue;
-				}
-
-				$entry = self::build_entry( $post, $post_type, $max_content );
-
-				// WooCommerce extra fields.
-				if ( 'product' === $post_type && function_exists( 'wc_get_product' ) ) {
-					$product = \wc_get_product( $post_id );
-					if ( $product ) {
-						$entry['price'] = wc_price( $product->get_price() );
-						$entry['sku']   = $product->get_sku();
-					}
-				}
-
-				$entries[] = $entry;
-			}
-		}
 
 		/**
 		 * Filter the collected entries before indexing.
 		 *
 		 * @param array $entries The collected entries.
 		 */
-		return apply_filters( 'convoca_assistant/index_data', $entries );
+		return apply_filters( 'convoca_assistant/index_data', Provider_Registry::collect_entries( $max_content ) );
 	}
 
 	/**

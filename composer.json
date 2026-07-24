@@ -17,7 +17,8 @@
     },
     "autoload": {
         "psr-4": {
-            "Convoca\\Assistant\\": "includes/"
+            "Convoca\\Assistant\\": "includes/",
+            "Convoca\\Assistant\\Providers\\": "includes/providers/"
         }
     },
     "scripts": {
