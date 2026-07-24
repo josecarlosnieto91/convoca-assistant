@@ -434,11 +434,9 @@ class Indexer {
 	 * @return string
 	 */
 	public static function get_index_url(): string {
-		$settings = get_option( 'convoca_assistant_settings', Installer::default_settings() );
-		$ext      = ! empty( $settings['index_compress'] ) ? 'json.gz' : 'json';
 		$upload   = wp_upload_dir();
 		$hash     = get_option( 'convoca_assistant_index_hash', '' );
-		$url      = $upload['baseurl'] . '/convoca-assistant/index.' . $ext;
+		$url      = $upload['baseurl'] . '/convoca-assistant/index.json';
 
 		if ( $hash ) {
 			$url = add_query_arg( 'v', substr( $hash, 0, 8 ), $url );
