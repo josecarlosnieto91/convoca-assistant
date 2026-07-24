@@ -118,15 +118,19 @@ class Searcher {
 		// 6) Recency bonus.
 		$recency = self::recency_bonus( $entry['date'] ?? $entry['modified'] ?? '' );
 
-		// 7) Weight factor.
+		// 7) Graph score (how connected this entry is in the knowledge graph).
+		$graph_score = self::graph_score( $entry['id'] ?? 0 );
+
+		// 8) Weight factor.
 		$weight = (float) ( $entry['weight'] ?? 1.0 );
 
-		// Composite.
-		$score = ( $fuzzy_score   * 0.50 )
-			   + ( $exact_bonus   * 0.15 )
+		// Composite with graph score (20%).
+		$score = ( $fuzzy_score   * 0.40 )
+			   + ( $graph_score   * 0.20 )
+			   + ( $exact_bonus   * 0.10 )
 			   + ( $synonym_bonus * 0.10 )
 			   + ( $stem_bonus    * 0.05 )
-			   + ( $coverage      * 0.10 )
+			   + ( $coverage      * 0.05 )
 			   + ( $recency       * 0.05 )
 			   + ( ( $weight / 10.0 ) * 0.05 );
 
@@ -275,6 +279,23 @@ class Searcher {
 			return 0.01;
 		}
 		return 0.0;
+	}
+
+	/**
+	 * Graph score: how well-connected an entry is in the knowledge graph.
+	 *
+	 * @param int $entry_id Entry post ID.
+	 * @return float Score 0-1.
+	 */
+	private static function graph_score( int $entry_id ): float {
+		static $graph = null;
+		if ( null === $graph ) {
+			$graph = Graph_Builder::load();
+		}
+		if ( ! $graph ) {
+			return 0.0;
+		}
+		return Graph_Builder::get_node_score( $entry_id, $graph );
 	}
 
 	/* ── Text processing ────────────────────────── */

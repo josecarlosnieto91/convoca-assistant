@@ -37,6 +37,9 @@
 				status:      document.querySelector('.convoca-chat-status'),
 			};
 
+			// Initialize session memory
+			this.session = new window.ConvocaSession();
+
 			if (!this.dom.widget) return;
 
 			// Check maintenance mode
@@ -114,29 +117,150 @@
 			this.dom.input.value = '';
 			this.hideSuggestions();
 
-			// Add user message
 			this.addMessage(query, 'user');
-
-			// Show typing
 			const typingMsg = this.showTyping();
 
-			// Search
 			const start = performance.now();
-			const results = this.chat.search(query);
+			const { results, clusters, related } = this.chat.search(query);
 			const elapsed = Math.round(performance.now() - start);
 
-			// Remove typing
 			if (typingMsg) typingMsg.remove();
 
-			// Show result
+			// Record in session
+			const resultIds = results.map(r => r.entry.id);
+			this.session.addQuery(query, resultIds);
+
 			if (results.length > 0) {
-				this.showResults(results, query);
+				// Show context message from session
+				const ctxMsg = this.session.getContextMessage(results);
+				if (ctxMsg) {
+					this.addBotMessage(ctxMsg, 'convoca-context');
+				}
+
+				// Show clustered results
+				this.showClusteredResults(clusters, results, query, elapsed);
+
+				// Show related content from graph
+				this.showRelatedContent(related, results[0].entry);
 			} else {
 				this.showNoResults(query);
 			}
 
-			// Log
 			this.logInteraction(query, results, elapsed);
+		}
+
+		/**
+		 * Show clustered results.
+		 * @param {Array} clusters
+		 * @param {Array} results
+		 * @param {string} query
+		 * @param {number} elapsed
+		 */
+		showClusteredResults(clusters, results, query, elapsed) {
+			const hasMultipleThemes = clusters.length > 1;
+
+			if (hasMultipleThemes && clusters.length >= 2) {
+				// Hybrid response
+				const sourceCount = results.length;
+				const div = document.createElement('div');
+				div.className = 'convoca-message convoca-message-bot convoca-hybrid';
+
+				let html = `<div class="convoca-message-text"><p><strong>He encontrado información en ${sourceCount} fuentes:</strong></p></div>`;
+
+				for (const cluster of clusters) {
+					html += `<div class="convoca-cluster"><div class="convoca-cluster-theme">📂 ${this.escapeHtml(cluster.theme)}</div>`;
+					for (const entry of cluster.entries) {
+						const sourceLabel = entry.type === 'convoca_faq' ? 'FAQ' :
+						                   entry.type === 'convoca_kb' ? 'Base de Conocimiento' :
+						                   entry.type === 'post' ? 'Blog' :
+						                   entry.type === 'page' ? 'Página' :
+						                   entry.type === 'product' ? 'Producto' : entry.type;
+						html += `<div class="convoca-cluster-entry">
+							<a href="${this.escapeHtml(entry.url || '#')}" target="_blank" rel="noopener">
+							📄 <strong>${this.escapeHtml(entry.title)}</strong></a>
+							<span class="convoca-cluster-meta">(${sourceLabel})</span>
+						</div>`;
+					}
+					html += '</div>';
+				}
+
+				div.innerHTML = html;
+				this.dom.messages.appendChild(div);
+				this.scrollToBottom();
+
+			} else {
+				// Single result
+				this.showResultEntry(results[0], query);
+			}
+		}
+
+		/**
+		 * Show a single result entry.
+		 * @param {Object} result
+		 * @param {string} query
+		 */
+		showResultEntry(result, query) {
+			const entry = result.entry;
+			const div = document.createElement('div');
+			div.className = 'convoca-message convoca-message-bot convoca-result';
+
+			const text = this.truncate(entry.excerpt || entry.content, 350);
+			const renderedContent = this.renderMarkdown(text);
+			const sourceLink = entry.url
+				? `<div class="convoca-message-source"><a href="${this.escapeHtml(entry.url)}" target="_blank" rel="noopener noreferrer">→ ${this.escapeHtml(entry.title)}</a></div>`
+				: '';
+
+			div.innerHTML = `<div class="convoca-message-text">${renderedContent}</div>${sourceLink}
+				<div class="convoca-message-actions">
+					<button class="convoca-action-feedback" data-vote="up" data-query="${this.escapeHtml(query)}" data-id="${entry.id}" data-score="${result.score}" title="Me sirvió">👍</button>
+					<button class="convoca-action-feedback" data-vote="down" data-query="${this.escapeHtml(query)}" title="No me sirvió">👎</button>
+					<button class="convoca-action-copy" title="Copiar respuesta">📋</button>
+				</div>`;
+
+			this.dom.messages.appendChild(div);
+			this.scrollToBottom();
+			this.bindResultActions(div, query, entry, result.score);
+		}
+
+		/**
+		 * Show related content from the knowledge graph.
+		 * @param {Array} related
+		 * @param {Object} currentEntry
+		 */
+		showRelatedContent(related, currentEntry) {
+			if (related.length === 0) return;
+
+			const div = document.createElement('div');
+			div.className = 'convoca-message convoca-message-bot convoca-related-section';
+			let html = `<div class="convoca-message-text"><p>🔗 <strong>Contenido relacionado:</strong></p></div>`;
+
+			for (const rel of related) {
+				const relType = rel.type === 'same_category' ? 'misma categoría' :
+				                rel.type === 'same_tag' ? 'mismas etiquetas' :
+				                rel.type === 'internal_link' ? 'enlace interno' : 'relacionado';
+				html += `<div class="convoca-related-entry">
+					<a href="${this.escapeHtml(rel.entry.url || '#')}" target="_blank" rel="noopener">
+					📎 ${this.escapeHtml(rel.entry.title)}</a>
+					<span class="convoca-related-meta">(${relType})</span>
+				</div>`;
+			}
+
+			div.innerHTML = html;
+			this.dom.messages.appendChild(div);
+			this.scrollToBottom();
+		}
+
+		/**
+		 * Add a bot message.
+		 * @param {string} text
+		 * @param {string} cls
+		 */
+		addBotMessage(text, cls = '') {
+			const div = document.createElement('div');
+			div.className = `convoca-message convoca-message-bot ${cls}`;
+			div.textContent = text;
+			this.dom.messages.appendChild(div);
+			this.scrollToBottom();
 		}
 
 		/* ── Message rendering ──────────────────── */

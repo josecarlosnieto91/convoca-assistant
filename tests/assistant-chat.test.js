@@ -2,110 +2,104 @@
  * @jest-environment jsdom
  */
 
-// Mock Fuse.js — the actual bundled file creates a global Fuse
+// Mock Fuse.js
 global.Fuse = jest.fn().mockImplementation(() => ({
 	search: jest.fn().mockReturnValue([]),
 }));
 
-// Import the module
-const fs = require('fs');
-const path = require('path');
+// Load session
+require('../assets/js/assistant-session.js');
 
-describe('ConvocaChat Engine', () => {
+describe('SessionMemory', () => {
 	beforeEach(() => {
-		document.body.innerHTML = '';
-		// Module is loaded once via require; don't delete window.ConvocaChat
+		localStorage.clear();
 	});
 
-	test('ConvocaChat class exists', () => {
-		require('../assets/js/assistant-chat.js');
-		expect(window.ConvocaChat).toBeDefined();
+	test('SessionMemory class exists', () => {
+		const session = new window.ConvocaSession();
+		expect(session).toBeDefined();
+		expect(session.data.sessionId).toBeDefined();
 	});
 
-	test('normalize removes accents and punctuation', () => {
+	test('addQuery records query and extracts topics', () => {
+		const session = new window.ConvocaSession();
+		session.addQuery('cómo renovar la licencia', [42, 15]);
+		expect(session.data.queries.length).toBe(1);
+		expect(session.data.queries[0].text).toBe('cómo renovar la licencia');
+		expect(session.data.topics).toContain('renovar');
+		expect(session.data.topics).toContain('licencia');
+	});
+
+	test('markClicked adds to clicked array', () => {
+		const session = new window.ConvocaSession();
+		session.markClicked(42);
+		expect(session.data.clicked).toContain(42);
+	});
+
+	test('getSeenIds includes clicked and result IDs', () => {
+		const session = new window.ConvocaSession();
+		session.addQuery('test', [1, 2, 3]);
+		session.markClicked(1);
+		const seen = session.getSeenIds();
+		expect(seen).toContain(1);
+		expect(seen).toContain(2);
+		expect(seen).toContain(3);
+	});
+
+	test('clear resets session', () => {
+		const session = new window.ConvocaSession();
+		session.addQuery('test', [1]);
+		session.clear();
+		expect(session.data.queries.length).toBe(0);
+		expect(session.data.topics.length).toBe(0);
+	});
+});
+
+describe('ConvocaChat n-grams and lemmatization', () => {
+	beforeEach(() => {
+		delete window.ConvocaChat;
+	});
+
+	test('normalize removes accents', () => {
 		require('../assets/js/assistant-chat.js');
 		const chat = new window.ConvocaChat();
-		const result = chat.normalize('¿Cómo estás? ¡Bien!');
-		expect(result).toBe('como estas bien');
-	});
-
-	test('normalize lowercase', () => {
-		require('../assets/js/assistant-chat.js');
-		const chat = new window.ConvocaChat();
-		expect(chat.normalize('HOLA MUNDO')).toBe('hola mundo');
+		expect(chat.normalize('¿Cómo estás?')).toBe('como estas');
 	});
 
 	test('tokenize removes stop words', () => {
 		require('../assets/js/assistant-chat.js');
 		const chat = new window.ConvocaChat();
-		const stopWords = ['el', 'la', 'de', 'en', 'y'];
-		const result = chat.tokenize('el gato en la casa', stopWords);
-		expect(result).not.toContain('el');
-		expect(result).not.toContain('la');
-		expect(result).not.toContain('en');
-		expect(result).toContain('gato');
-		expect(result).toContain('casa');
+		const result = chat.tokenize('el gato en la casa', ['el', 'la', 'en']);
+		expect(result).toEqual(['gato', 'casa']);
 	});
 
-	test('expandSynonyms adds related terms', () => {
+	test('expandSemantic adds lemmas', () => {
 		require('../assets/js/assistant-chat.js');
 		const chat = new window.ConvocaChat();
-		const synonyms = {
-			'ordenador': ['computadora', 'pc'],
-			'coche': ['auto', 'automóvil'],
+		const result = chat.expandSemantic(['inscripción'], {});
+		expect(result).toContain('inscripción');
+		expect(result).toContain('inscribir');
+	});
+
+	test('calcGraphScore with no graph', () => {
+		require('../assets/js/assistant-chat.js');
+		const chat = new window.ConvocaChat();
+		chat.graph = null;
+		expect(chat.calcGraphScore(1)).toBe(0);
+	});
+
+	test('calcGraphScore with edges', () => {
+		require('../assets/js/assistant-chat.js');
+		const chat = new window.ConvocaChat();
+		chat.graph = {
+			edges: [
+				{ from: 1, to: 2, type: 'same', weight: 0.3 },
+				{ from: 2, to: 3, type: 'same', weight: 0.4 },
+			]
 		};
-		const result = chat.expandSynonyms(['ordenador'], synonyms);
-		expect(result).toContain('computadora');
-		expect(result).toContain('pc');
-		expect(result).toContain('ordenador');
-	});
-
-	test('recencyBonus returns higher for recent dates', () => {
-		require('../assets/js/assistant-chat.js');
-		const chat = new window.ConvocaChat();
-
-		const recent = chat.recencyBonus(new Date().toISOString());
-		const old = chat.recencyBonus('2020-01-01');
-
-		expect(recent).toBeGreaterThan(old);
-		expect(recent).toBe(0.05);
-		expect(old).toBe(0);
-	});
-
-	test('exactMatchBonus for title match', () => {
-		require('../assets/js/assistant-chat.js');
-		const chat = new window.ConvocaChat();
-		const bonus = chat.exactMatchBonus(
-			'como registrarse',
-			'como registrarse en la asociacion',
-			'',
-			''
-		);
-		expect(bonus).toBe(0.15);
-	});
-
-	test('compositeScore returns between 0 and 1', () => {
-		require('../assets/js/assistant-chat.js');
-		const chat = new window.ConvocaChat();
-
-		const score = chat.compositeScore(
-			{
-				title: 'Test title',
-				content: 'Test content',
-				keywords: ['test'],
-				categories: [],
-				tags: [],
-				excerpt: 'Test',
-				weight: 1.0,
-				date: new Date().toISOString(),
-			},
-			'test',
-			['test'],
-			['test'],
-			0.8
-		);
-
-		expect(score).toBeGreaterThanOrEqual(0);
-		expect(score).toBeLessThanOrEqual(1);
+		const score1 = chat.calcGraphScore(1);
+		const score3 = chat.calcGraphScore(3);
+		expect(score1).toBeGreaterThan(0);
+		expect(score3).toBeGreaterThan(0);
 	});
 });

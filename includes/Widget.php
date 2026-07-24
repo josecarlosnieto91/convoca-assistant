@@ -44,11 +44,20 @@ class Widget {
 			true
 		);
 
+		// Session memory.
+		wp_enqueue_script(
+			'convoca-assistant-session',
+			CONVOCA_ASSISTANT_ASSETS_URL . 'js/assistant-session.js',
+			array(),
+			CONVOCA_ASSISTANT_VERSION,
+			true
+		);
+
 		// Chat engine.
 		wp_enqueue_script(
 			'convoca-assistant-chat',
 			CONVOCA_ASSISTANT_ASSETS_URL . 'js/assistant-chat.js',
-			array( 'convoca-assistant-fuse' ),
+			array( 'convoca-assistant-fuse', 'convoca-assistant-session' ),
 			CONVOCA_ASSISTANT_VERSION,
 			true
 		);

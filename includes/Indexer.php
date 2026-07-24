@@ -187,6 +187,16 @@ class Indexer {
 
 		update_option( 'convoca_assistant_index_hash', $hash );
 		update_option( 'convoca_assistant_index_generated', time() );
+
+		// Build and write knowledge graph.
+		$graph_result = Graph_Builder::write();
+		if ( $graph_result['success'] ) {
+			Logger::info(
+				sprintf( 'Graph built: %d nodes, %d edges.', $graph_result['nodes'], $graph_result['edges'] ),
+				'convoca-assistant'
+			);
+		}
+
 		delete_transient( 'convoca_assistant_index_dirty' );
 		delete_transient( 'convoca_assistant_index_debounce' );
 

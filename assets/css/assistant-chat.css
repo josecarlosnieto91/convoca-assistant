@@ -393,7 +393,92 @@
 	margin: 4px 0;
 }
 
-/* ── Inline mode (shortcode) ──────────────────────── */
+/* ── Clusters & hybrid results ──────────────────── */
+
+.convoca-hybrid {
+	padding: 12px 16px;
+}
+
+.convoca-cluster {
+	margin: 8px 0;
+	padding: 8px 12px;
+	background: rgba(0,0,0,0.03);
+	border-radius: 8px;
+}
+
+.convoca-cluster-theme {
+	font-size: 12px;
+	font-weight: 600;
+	color: var(--convoca-muted);
+	text-transform: uppercase;
+	letter-spacing: 0.3px;
+	margin-bottom: 6px;
+}
+
+.convoca-cluster-entry {
+	margin: 4px 0;
+	font-size: 13px;
+}
+
+.convoca-cluster-entry a {
+	color: var(--convoca-primary);
+	text-decoration: none;
+}
+
+.convoca-cluster-entry a:hover {
+	text-decoration: underline;
+}
+
+.convoca-cluster-meta {
+	font-size: 11px;
+	color: var(--convoca-muted);
+	margin-left: 4px;
+}
+
+/* ── Related content section ──────────────────── */
+
+.convoca-related-section {
+	padding: 10px 14px;
+	font-size: 13px;
+}
+
+.convoca-related-entry {
+	margin: 4px 0;
+}
+
+.convoca-related-entry a {
+	color: var(--convoca-primary);
+	text-decoration: none;
+}
+
+.convoca-related-entry a:hover {
+	text-decoration: underline;
+}
+
+.convoca-related-meta {
+	font-size: 11px;
+	color: var(--convoca-muted);
+	margin-left: 4px;
+}
+
+/* ── Context message ──────────────────────────── */
+
+.convoca-message.convoca-context {
+	background: #eff6ff;
+	color: #1e40af;
+	font-size: 13px;
+	border: 1px solid #bfdbfe;
+}
+
+@media (prefers-color-scheme: dark) {
+	.convoca-message.convoca-context {
+		background: #1e3a5f;
+		color: #93c5fd;
+		border-color: #2563eb;
+	}
+}
+
+/* ── Inline mode ──────────────────────────────────── */
 
 .convoca-assistant-inline {
 	border: 1px solid var(--convoca-border);

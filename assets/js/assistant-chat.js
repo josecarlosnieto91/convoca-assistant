@@ -1,9 +1,13 @@
 /**
- * Convoca Assistant — Chat Engine
+ * Convoca Assistant — Chat Engine (KG Evolution)
  *
- * Core search engine running Fuse.js in the browser.
- * Handles index loading, query normalization, synonym expansion,
- * composite scoring (fuzzy + exact + weight + recency), and ranking.
+ * Fuse.js search engine with:
+ * - Composite scoring: fuzzy + graph + exact + synonym + stem + coverage + recency + weight
+ * - n-gram matching (unigram, bigram, trigram)
+ * - Light Spanish lemmatization
+ * - Result clustering by theme
+ * - Knowledge graph integration (related content)
+ * - Hybrid response rendering
  *
  * @module ConvocaAssistant/Chat
  */
@@ -11,112 +15,246 @@
 (function () {
 	'use strict';
 
-	/* ── Constants ─────────────────────────────── */
-
-	/** @const {number} Minimum score threshold to return a result */
 	const SCORE_THRESHOLD = 0.10;
 
-	/** @const {Object<string,number>} Score component weights */
-	const WEIGHTS = {
-		fuzzy:   0.50,
-		exact:   0.15,
-		synonym: 0.10,
-		stem:    0.05,
-		coverage: 0.10,
-		recency: 0.05,
-		weight:  0.05,
+	/* ── Lemma dictionary (Spanish, compact) ─────── */
+
+	const LEMMAS = {
+		// Verb lemmas
+		'inscribir': ['inscribo', 'inscribes', 'inscribe', 'inscribimos', 'inscribís', 'inscriben',
+			           'inscribí', 'inscribiste', 'inscribió', 'inscribieron',
+			           'inscribía', 'inscribías', 'inscribíamos', 'inscribíais', 'inscribían',
+			           'inscribiré', 'inscribirás', 'inscribirá', 'inscribiremos', 'inscribiréis', 'inscribirán',
+			           'inscrito', 'inscrita', 'inscritos', 'inscritas',
+			           'inscripción', 'inscripciones', 'inscribirse'],
+		'registrar': ['registro', 'registras', 'registra', 'registramos', 'registráis', 'registran',
+			          'registré', 'registraste', 'registró', 'registraron',
+			          'registraba', 'registrabas', 'registrábamos',
+			          'registraré', 'registrarás', 'registrará', 'registraremos',
+			          'registrado', 'registrada', 'registrados', 'registradas',
+			          'registración', 'registraciones', 'registrarse'],
+		'pagar': ['pago', 'pagas', 'paga', 'pagamos', 'pagáis', 'pagan',
+			      'pagué', 'pagaste', 'pagó', 'pagaron',
+			      'pagaba', 'pagabas', 'pagábamos',
+			      'pagaré', 'pagarás', 'pagará', 'pagaremos',
+			      'pagado', 'pagada', 'pagados', 'pagadas',
+			      'pago', 'pagos', 'pagador', 'pagadora'],
+		'renovar': ['renuevo', 'renuevas', 'renueva', 'renovamos', 'renováis', 'renuevan',
+			        'renové', 'renovaste', 'renovó', 'renovaron',
+			        'renovaba', 'renovabas', 'renovábamos',
+			        'renovaré', 'renovarás', 'renovará', 'renovaremos',
+			        'renovado', 'renovada', 'renovados', 'renovadas',
+			        'renovación', 'renovaciones', 'renovable', 'renovables'],
+		'solicitar': ['solicito', 'solicitas', 'solicita', 'solicitamos', 'solicitáis', 'solicitan',
+			          'solicité', 'solicitaste', 'solicitó', 'solicitaron',
+			          'solicitaba', 'solicitabas', 'solicitábamos',
+			          'solicitaré', 'solicitarás', 'solicitará', 'solicitaremos',
+			          'solicitado', 'solicitada', 'solicitados', 'solicitadas',
+			          'solicitud', 'solicitudes', 'solicitante', 'solicitantes'],
+		'contactar': ['contacto', 'contactas', 'contacta', 'contactamos', 'contactáis', 'contactan',
+			          'contacté', 'contactaste', 'contactó', 'contactaron',
+			          'contactaba', 'contactabas', 'contactábamos',
+			          'contactaré', 'contactarás', 'contactará', 'contactaremos',
+			          'contactado', 'contactada', 'contactados', 'contactadas',
+			          'contacto', 'contactos'],
+		'participar': ['participo', 'participas', 'participa', 'participamos', 'participáis', 'participan',
+			           'participé', 'participaste', 'participó', 'participaron',
+			           'participaba', 'participabas', 'participábamos',
+			           'participaré', 'participarás', 'participará', 'participaremos',
+			           'participado', 'participada', 'participados', 'participadas',
+			           'participación', 'participaciones', 'participante', 'participantes'],
+		'gestionar': ['gestiono', 'gestionas', 'gestiona', 'gestionamos', 'gestionáis', 'gestionan',
+			          'gestioné', 'gestionaste', 'gestionó', 'gestionaron',
+			          'gestionaba', 'gestionabas', 'gestionábamos',
+			          'gestionaré', 'gestionarás', 'gestionará', 'gestionaremos',
+			          'gestionado', 'gestionada', 'gestionados', 'gestionadas',
+			          'gestión', 'gestiones', 'gestor', 'gestora'],
+		'descargar': ['descargo', 'descargas', 'descarga', 'descargamos', 'descargáis', 'descargan',
+			          'descargué', 'descargaste', 'descargó', 'descargaron',
+			          'descargaba', 'descargabas', 'descargábamos',
+			          'descargaré', 'descargarás', 'descargará', 'descargaremos',
+			          'descargado', 'descargada', 'descargados', 'descargadas',
+			          'descarga', 'descargas', 'descargable', 'descargables'],
+		'organizar': ['organizo', 'organizas', 'organiza', 'organizamos', 'organizáis', 'organizan',
+			          'organicé', 'organizaste', 'organizó', 'organizaron',
+			          'organizaba', 'organizabas', 'organizábamos',
+			          'organizaré', 'organizarás', 'organizará', 'organizaremos',
+			          'organizado', 'organizada', 'organizados', 'organizadas',
+			          'organización', 'organizaciones', 'organizador', 'organizadora',
+			          'organizativo', 'organizativa'],
+		'necesitar': ['necesito', 'necesitas', 'necesita', 'necesitamos', 'necesitáis', 'necesitan',
+			          'necesité', 'necesitaste', 'necesitó', 'necesitaron',
+			          'necesitaba', 'necesitabas', 'necesitábamos',
+			          'necesitaré', 'necesitarás', 'necesitará', 'necesitaremos',
+			          'necesitado', 'necesitada', 'necesitados', 'necesitadas',
+			          'necesidad', 'necesidades', 'necesario', 'necesaria'],
+		// Noun lemmas
+		'socio': ['socia', 'socios', 'socias', 'asociado', 'asociada', 'asociados', 'asociadas',
+			      'asociacion', 'asociaciones', 'asociarse', 'asociar'],
+		'documento': ['documentos', 'documental', 'documentación', 'documentado', 'documentada'],
+		'cuota': ['cuotas', 'cuotificar', 'cuotificación'],
+		'taller': ['talleres', 'tallerista', 'talleristas'],
+		'horario': ['horarios', 'horaria', 'horarias', 'horario', 'hora', 'horas'],
+		'precio': ['precios', 'preciar', 'preciado', 'coste', 'costes', 'costo', 'costos', 'tarifa', 'tarifas'],
+		'curso': ['cursos', 'cursar', 'cursado', 'cursando'],
+		'actividad': ['actividades', 'activo', 'activa', 'activos', 'activas', 'activar', 'activado'],
+		'formulario': ['formularios', 'formular', 'formulado', 'formación'],
+		'voluntario': ['voluntaria', 'voluntarios', 'voluntarias', 'voluntariado'],
+		'membresía': ['membresías', 'membresia', 'membresias', 'membersía', 'membersias'],
+		'beneficio': ['beneficios', 'beneficiar', 'beneficiado', 'beneficiaria', 'beneficiario'],
+		'evento': ['eventos', 'eventual'],
+		'proyecto': ['proyectos', 'proyectar', 'proyectado'],
+		'certificado': ['certificados', 'certificar', 'certificada', 'certificación', 'certificaciones'],
 	};
 
-	/* ── Spanish stemmer (light) ───────────────── */
+	/* ── n-gram generator ────────────────────────── */
 
 	/**
-	 * Light Spanish stemming: removes common suffixes.
-	 * Not a full morphological analyzer, but good enough for search matching.
-	 *
-	 * @param {string} word
-	 * @returns {string}
+	 * Generate n-grams from tokens.
+	 * @param {string[]} tokens
+	 * @param {number} maxN
+	 * @returns {{unigrams: string[], bigrams: string[], trigrams: string[]}}
 	 */
-	function stemSpanish(word) {
-		if (word.length < 4) return word;
+	function generateNgrams(tokens, maxN = 3) {
+		const result = { unigrams: tokens };
 
-		const suffixes = [
-			// Verb conjugations
-			/ando$|iendo$|ando[ns]?$/i,
-			/aba$|abas$|ábamos$|abais$|aban$/i,
-			/ía$|ías$|íamos$|íais$|ían$/i,
-			/é$|aste$|ó$|amos$|asteis$|aron$/i,
-			/eré$|erás$|erá$|eremos$|eréis$|erán$/i,
-			/iré$|irás$|irá$|iremos$|iréis$|irán$/i,
-			/ando$|iendo$/i,
-			/ado$|ido$|ada$|ida$/i,
-			/ar$|er$|ir$/i,
-			// Noun/adjective suffixes
-			/ción$|ciones$/i,
-			/miento$|mientos$/i,
-			/mente$/i,
-			/dor$|dora$|dores$|doras$/i,
-			/ero$|era$|eros$|eras$/i,
-			/ista$|istas$/i,
-			/azo$|aza$|azos$|azas$/i,
-			/ito$|ita$|itos$|itas$/i,
-			/ón$|ona$|ones$/i,
-			/ble$|bles$/i,
-			/eza$|ezas$/i,
-			/ivo$|iva$|ivos$|ivas$/i,
-		];
-
-		let stemmed = word;
-		for (const pattern of suffixes) {
-			const candidate = stemmed.replace(pattern, '');
-			if (candidate !== word && candidate.length >= 3) {
-				stemmed = candidate;
-				break;
+		if (maxN >= 2) {
+			result.bigrams = [];
+			for (let i = 0; i < tokens.length - 1; i++) {
+				result.bigrams.push(tokens[i] + ' ' + tokens[i + 1]);
 			}
 		}
 
-		return stemmed.toLowerCase();
+		if (maxN >= 3) {
+			result.trigrams = [];
+			for (let i = 0; i < tokens.length - 2; i++) {
+				result.trigrams.push(tokens[i] + ' ' + tokens[i + 1] + ' ' + tokens[i + 2]);
+			}
+		}
+
+		return result;
 	}
 
-	/* ── Main engine ───────────────────────────── */
+	/* ── Lemmatizer ──────────────────────────────── */
+
+	/**
+	 * Find the lemma (canonical form) of a word.
+	 * @param {string} word - Lowercase word
+	 * @returns {string} Lemma or word itself if not found
+	 */
+	function lemmatize(word) {
+		if (word.length < 3) return word;
+
+		// Direct lookup in lemma dictionary values → find the key
+		for (const [lemma, forms] of Object.entries(LEMMAS)) {
+			if (lemma === word) return lemma;
+			for (const form of forms) {
+				if (form === word) return lemma;
+			}
+		}
+
+		return word;
+	}
+
+	/**
+	 * Expand a word with lemmas for more matching.
+	 * @param {string} word
+	 * @returns {string[]} [original, lemma, ...other forms]
+	 */
+	function expandWithLemmas(word) {
+		const results = [word];
+		const lemma = lemmatize(word);
+		if (lemma !== word) {
+			results.push(lemma);
+			// Add a few representative forms
+			const forms = LEMMAS[lemma];
+			if (forms) {
+				// Add first 3 forms as examples
+				for (let i = 0; i < Math.min(3, forms.length); i++) {
+					if (forms[i] !== word && forms[i] !== lemma) {
+						results.push(forms[i]);
+					}
+				}
+			}
+		}
+		return [...new Set(results)];
+	}
+
+	/* ── Clustering ──────────────────────────────── */
+
+	/**
+	 * Cluster search results by theme (category).
+	 * @param {Array} results - Scored results
+	 * @returns {Array} Clusters
+	 */
+	function clusterResults(results) {
+		const clusters = [];
+		const seen = new Set();
+
+		for (const result of results) {
+			const entry = result.entry;
+			const cats = entry.categories || [];
+
+			// Find or create cluster by first category
+			let clusterKey = cats.length > 0 ? cats[0] : 'general';
+			let cluster = clusters.find(c => c.theme === clusterKey);
+
+			if (!cluster) {
+				cluster = { theme: clusterKey, entries: [], scores: [] };
+				clusters.push(cluster);
+			}
+
+			if (!seen.has(entry.id)) {
+				cluster.entries.push(entry);
+				cluster.scores.push(result.score);
+				seen.add(entry.id);
+			}
+		}
+
+		// Sort clusters by average score, limit to 3 clusters, 3 entries each
+		for (const c of clusters) {
+			c.avgScore = c.scores.reduce((a, b) => a + b, 0) / c.scores.length;
+			c.entries = c.entries.slice(0, 3);
+		}
+
+		return clusters
+			.sort((a, b) => b.avgScore - a.avgScore)
+			.slice(0, 3);
+	}
+
+	/* ── Main engine ─────────────────────────────── */
 
 	class ConvocaChat {
 		constructor() {
-			/** @type {Fuse|null} */
 			this.fuse = null;
-
-			/** @type {Object|null} */
 			this.index = null;
-
-			/** @type {Object} */
+			this.graph = null;
 			this.config = window.convocaAssistant || {};
-
-			/** @type {boolean} */
 			this.ready = false;
 		}
 
 		/**
-		 * Initialize the engine: fetch and index the knowledge base.
+		 * Initialize: fetch index + graph.
 		 * @returns {Promise<boolean>}
 		 */
 		async init() {
 			try {
 				const url = this.config.indexUrl || '/wp-content/uploads/convoca-assistant/index.json';
-
 				const response = await fetch(url);
 				if (!response.ok) throw new Error(`HTTP ${response.status}`);
-
 				this.index = await response.json();
-				if (!this.index || !this.index.entries || !Array.isArray(this.index.entries)) {
-					throw new Error('Invalid index format');
-				}
+				if (!this.index || !this.index.entries) throw new Error('Invalid index');
+
+				// Load knowledge graph
+				await this.loadGraph();
 
 				const weights = this.config.settings?.weights || {};
 				const threshold = this.config.settings?.threshold || 0.4;
 				const distance = this.config.settings?.distance || 100;
 
-				const options = {
+				this.fuse = new Fuse(this.index.entries, {
 					includeScore: true,
-					shouldSort: false, // We'll sort ourselves with composite score
+					shouldSort: false,
 					threshold,
 					distance,
 					keys: [
@@ -126,79 +264,132 @@
 						{ name: 'content',   weight: weights.content   || 1 },
 						{ name: 'tags',      weight: weights.tags      || 1 },
 					],
-				};
+				});
 
-				this.fuse = new Fuse(this.index.entries, options);
 				this.ready = true;
 				return true;
-
 			} catch (err) {
-				console.error('[Convoca Assistant] Failed to load index:', err);
+				console.error('[Convoca Assistant] Init error:', err);
 				this.ready = false;
 				return false;
 			}
 		}
 
 		/**
-		 * Search the knowledge base with composite scoring.
-		 * @param {string} query - User's raw query
-		 * @returns {Array<{entry: Object, score: number}>}
+		 * Load graph.json for related content.
+		 */
+		async loadGraph() {
+			try {
+				const baseUrl = this.config.indexUrl.substring(0, this.config.indexUrl.lastIndexOf('/'));
+				const graphUrl = baseUrl + '/graph.json';
+				const res = await fetch(graphUrl);
+				if (res.ok) {
+					this.graph = await res.json();
+				}
+			} catch (e) {
+				this.graph = null;
+			}
+		}
+
+		/**
+		 * Search with composite scoring + clustering.
+		 * @param {string} query
+		 * @returns {{results: Array, clusters: Array, related: Array}}
 		 */
 		search(query) {
 			if (!this.ready || !this.fuse || !this.index) {
-				return [];
+				return { results: [], clusters: [], related: [] };
 			}
 
 			const maxResults = this.config.settings?.maxResults || 10;
 			const synonyms = this.index.synonyms || {};
 			const stopWords = this.index.stop_words || [];
 
-			// 1. Normalize query
+			// 1. Normalize
 			const normalized = this.normalize(query);
 
-			// 2. Tokenize and remove stop words
+			// 2. Tokenize
 			const tokens = this.tokenize(normalized, stopWords);
-			if (tokens.length === 0) return [];
+			if (tokens.length === 0) return { results: [], clusters: [], related: [] };
 
-			// 3. Expand with synonyms
-			const expanded = this.expandSynonyms(tokens, synonyms);
+			// 3. Generate n-grams
+			const ngrams = generateNgrams(tokens, 3);
 
-			// 4. Run Fuse.js search (use expanded terms as search query)
-			const fuseQuery = expanded.join(' ');
-			const rawResults = this.fuse.search(fuseQuery);
+			// 4. Expand with synonyms + lemmas
+			const expanded = this.expandSemantic(tokens, synonyms);
 
-			// 5. Calculate composite score for each result
-			const scored = rawResults.map(result => {
-				const entry = result.item;
-				const fuzzyScore = 1 - (result.score || 0);
-				const composite = this.compositeScore(entry, normalized, tokens, expanded, fuzzyScore);
+			// 5. Build search queries (trigram > bigram > unigram)
+			const searchQueries = [];
+			if (ngrams.trigrams?.length) searchQueries.push(...ngrams.trigrams);
+			if (ngrams.bigrams?.length) searchQueries.push(...ngrams.bigrams);
+			searchQueries.push(expanded.join(' '));
 
-				return {
-					entry,
-					score: composite,
-				};
-			});
+			// 6. Run Fuse.js with each query, collect unique results
+			const seen = new Set();
+			const rawResults = [];
 
-			// 6. Filter by threshold
+			for (const sq of searchQueries) {
+				const fuseResults = this.fuse.search(sq);
+				for (const fr of fuseResults) {
+					if (!seen.has(fr.item.id)) {
+						seen.add(fr.item.id);
+						rawResults.push(fr);
+					}
+				}
+			}
+
+			// 7. Score with composite
+			const scored = rawResults.map(r => ({
+				entry: r.item,
+				score: this.compositeScore(r.item, normalized, tokens, expanded, 1 - (r.score || 0)),
+			}));
+
+			// 8. Filter & sort
 			const filtered = scored.filter(r => r.score >= SCORE_THRESHOLD);
-
-			// 7. Sort by composite score descending
 			filtered.sort((a, b) => b.score - a.score);
+			const topResults = filtered.slice(0, maxResults);
 
-			return filtered.slice(0, maxResults);
+			// 9. Cluster
+			const clusters = clusterResults(topResults);
+
+			// 10. Related content from graph
+			const related = this.getRelatedContent(topResults);
+
+			return { results: topResults, clusters, related };
+		}
+
+		/**
+		 * Get related content from graph for top result.
+		 * @param {Array} results
+		 * @returns {Array}
+		 */
+		getRelatedContent(results) {
+			if (!this.graph || !this.graph.edges || results.length === 0) return [];
+			const topId = results[0].entry.id;
+			const related = [];
+			const seen = new Set();
+
+			for (const edge of this.graph.edges) {
+				let relatedId = null;
+				if (edge.from === topId) relatedId = edge.to;
+				else if (edge.to === topId) relatedId = edge.from;
+
+				if (relatedId && !seen.has(relatedId)) {
+					seen.add(relatedId);
+					const entry = this.index.entries.find(e => e.id === relatedId);
+					if (entry) {
+						related.push({ entry, weight: edge.weight, type: edge.type });
+					}
+				}
+			}
+
+			return related
+				.sort((a, b) => b.weight - a.weight)
+				.slice(0, 4);
 		}
 
 		/* ── Composite score ────────────────────── */
 
-		/**
-		 * Calculate the composite score for a single entry.
-		 * @param {Object} entry     - Index entry
-		 * @param {string} normalized - Normalized query
-		 * @param {string[]} tokens  - Tokenized words
-		 * @param {string[]} expanded - Words + synonyms
-		 * @param {number} fuzzyScore - Raw Fuse.js score (inverted)
-		 * @returns {number} Final score (0-1)
-		 */
 		compositeScore(entry, normalized, tokens, expanded, fuzzyScore) {
 			const title    = (entry.title    || '').toLowerCase();
 			const content  = (entry.content  || '').toLowerCase();
@@ -206,48 +397,41 @@
 			const cats     = (entry.categories||[]).join(' ').toLowerCase();
 			const tags     = (entry.tags     || []).join(' ').toLowerCase();
 			const excerpt  = (entry.excerpt  || '').toLowerCase();
+			const weight   = entry.weight || 1.0;
 
-			// Exact match bonus
-			const exactBonus = this.exactMatchBonus(normalized, title, keywords, content);
+			// Graph score (how connected)
+			const graphScore = this.calcGraphScore(entry.id);
 
-			// Synonym bonus
-			const synBonus = this.synonymBonus(content + ' ' + title, tokens, expanded);
+			const score =
+				(fuzzyScore        * 0.40) +
+				(graphScore        * 0.20) +
+				(this.exactMatchBonus(normalized, title, keywords, content) * 0.10) +
+				(this.synonymBonus(content + ' ' + title, tokens, expanded) * 0.10) +
+				(this.stemBonus(tokens, title, content, keywords)            * 0.05) +
+				(this.coverageScore(tokens, title, content, keywords, cats, tags, excerpt) * 0.05) +
+				(this.recencyBonus(entry.date || entry.modified || '')       * 0.05) +
+				((weight / 10.0) * 0.05);
 
-			// Stem matching
-			const stemBonus = this.stemBonus(tokens, title, content, keywords);
-
-			// Content coverage
-			const coverage = this.coverageScore(tokens, title, content, keywords, cats, tags, excerpt);
-
-			// Recency
-			const recency = this.recencyBonus(entry.date || entry.modified || '');
-
-			// Weight factor
-			const weight = entry.weight || 1.0;
-
-			// Composite
-			let score = (fuzzyScore * WEIGHTS.fuzzy)
-			          + (exactBonus * WEIGHTS.exact)
-			          + (synBonus   * WEIGHTS.synonym)
-			          + (stemBonus  * WEIGHTS.stem)
-			          + (coverage   * WEIGHTS.coverage)
-			          + (recency    * WEIGHTS.recency)
-			          + ((weight / 10.0) * WEIGHTS.weight);
-
-			// Boost from weight multiplier
-			score *= (0.5 + (weight / 20.0));
-
-			return Math.min(score, 1.0);
+			return Math.min(score * (0.5 + (weight / 20.0)), 1.0);
 		}
 
 		/**
-		 * Bonus for exact phrase matches.
-		 * @param {string} query    - Normalized query
-		 * @param {string} title    - Lowercase title
-		 * @param {string} keywords - Lowercase keywords
-		 * @param {string} content  - Lowercase content
-		 * @returns {number} 0-0.15
+		 * Calculate graph score for an entry.
+		 * @param {number} entryId
+		 * @returns {number}
 		 */
+		calcGraphScore(entryId) {
+			if (!this.graph || !this.graph.edges || this.graph.edges.length === 0) return 0;
+			let count = 0;
+			const total = this.graph.edges.length;
+			for (const edge of this.graph.edges) {
+				if (edge.from === entryId || edge.to === entryId) count++;
+			}
+			return total > 0 ? Math.min(count / Math.sqrt(total), 1.0) : 0;
+		}
+
+		/* ── Score components ───────────────────── */
+
 		exactMatchBonus(query, title, keywords, content) {
 			if (title.includes(query))    return 0.15;
 			if (keywords.includes(query)) return 0.10;
@@ -255,131 +439,85 @@
 			return 0;
 		}
 
-		/**
-		 * Bonus when synonyms of query words appear in content.
-		 * @param {string} text     - Combined text to search
-		 * @param {string[]} tokens - Original words
-		 * @param {string[]} expanded - Expanded words
-		 * @returns {number} 0-0.10
-		 */
 		synonymBonus(text, tokens, expanded) {
 			const extra = expanded.filter(w => !tokens.includes(w));
 			if (extra.length === 0) return 0;
-
 			const hits = extra.filter(syn => text.includes(syn)).length;
 			return (hits / extra.length) * 0.10;
 		}
 
-		/**
-		 * Bonus when stems of query words match stems in content.
-		 * @param {string[]} tokens  - Query words
-		 * @param {string}   title   - Lowercase title
-		 * @param {string}   content - Lowercase content
-		 * @param {string}   keywords - Lowercase keywords
-		 * @returns {number} 0-0.05
-		 */
 		stemBonus(tokens, title, content, keywords) {
-			const searchSpace = title + ' ' + content + ' ' + keywords;
-			let stemHits = 0;
-
-			for (const word of tokens) {
-				const stem = stemSpanish(word);
-				if (stem.length < 3) continue;
-				if (searchSpace.includes(stem)) stemHits++;
+			const space = title + ' ' + content + ' ' + keywords;
+			let hits = 0;
+			for (const w of tokens) {
+				const forms = expandWithLemmas(w);
+				if (forms.some(f => f.length >= 3 && space.includes(f))) hits++;
 			}
-
-			return tokens.length > 0 ? (stemHits / tokens.length) * 0.05 : 0;
+			return tokens.length > 0 ? (hits / tokens.length) * 0.05 : 0;
 		}
 
-		/**
-		 * How many query words appear anywhere in the entry.
-		 * @param {string[]} tokens   - Query words
-		 * @param {string}   title    - Lowercase title
-		 * @param {string}   content  - Lowercase content
-		 * @param {string}   keywords - Lowercase keywords
-		 * @param {string}   cats     - Lowercase categories
-		 * @param {string}   tags     - Lowercase tags
-		 * @param {string}   excerpt  - Lowercase excerpt
-		 * @returns {number} 0-1
-		 */
 		coverageScore(tokens, title, content, keywords, cats, tags, excerpt) {
-			const searchSpace = `${title} ${content} ${keywords} ${cats} ${tags} ${excerpt}`;
+			const space = `${title} ${content} ${keywords} ${cats} ${tags} ${excerpt}`;
 			if (tokens.length === 0) return 0;
-
-			const matches = tokens.filter(w => searchSpace.includes(w)).length;
+			const matches = tokens.filter(w => space.includes(w)).length;
 			return matches / tokens.length;
 		}
 
-		/**
-		 * Bonus for recent content.
-		 * @param {string} dateStr - MySQL date string
-		 * @returns {number} 0-0.05
-		 */
 		recencyBonus(dateStr) {
 			if (!dateStr) return 0;
 			const date = new Date(dateStr);
 			if (isNaN(date.getTime())) return 0;
-
 			const days = (Date.now() - date.getTime()) / 86400000;
-
 			if (days < 30)  return 0.05;
 			if (days < 90)  return 0.03;
 			if (days < 365) return 0.01;
 			return 0;
 		}
 
-		/* ── Text processing ─────────────────────── */
+		/* ── Semantic expansion ──────────────────── */
 
 		/**
-		 * Normalize text: lower, remove accents, strip punctuation.
-		 * @param {string} text
-		 * @returns {string}
-		 */
-		normalize(text) {
-			return text
-				.toLowerCase()
-				.normalize('NFD').replace(/[\u0300-\u036f]/g, '') // Remove accents
-				.replace(/[¿?!¡,.;:\-"'«»()\[\]{}]/g, ' ')       // Punctuation → space
-				.replace(/\s+/g, ' ')                               // Collapse spaces
-				.trim();
-		}
-
-		/**
-		 * Tokenize and remove stop words.
-		 * @param {string} text      - Normalized text
-		 * @param {string[]} stopWords
-		 * @returns {string[]}
-		 */
-		tokenize(text, stopWords) {
-			return text
-				.split(' ')
-				.filter(w => w.length > 1 && !stopWords.includes(w));
-		}
-
-		/**
-		 * Expand tokens with synonyms from the index dictionary.
+		 * Expand tokens with synonyms + lemmas.
 		 * @param {string[]} tokens
-		 * @param {Object<string, string[]>} synonyms
+		 * @param {Object} synonyms
 		 * @returns {string[]}
 		 */
-		expandSynonyms(tokens, synonyms) {
+		expandSemantic(tokens, synonyms) {
 			const expanded = [...tokens];
 
+			// Synonym expansion
 			for (const token of tokens) {
 				for (const [term, synList] of Object.entries(synonyms)) {
-					const termLower = term.toLowerCase();
-					const synLower  = synList.map(s => s.toLowerCase());
-
-					if (token === termLower || synLower.includes(token)) {
-						expanded.push(...synLower, termLower);
+					const t = term.toLowerCase();
+					const s = synList.map(x => x.toLowerCase());
+					if (token === t || s.includes(token)) {
+						expanded.push(...s, t);
 					}
 				}
+
+				// Lemma expansion
+				const lemmaForms = expandWithLemmas(token);
+				expanded.push(...lemmaForms);
 			}
 
 			return [...new Set(expanded)];
 		}
+
+		/* ── Text processing ─────────────────────── */
+
+		normalize(text) {
+			return text
+				.toLowerCase()
+				.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+				.replace(/[¿?!¡,.;:\-'"«»()\[\]{}]/g, ' ')
+				.replace(/\s+/g, ' ')
+				.trim();
+		}
+
+		tokenize(text, stopWords) {
+			return text.split(' ').filter(w => w.length > 1 && !stopWords.includes(w));
+		}
 	}
 
-	// Export
 	window.ConvocaChat = ConvocaChat;
 })();
