@@ -20,56 +20,50 @@
 	<form method="post" action="options.php">
 		<?php settings_fields( 'convoca_assistant' ); ?>
 		<?php $settings = Convoca\Assistant\Settings::get_all(); ?>
+		<?php $providers = Convoca\Assistant\Provider_Registry::get_all(); ?>
 
 		<div class="convoca-admin-card">
 			<h2><?php esc_html_e( 'Fuentes activas', 'convoca-assistant' ); ?></h2>
+			<p class="description"><?php esc_html_e( 'Marca las fuentes de conocimiento que quieres incluir en el asistente.', 'convoca-assistant' ); ?></p>
 			<table class="form-table">
-				<tr>
-					<th scope="row"><?php esc_html_e( 'Entradas', 'convoca-assistant' ); ?></th>
-					<td><input type="checkbox" name="convoca_assistant_settings[source_post]" value="1" <?php checked( $settings['source_post'] ); ?> /></td>
-				</tr>
-				<tr>
-					<th scope="row"><?php esc_html_e( 'Páginas', 'convoca-assistant' ); ?></th>
-					<td><input type="checkbox" name="convoca_assistant_settings[source_page]" value="1" <?php checked( $settings['source_page'] ); ?> /></td>
-				</tr>
-				<tr>
-					<th scope="row"><?php esc_html_e( 'FAQ (CPT)', 'convoca-assistant' ); ?></th>
-					<td><input type="checkbox" name="convoca_assistant_settings[source_convoca_faq]" value="1" <?php checked( $settings['source_convoca_faq'] ); ?> /></td>
-				</tr>
-				<tr>
-					<th scope="row"><?php esc_html_e( 'Base de Conocimiento (CPT)', 'convoca-assistant' ); ?></th>
-					<td><input type="checkbox" name="convoca_assistant_settings[source_convoca_kb]" value="1" <?php checked( $settings['source_convoca_kb'] ); ?> /></td>
-				</tr>
-				<tr>
-					<th scope="row"><?php esc_html_e( 'Productos WooCommerce', 'convoca-assistant' ); ?></th>
-					<td><input type="checkbox" name="convoca_assistant_settings[source_woocommerce]" value="1" <?php checked( $settings['source_woocommerce'] ); ?> <?php disabled( ! class_exists( 'WooCommerce' ) ); ?> /></td>
-				</tr>
+				<?php foreach ( $providers as $provider ) : ?>
+					<tr>
+						<th scope="row">
+							<?php echo esc_html( $provider->get_name() ); ?>
+							<?php if ( ! $provider->is_available() ) : ?>
+								<span class="description">(<?php esc_html_e( 'no disponible', 'convoca-assistant' ); ?>)</span>
+							<?php endif; ?>
+						</th>
+						<td>
+							<input type="checkbox"
+							       name="convoca_assistant_settings[<?php echo esc_attr( $provider->get_setting_key() ); ?>]"
+							       value="1"
+							       <?php checked( ! empty( $settings[ $provider->get_setting_key() ] ) ); ?>
+							       <?php disabled( ! $provider->is_available() ); ?> />
+							<span class="description"><?php echo esc_html( $provider->get_description() ); ?></span>
+						</td>
+					</tr>
+				<?php endforeach; ?>
 			</table>
 		</div>
 
 		<div class="convoca-admin-card">
 			<h2><?php esc_html_e( 'Peso por tipo de contenido', 'convoca-assistant' ); ?></h2>
+			<p class="description"><?php esc_html_e( 'A mayor peso, más relevante será ese tipo de contenido en las búsquedas.', 'convoca-assistant' ); ?></p>
 			<table class="form-table">
-				<tr>
-					<th scope="row"><?php esc_html_e( 'FAQ', 'convoca-assistant' ); ?></th>
-					<td><input type="number" name="convoca_assistant_settings[weight_convoca_faq]" value="<?php echo esc_attr( $settings['weight_convoca_faq'] ); ?>" step="0.1" min="0" max="10" /> <span class="description">(0-10)</span></td>
-				</tr>
-				<tr>
-					<th scope="row"><?php esc_html_e( 'Base de Conocimiento', 'convoca-assistant' ); ?></th>
-					<td><input type="number" name="convoca_assistant_settings[weight_convoca_kb]" value="<?php echo esc_attr( $settings['weight_convoca_kb'] ); ?>" step="0.1" min="0" max="10" /></td>
-				</tr>
-				<tr>
-					<th scope="row"><?php esc_html_e( 'Entradas', 'convoca-assistant' ); ?></th>
-					<td><input type="number" name="convoca_assistant_settings[weight_post]" value="<?php echo esc_attr( $settings['weight_post'] ); ?>" step="0.1" min="0" max="10" /></td>
-				</tr>
-				<tr>
-					<th scope="row"><?php esc_html_e( 'Páginas', 'convoca-assistant' ); ?></th>
-					<td><input type="number" name="convoca_assistant_settings[weight_page]" value="<?php echo esc_attr( $settings['weight_page'] ); ?>" step="0.1" min="0" max="10" /></td>
-				</tr>
-				<tr>
-					<th scope="row"><?php esc_html_e( 'Productos', 'convoca-assistant' ); ?></th>
-					<td><input type="number" name="convoca_assistant_settings[weight_product]" value="<?php echo esc_attr( $settings['weight_product'] ); ?>" step="0.1" min="0" max="10" /></td>
-				</tr>
+				<?php foreach ( $providers as $provider ) : ?>
+					<?php if ( ! $provider->is_available() ) { continue; } ?>
+					<tr>
+						<th scope="row"><?php echo esc_html( $provider->get_name() ); ?></th>
+						<td>
+							<input type="number"
+							       name="convoca_assistant_settings[weight_<?php echo esc_attr( $provider->get_id() ); ?>]"
+							       value="<?php echo esc_attr( $settings[ 'weight_' . $provider->get_id() ] ?? $provider->get_default_weight() ); ?>"
+							       step="0.1" min="0" max="10" />
+							<span class="description">(<?php esc_html_e( 'defecto:', 'convoca-assistant' ); ?> <?php echo esc_html( $provider->get_default_weight() ); ?>)</span>
+						</td>
+					</tr>
+				<?php endforeach; ?>
 			</table>
 		</div>
 
