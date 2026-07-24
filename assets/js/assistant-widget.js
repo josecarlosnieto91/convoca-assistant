@@ -127,7 +127,7 @@
 			const normalized = query.toLowerCase().trim().replace(/[¿?!¡,.]/g, '');
 			if (greetings.includes(normalized) || greetings.some(g => normalized === g) || greetings.some(g => normalized.startsWith(g + ' '))) {
 				const name = this.config.settings?.title || 'Asistente Virtual';
-				this.addBotMessage(`¡${name}! 😊 ¿En qué puedo ayudarte hoy?`, '');
+				this.addBotMessage(`¡Hola! Soy ${name}. ¿En qué puedo ayudarte? 😊`, '');
 				this.logInteraction(query, [], 0);
 				return;
 			}
