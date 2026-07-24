@@ -33,6 +33,32 @@ class Installer {
 	}
 
 	/**
+	 * Get default stop words.
+	 */
+	public static function default_stop_words(): array {
+		return array(
+			'a', 'al', 'algo', 'alas', 'ambos', 'ante', 'aquel', 'aquellos',
+			'aqui', 'asi', 'aunque', 'bajo', 'bastante', 'bien', 'cada',
+			'casi', 'como', 'con', 'cual', 'cualquier', 'cuando', 'de',
+			'del', 'demas', 'desde', 'donde', 'dos', 'durante', 'e', 'el',
+			'ella', 'ellas', 'ellos', 'en', 'entre', 'era', 'eran', 'es',
+			'esa', 'esas', 'ese', 'eso', 'esos', 'esta', 'estaba', 'estan',
+			'estas', 'este', 'esto', 'etc', 'fue', 'gracias', 'ha', 'hace',
+			'hacen', 'han', 'has', 'hasta', 'hay', 'la', 'las', 'le', 'les',
+			'lo', 'los', 'mas', 'me', 'menos', 'mi', 'mis', 'mucha', 'muchas',
+			'mucho', 'muchos', 'muy', 'nada', 'ni', 'ningun', 'no', 'nos',
+			'nosotras', 'nosotros', 'nuestra', 'nuestro', 'o', 'os', 'otra',
+			'otro', 'para', 'pero', 'poco', 'podemos', 'por', 'porque',
+			'que', 'quien', 's', 'se', 'segun', 'ser', 'si', 'sido', 'sin',
+			'sobre', 'solo', 'son', 'su', 'sus', 'tambien', 'tampoco', 'tan',
+			'tanto', 'te', 'tenemos', 'tengo', 'ti', 'tiene', 'tienen', 'todo',
+			'todos', 'tu', 'tus', 'un', 'una', 'uno', 'unos', 'usted', 'va',
+			'van', 'vosotras', 'vosotros', 'vuestra', 'vuestro', 'y', 'ya',
+			'yo',
+		);
+	}
+
+	/**
 	 * Run on plugin activation.
 	 */
 	public static function activate(): void {
