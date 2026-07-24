@@ -7,10 +7,9 @@
 	        aria-label="<?php esc_attr_e( 'Abrir asistente virtual', 'convoca-assistant' ); ?>"
 	        aria-expanded="false"
 	        aria-controls="convosa-chat-container">
-		<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+		<svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
 			<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-			<line x1="12" y1="8" x2="12" y2="12"/>
-			<line x1="9" y1="11" x2="15" y2="11"/>
+			<path d="M8 10h8M8 14h5"/>
 		</svg>
 	</button>
 
