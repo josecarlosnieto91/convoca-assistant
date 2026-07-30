@@ -8,3 +8,11 @@ node_modules/
 tests/.phpunit.result.cache
 *.tar.gz
 *.backup
+*.zip
+.env
+/.phpunit.cache/
+/test-results/
+
+# Translation files (user-generated)
+*.po
+*.mo
