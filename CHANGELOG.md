@@ -1,5 +1,15 @@
 # Changelog — Convoca Assistant
 
+## 0.2.1 (2026-07-25)
+
+### 🔧 Correcciones
+
+- **Compatibilidad con temas sin `wp_footer`**: Añadidos hooks alternativos (`wp_body_open`, `wp_enqueue_scripts`) para que el widget se renderice incluso en temas que no ejecutan `wp_footer`.
+- **Widget DOM desde JavaScript**: El HTML del widget se construye desde JS (`buildWidgetDOM()`) en lugar de inyectarse desde PHP, eliminando dependencia de `wp_footer`.
+- **IDs duplicados**: Unificado a un solo hook de render para evitar que el widget aparezca múltiples veces en el DOM.
+- **Padding del toggle**: Añadido `padding: 0 !important` para vencer estilos del theme (Bravada) que sobreescribían el botón del widget.
+- **Cache-bust**: Bump a v0.2.1 para forzar refresco de assets CSS/JS en navegadores y CDN.
+
 ## 0.2.0 (2026-07-24)
 
 ### ✨ Nuevas funcionalidades
