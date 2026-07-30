@@ -1,0 +1,14 @@
+.git/
+.github/
+.gitignore
+.gitattributes
+.editorconfig
+dev-tools/
+tests/
+node_modules/
+vendor/
+*.md
+*.xml
+*.dist
+Makefile
+composer.lock
