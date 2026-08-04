@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-08-04T22:40:37+00:00\n"
+"POT-Creation-Date: 2026-08-04T23:00:57+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: convoca-assistant\n"
@@ -607,10 +607,31 @@ msgstr ""
 msgid "Index is up to date."
 msgstr ""
 
+#: includes/Indexer.php:152
+msgid "JSON encoding failed."
+msgstr ""
+
+#: includes/Indexer.php:159
+msgid "JSON encoding failed (final)."
+msgstr ""
+
+#: includes/Indexer.php:167
+msgid "Could not create index directory."
+msgstr ""
+
+#: includes/Indexer.php:179
+msgid "Could not write index.json."
+msgstr ""
+
 #. translators: %s: human-readable time diff
 #: includes/Indexer.php:500
 #, php-format
 msgid "Hace %s"
+msgstr ""
+
+#: includes/Installer.php:21
+#: includes/Installer.php:101
+msgid "¡Hola! Soy el asistente virtual. ¿En qué puedo ayudarte?"
 msgstr ""
 
 #: includes/Knowledge_Base.php:83

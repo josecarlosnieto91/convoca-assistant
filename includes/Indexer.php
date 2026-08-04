@@ -149,14 +149,14 @@ class Indexer {
 		// Generate hash before writing (without hash in JSON so hash is stable).
 		$json_no_hash = wp_json_encode( $index, JSON_UNESCAPED_UNICODE );
 		if ( false === $json_no_hash ) {
-			return array( 'success' => false, 'error' => 'JSON encoding failed.' );
+			return array( 'success' => false, 'error' => __( 'JSON encoding failed.', 'convoca-assistant' ) );
 		}
 		$hash          = md5( $json_no_hash );
 		$index['hash'] = $hash;
 
 		$json_final = wp_json_encode( $index, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES );
 		if ( false === $json_final ) {
-			return array( 'success' => false, 'error' => 'JSON encoding failed (final).' );
+			return array( 'success' => false, 'error' => __( 'JSON encoding failed (final).', 'convoca-assistant' ) );
 		}
 
 		// Ensure directory exists.
@@ -164,7 +164,7 @@ class Indexer {
 		if ( ! is_dir( $dir ) ) {
 			$created = wp_mkdir_p( $dir );
 			if ( ! $created ) {
-				return array( 'success' => false, 'error' => 'Could not create index directory.' );
+				return array( 'success' => false, 'error' => __( 'Could not create index directory.', 'convoca-assistant' ) );
 			}
 		}
 
@@ -176,7 +176,7 @@ class Indexer {
 		// Write uncompressed JSON.
 		$written_json = file_put_contents( $dir . 'index.json', $json_final ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents
 		if ( false === $written_json ) {
-			return array( 'success' => false, 'error' => 'Could not write index.json.' );
+			return array( 'success' => false, 'error' => __( 'Could not write index.json.', 'convoca-assistant' ) );
 		}
 
 		// Clean up any leftover .gz files from previous versions.

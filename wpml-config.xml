@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  WPML String Translation configuration for Convoca Assistant.
+  Widget title and greeting are user-facing strings.
+-->
+<wpml-config>
+    <admin-texts>
+        <key name="convoca_assistant_settings">
+            <key name="widget_title"/>
+            <key name="widget_greeting"/>
+        </key>
+    </admin-texts>
+</wpml-config>

@@ -18,7 +18,7 @@ class Installer {
 	public static function default_settings(): array {
 		return array(
 			'widget_title'          => 'Asistente Virtual',
-			'widget_greeting'       => '¡Hola! Soy el asistente virtual. ¿En qué puedo ayudarte?',
+			'widget_greeting'       => __( '¡Hola! Soy el asistente virtual. ¿En qué puedo ayudarte?', 'convoca-assistant' ),
 			'widget_primary_color'  => '#2563eb',
 			'widget_position'       => 'bottom-right',
 			'maintenance_mode'      => false,
@@ -98,7 +98,7 @@ class Installer {
 		if ( ! get_option( 'convoca_assistant_settings' ) ) {
 			add_option( 'convoca_assistant_settings', array(
 				'widget_title'       => 'Asistente Virtual',
-				'widget_greeting'    => '¡Hola! Soy el asistente virtual. ¿En qué puedo ayudarte?',
+				'widget_greeting'    => __( '¡Hola! Soy el asistente virtual. ¿En qué puedo ayudarte?', 'convoca-assistant' ),
 				'widget_primary_color' => '#2563eb',
 				'widget_position'    => 'bottom-right',
 			) );
