@@ -1,115 +1,879 @@
-# Convoca Assistant POT file
-
+# Copyright (C) 2026 Jose Carlos Nieto Ramos
+# This file is distributed under the GPL-2.0-or-later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Convoca Assistant 0.1.0\n"
-"Report-Msgid-Bugs-To: https://getconvoca.app\n"
-"Last-Translator: Jose Carlos Nieto Ramos\n"
-"Language-Team: Spanish\n"
-"Language: es_ES\n"
+"Project-Id-Version: Convoca Assistant 0.2.1\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/convoca-assistant\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-07-24 20:00+0000\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Convoca Assistant\n"
+"POT-Creation-Date: 2026-08-04T22:40:37+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.12.0\n"
+"X-Domain: convoca-assistant\n"
 
-#: admin.php:...
-msgid "Funciones y responsabilidades"
-msgstr "Funciones y responsabilidades"
-
-#: class-admin.php:...
+#. Plugin Name of the plugin
+#: convoca-assistant.php
+#: includes/Admin.php:33
+#: includes/Admin.php:34
+#: includes/Knowledge_Base.php:393
 msgid "Convoca Assistant"
-msgstr "Convoca Assistant"
+msgstr ""
 
-#: class-admin.php:...
-msgid "Dashboard"
-msgstr "Dashboard"
+#. Plugin URI of the plugin
+#. Author URI of the plugin
+#: convoca-assistant.php
+msgid "https://getconvoca.app"
+msgstr ""
 
-#: class-admin.php:...
-msgid "Conocimiento"
-msgstr "Conocimiento"
+#. Description of the plugin
+#: convoca-assistant.php
+msgid "Asistente conversacional local sin IA para WordPress. Busqueda difusa con Fuse.js sobre tu base de conocimiento. Sin APIs externas, sin cloud, compatible GDPR."
+msgstr ""
 
-#: class-admin.php:...
-msgid "Sinónimos"
-msgstr "Sinónimos"
+#. Author of the plugin
+#: convoca-assistant.php
+msgid "Jose Carlos Nieto Ramos"
+msgstr ""
 
-#: class-admin.php:...
+#: assets/templates/admin-analytics.php:2
+#: includes/Admin.php:75
+#: includes/Admin.php:76
 msgid "Analytics"
-msgstr "Analytics"
+msgstr ""
 
-#: class-admin.php:...
-msgid "Sin respuesta"
-msgstr "Sin respuesta"
+#: assets/templates/admin-analytics.php:3
+msgid "Estadísticas de uso del asistente virtual."
+msgstr ""
 
-#: class-admin.php:...
+#: assets/templates/admin-analytics.php:6
+msgid "Resumen"
+msgstr ""
+
+#: assets/templates/admin-analytics.php:8
+#: assets/templates/admin-dashboard.php:28
+msgid "Cargando datos…"
+msgstr ""
+
+#: assets/templates/admin-analytics.php:13
+msgid "Últimas consultas"
+msgstr ""
+
+#: assets/templates/admin-analytics.php:17
+#: assets/templates/admin-unanswered.php:9
+msgid "Consulta"
+msgstr ""
+
+#: assets/templates/admin-analytics.php:18
+msgid "Score"
+msgstr ""
+
+#: assets/templates/admin-analytics.php:19
+msgid "Fuente"
+msgstr ""
+
+#: assets/templates/admin-analytics.php:20
+msgid "Click"
+msgstr ""
+
+#: assets/templates/admin-analytics.php:21
+msgid "Tiempo"
+msgstr ""
+
+#: assets/templates/admin-analytics.php:22
+msgid "Fecha"
+msgstr ""
+
+#: assets/templates/admin-analytics.php:26
+#: assets/templates/admin-dashboard.php:36
+#: assets/templates/admin-unanswered.php:16
+msgid "Cargando…"
+msgstr ""
+
+#: assets/templates/admin-dashboard.php:2
+msgid "Convoca Assistant — Dashboard"
+msgstr ""
+
+#: assets/templates/admin-dashboard.php:7
+msgid "Consultas (30d)"
+msgstr ""
+
+#: assets/templates/admin-dashboard.php:11
+msgid "Tasa de resolución"
+msgstr ""
+
+#: assets/templates/admin-dashboard.php:15
+msgid "Sin respuesta (30d)"
+msgstr ""
+
+#: assets/templates/admin-dashboard.php:19
+msgid "Tiempo medio"
+msgstr ""
+
+#: assets/templates/admin-dashboard.php:26
+msgid "Consultas por día"
+msgstr ""
+
+#: assets/templates/admin-dashboard.php:34
+msgid "Top consultas"
+msgstr ""
+
+#: assets/templates/admin-dashboard.php:43
+msgid "Estado del índice"
+msgstr ""
+
+#: assets/templates/admin-dashboard.php:46
+msgid "Estado:"
+msgstr ""
+
+#: assets/templates/admin-dashboard.php:49
+msgid "Generado"
+msgstr ""
+
+#: assets/templates/admin-dashboard.php:51
+msgid "(pendiente de regenerar)"
+msgstr ""
+
+#: assets/templates/admin-dashboard.php:54
+msgid "No generado"
+msgstr ""
+
+#: assets/templates/admin-dashboard.php:59
+msgid "Entradas:"
+msgstr ""
+
+#: assets/templates/admin-dashboard.php:63
+msgid "Tamaño:"
+msgstr ""
+
+#: assets/templates/admin-dashboard.php:67
+msgid "Última generación:"
+msgstr ""
+
+#: assets/templates/admin-dashboard.php:71
+msgid "Hash:"
+msgstr ""
+
+#: assets/templates/admin-dashboard.php:76
+msgid "Regenerar índice ahora"
+msgstr ""
+
+#: assets/templates/admin-knowledge.php:2
+#: includes/Admin.php:55
+#: includes/Admin.php:56
+msgid "Conocimiento"
+msgstr ""
+
+#: assets/templates/admin-knowledge.php:3
+msgid "Gestiona las fuentes de conocimiento del asistente. Puedes activar o desactivar tipos de contenido y ajustar su peso en las búsquedas."
+msgstr ""
+
+#: assets/templates/admin-knowledge.php:6
+msgid "Ajustes guardados."
+msgstr ""
+
+#: assets/templates/admin-knowledge.php:10
+msgid "Contenido indexable"
+msgstr ""
+
+#: assets/templates/admin-knowledge.php:11
+msgid "Accede directamente a los listados para gestionar el contenido:"
+msgstr ""
+
+#: assets/templates/admin-knowledge.php:13
+msgid "Gestionar FAQs"
+msgstr ""
+
+#: assets/templates/admin-knowledge.php:14
+msgid "Gestionar Base de Conocimiento"
+msgstr ""
+
+#: assets/templates/admin-knowledge.php:15
+#: includes/providers/Posts_Provider.php:32
+msgid "Entradas"
+msgstr ""
+
+#: assets/templates/admin-knowledge.php:16
+#: includes/providers/Pages_Provider.php:30
+msgid "Páginas"
+msgstr ""
+
+#: assets/templates/admin-knowledge.php:26
+msgid "Fuentes activas"
+msgstr ""
+
+#: assets/templates/admin-knowledge.php:27
+msgid "Marca las fuentes de conocimiento que quieres incluir en el asistente."
+msgstr ""
+
+#: assets/templates/admin-knowledge.php:34
+msgid "no disponible"
+msgstr ""
+
+#: assets/templates/admin-knowledge.php:51
+msgid "Peso por tipo de contenido"
+msgstr ""
+
+#: assets/templates/admin-knowledge.php:52
+msgid "A mayor peso, más relevante será ese tipo de contenido en las búsquedas."
+msgstr ""
+
+#: assets/templates/admin-knowledge.php:63
+msgid "defecto:"
+msgstr ""
+
+#: assets/templates/admin-knowledge.php:70
+msgid "Guardar cambios"
+msgstr ""
+
+#: assets/templates/admin-settings.php:2
+#: includes/Admin.php:95
+#: includes/Admin.php:96
 msgid "Ajustes"
-msgstr "Ajustes"
+msgstr ""
 
-#: class-admin.php:...
+#: assets/templates/admin-settings.php:9
+msgid "Widget"
+msgstr ""
+
+#: assets/templates/admin-settings.php:12
+msgid "Habilitar widget flotante"
+msgstr ""
+
+#: assets/templates/admin-settings.php:16
+msgid "Posición"
+msgstr ""
+
+#: assets/templates/admin-settings.php:19
+msgid "Abajo derecha"
+msgstr ""
+
+#: assets/templates/admin-settings.php:20
+msgid "Abajo izquierda"
+msgstr ""
+
+#: assets/templates/admin-settings.php:25
+msgid "Color primario"
+msgstr ""
+
+#: assets/templates/admin-settings.php:29
+msgid "Título"
+msgstr ""
+
+#: assets/templates/admin-settings.php:33
+msgid "Mensaje de bienvenida"
+msgstr ""
+
+#: assets/templates/admin-settings.php:37
+msgid "Auto-apertura"
+msgstr ""
+
+#: assets/templates/admin-settings.php:40
+#: includes/Indexer.php:502
+msgid "Nunca"
+msgstr ""
+
+#: assets/templates/admin-settings.php:41
+msgid "Siempre"
+msgstr ""
+
+#: assets/templates/admin-settings.php:42
+msgid "Al hacer scroll"
+msgstr ""
+
+#: assets/templates/admin-settings.php:50
+msgid "Búsqueda"
+msgstr ""
+
+#: assets/templates/admin-settings.php:53
+msgid "Modo de búsqueda"
+msgstr ""
+
+#: assets/templates/admin-settings.php:56
+msgid "Cliente (Fuse.js)"
+msgstr ""
+
+#: assets/templates/admin-settings.php:57
+msgid "Servidor"
+msgstr ""
+
+#: assets/templates/admin-settings.php:58
+msgid "Ambos"
+msgstr ""
+
+#: assets/templates/admin-settings.php:63
+msgid "Fallback servidor"
+msgstr ""
+
+#: assets/templates/admin-settings.php:67
+msgid "Máx. resultados"
+msgstr ""
+
+#: assets/templates/admin-settings.php:71
+msgid "Umbral Fuse.js"
+msgstr ""
+
+#: assets/templates/admin-settings.php:75
+msgid "Distancia Fuse.js"
+msgstr ""
+
+#: assets/templates/admin-settings.php:82
+msgid "Privacidad"
+msgstr ""
+
+#: assets/templates/admin-settings.php:85
+msgid "Registrar interacciones"
+msgstr ""
+
+#: assets/templates/admin-settings.php:89
+msgid "Anonimizar IP/UA"
+msgstr ""
+
+#: assets/templates/admin-settings.php:93
+msgid "Retención (días)"
+msgstr ""
+
+#: assets/templates/admin-settings.php:100
+#: assets/templates/admin-tools.php:40
+msgid "Mantenimiento"
+msgstr ""
+
+#: assets/templates/admin-settings.php:103
+msgid "Modo mantenimiento"
+msgstr ""
+
+#: assets/templates/admin-settings.php:107
+msgid "Mensaje"
+msgstr ""
+
+#: assets/templates/admin-settings.php:113
+msgid "Guardar ajustes"
+msgstr ""
+
+#: assets/templates/admin-synonyms.php:2
+#: assets/templates/admin-synonyms.php:24
+#: assets/templates/admin-synonyms.php:48
+#: includes/Admin.php:65
+#: includes/Admin.php:66
+msgid "Sinónimos"
+msgstr ""
+
+#: assets/templates/admin-synonyms.php:5
+msgid "Sinónimos guardados correctamente."
+msgstr ""
+
+#: assets/templates/admin-synonyms.php:8
+msgid "Sinónimo eliminado."
+msgstr ""
+
+#: assets/templates/admin-synonyms.php:14
+#: assets/templates/admin-synonyms.php:31
+msgid "Añadir sinónimo"
+msgstr ""
+
+#: assets/templates/admin-synonyms.php:20
+#: assets/templates/admin-synonyms.php:47
+msgid "Término"
+msgstr ""
+
+#: assets/templates/admin-synonyms.php:27
+msgid "Un sinónimo por línea."
+msgstr ""
+
+#: assets/templates/admin-synonyms.php:38
+msgid "Sinónimos existentes"
+msgstr ""
+
+#: assets/templates/admin-synonyms.php:42
+msgid "No hay sinónimos definidos."
+msgstr ""
+
+#: assets/templates/admin-synonyms.php:49
+#: assets/templates/admin-unanswered.php:12
+msgid "Acción"
+msgstr ""
+
+#: assets/templates/admin-synonyms.php:62
+msgid "Eliminar"
+msgstr ""
+
+#: assets/templates/admin-synonyms.php:75
+msgid "Stop Words"
+msgstr ""
+
+#: assets/templates/admin-synonyms.php:82
+msgid "Una palabra por línea. Estas palabras se ignorarán en las búsquedas."
+msgstr ""
+
+#: assets/templates/admin-synonyms.php:83
+msgid "Guardar stop words"
+msgstr ""
+
+#: assets/templates/admin-tools.php:2
+#: includes/Admin.php:105
+#: includes/Admin.php:106
 msgid "Herramientas"
-msgstr "Herramientas"
+msgstr ""
 
-#: class-installer.php:...
-msgid "Asistente Virtual"
-msgstr "Asistente Virtual"
+#: assets/templates/admin-tools.php:5
+msgid "Importación completada."
+msgstr ""
 
-#: class-installer.php:...
-msgid "¡Hola! Soy el asistente virtual. ¿En qué puedo ayudarte?"
-msgstr "¡Hola! Soy el asistente virtual. ¿En qué puedo ayudarte?"
+#: assets/templates/admin-tools.php:11
+#: assets/templates/admin-tools.php:20
+msgid "Exportar"
+msgstr ""
 
-#: class-installer.php:...
-msgid "El asistente está en mantenimiento. Vuelve pronto."
-msgstr "El asistente está en mantenimiento. Vuelve pronto."
+#: assets/templates/admin-tools.php:12
+msgid "Exporta tu base de conocimiento o configuración como archivo JSON."
+msgstr ""
 
-#: class-knowledge-base.php:...
-msgid "FAQs"
-msgstr "FAQs"
+#: assets/templates/admin-tools.php:17
+msgid "Conocimiento (FAQ + KB + sinónimos)"
+msgstr ""
 
-#: class-knowledge-base.php:...
-msgid "FAQ"
-msgstr "FAQ"
+#: assets/templates/admin-tools.php:18
+msgid "Configuración"
+msgstr ""
 
-#: class-knowledge-base.php:...
-msgid "Base de Conocimiento"
-msgstr "Base de Conocimiento"
+#: assets/templates/admin-tools.php:27
+#: assets/templates/admin-tools.php:33
+msgid "Importar"
+msgstr ""
 
-#: class-knowledge-base.php:...
-msgid "Palabras clave extra (separadas por coma)"
-msgstr "Palabras clave extra (separadas por coma)"
+#: assets/templates/admin-tools.php:28
+msgid "Importa un archivo JSON de conocimiento o configuración."
+msgstr ""
 
-#: class-knowledge-base.php:...
-msgid "Peso en búsquedas (0-10). 0 = peso por defecto del tipo"
-msgstr "Peso en búsquedas (0-10). 0 = peso por defecto del tipo"
+#: assets/templates/admin-tools.php:42
+msgid "Regenerar índice"
+msgstr ""
 
-#: class-knowledge-base.php:...
-msgid "Excluir del índice del asistente"
-msgstr "Excluir del índice del asistente"
+#: assets/templates/admin-tools.php:45
+msgid "Limpiar logs antiguos"
+msgstr ""
 
-#: class-rest-controller.php:...
-msgid "Demasiadas solicitudes. Inténtalo de nuevo en un minuto."
-msgstr "Demasiadas solicitudes. Inténtalo de nuevo en un minuto."
+#: assets/templates/admin-tools.php:51
+msgid "Debug"
+msgstr ""
 
-#: class-rest-controller.php:...
-msgid "La consulta debe tener al menos 2 caracteres."
-msgstr "La consulta debe tener al menos 2 caracteres."
+#: assets/templates/admin-tools.php:57
+msgid "Modo debug"
+msgstr ""
 
-#: class-widget.php:...
+#: assets/templates/admin-tools.php:61
+msgid "Guardar"
+msgstr ""
+
+#: assets/templates/admin-tools.php:64
+msgid "Probar búsqueda"
+msgstr ""
+
+#: assets/templates/admin-tools.php:65
+msgid "Escribe una consulta de prueba…"
+msgstr ""
+
+#: assets/templates/admin-tools.php:66
+msgid "Buscar"
+msgstr ""
+
+#: assets/templates/admin-unanswered.php:2
+msgid "Consultas sin respuesta"
+msgstr ""
+
+#: assets/templates/admin-unanswered.php:3
+msgid "Estas consultas de usuarios no encontraron contenido relevante. Añádelas a tu base de conocimiento para mejorar el asistente."
+msgstr ""
+
+#: assets/templates/admin-unanswered.php:10
+msgid "Veces"
+msgstr ""
+
+#: assets/templates/admin-unanswered.php:11
+msgid "Última vez"
+msgstr ""
+
+#: assets/templates/widget-html.php:7
+msgid "Abrir asistente virtual"
+msgstr ""
+
+#: assets/templates/widget-html.php:25
+msgid "Cerrar"
+msgstr ""
+
+#: assets/templates/widget-html.php:31
+#: includes/Widget.php:101
+msgid "¡Hola! ¿En qué puedo ayudarte?"
+msgstr ""
+
+#: assets/templates/widget-html.php:42
+#: includes/Widget.php:114
 msgid "Escribe tu pregunta aquí..."
-msgstr "Escribe tu pregunta aquí..."
+msgstr ""
 
-#: class-widget.php:...
-msgid "Ver fuente"
-msgstr "Ver fuente"
+#: assets/templates/widget-html.php:43
+msgid "Pregunta"
+msgstr ""
 
-#: class-widget.php:...
-msgid "No encontré una respuesta. Reformula la pregunta o contacta con nosotros."
-msgstr "No encontré una respuesta. Reformula la pregunta o contacta con nosotros."
+#: assets/templates/widget-html.php:46
+#: includes/Widget.php:115
+msgid "Enviar"
+msgstr ""
 
-#: class-export-import.php:...
+#: includes/Admin.php:45
+#: includes/Admin.php:46
+msgid "Dashboard"
+msgstr ""
+
+#: includes/Admin.php:85
+#: includes/Admin.php:86
+msgid "Sin respuesta"
+msgstr ""
+
+#: includes/Export_Import.php:39
+#: includes/Export_Import.php:85
+#: includes/Synonyms.php:147
+#: includes/Synonyms.php:176
+#: includes/Synonyms.php:197
 msgid "No tienes permisos."
-msgstr "No tienes permisos."
+msgstr ""
 
-#: class-export-import.php:...
+#: includes/Export_Import.php:54
+msgid "Tipo de exportación no válido."
+msgstr ""
+
+#: includes/Export_Import.php:92
+#: includes/Export_Import.php:175
+msgid "No se seleccionó ningún archivo."
+msgstr ""
+
+#. translators: %s: max file size
+#: includes/Export_Import.php:106
+#, php-format
+msgid "El archivo excede el tamaño máximo de %s."
+msgstr ""
+
+#: includes/Export_Import.php:115
+msgid "Solo se permiten archivos .json."
+msgstr ""
+
+#: includes/Export_Import.php:121
+msgid "El archivo está vacío o no se pudo leer."
+msgstr ""
+
+#: includes/Export_Import.php:126
+msgid "El archivo no contiene JSON válido."
+msgstr ""
+
+#: includes/Export_Import.php:130
+msgid "Formato de archivo no reconocido. Usa un archivo exportado por Convoca Assistant."
+msgstr ""
+
+#: includes/Export_Import.php:141
+msgid "Tipo de importación no reconocido."
+msgstr ""
+
+#: includes/Export_Import.php:172
 msgid "El archivo excede el tamaño máximo permitido por el servidor."
-msgstr "El archivo excede el tamaño máximo permitido por el servidor."
+msgstr ""
+
+#: includes/Export_Import.php:173
+msgid "El archivo excede el tamaño máximo del formulario."
+msgstr ""
+
+#: includes/Export_Import.php:174
+msgid "El archivo se subió parcialmente."
+msgstr ""
+
+#: includes/Export_Import.php:176
+msgid "Error del servidor: falta directorio temporal."
+msgstr ""
+
+#: includes/Export_Import.php:177
+msgid "Error del servidor: no se pudo escribir."
+msgstr ""
+
+#: includes/Export_Import.php:180
+msgid "Error desconocido al subir el archivo."
+msgstr ""
+
+#: includes/Indexer.php:70
+msgid "Cada 5 minutos"
+msgstr ""
+
+#: includes/Indexer.php:87
+msgid "Index is up to date."
+msgstr ""
+
+#. translators: %s: human-readable time diff
+#: includes/Indexer.php:500
+#, php-format
+msgid "Hace %s"
+msgstr ""
+
+#: includes/Knowledge_Base.php:83
+msgid "FAQs"
+msgstr ""
+
+#: includes/Knowledge_Base.php:84
+#: includes/providers/FAQ_Provider.php:30
+msgid "FAQ"
+msgstr ""
+
+#: includes/Knowledge_Base.php:85
+msgid "Añadir FAQ"
+msgstr ""
+
+#: includes/Knowledge_Base.php:86
+msgid "Añadir nueva FAQ"
+msgstr ""
+
+#: includes/Knowledge_Base.php:87
+msgid "Editar FAQ"
+msgstr ""
+
+#: includes/Knowledge_Base.php:88
+msgid "Ver FAQ"
+msgstr ""
+
+#: includes/Knowledge_Base.php:89
+msgid "Buscar FAQs"
+msgstr ""
+
+#: includes/Knowledge_Base.php:90
+msgid "No se encontraron FAQs"
+msgstr ""
+
+#: includes/Knowledge_Base.php:91
+msgid "Todas las FAQs"
+msgstr ""
+
+#: includes/Knowledge_Base.php:120
+#: includes/providers/KB_Provider.php:30
+msgid "Base de Conocimiento"
+msgstr ""
+
+#: includes/Knowledge_Base.php:121
+msgid "Artículo"
+msgstr ""
+
+#: includes/Knowledge_Base.php:122
+msgid "Añadir artículo"
+msgstr ""
+
+#: includes/Knowledge_Base.php:123
+msgid "Añadir nuevo artículo"
+msgstr ""
+
+#: includes/Knowledge_Base.php:124
+msgid "Editar artículo"
+msgstr ""
+
+#: includes/Knowledge_Base.php:125
+msgid "Ver artículo"
+msgstr ""
+
+#: includes/Knowledge_Base.php:126
+msgid "Buscar artículos"
+msgstr ""
+
+#: includes/Knowledge_Base.php:127
+msgid "No se encontraron artículos"
+msgstr ""
+
+#: includes/Knowledge_Base.php:128
+msgid "Todos los artículos"
+msgstr ""
+
+#: includes/Knowledge_Base.php:159
+msgid "Categorías de FAQ"
+msgstr ""
+
+#: includes/Knowledge_Base.php:160
+msgid "Categoría de FAQ"
+msgstr ""
+
+#: includes/Knowledge_Base.php:161
+#: includes/Knowledge_Base.php:186
+msgid "Buscar categorías"
+msgstr ""
+
+#: includes/Knowledge_Base.php:162
+#: includes/Knowledge_Base.php:187
+msgid "Todas las categorías"
+msgstr ""
+
+#: includes/Knowledge_Base.php:163
+#: includes/Knowledge_Base.php:188
+msgid "Editar categoría"
+msgstr ""
+
+#: includes/Knowledge_Base.php:164
+#: includes/Knowledge_Base.php:189
+msgid "Actualizar categoría"
+msgstr ""
+
+#: includes/Knowledge_Base.php:165
+#: includes/Knowledge_Base.php:190
+msgid "Añadir nueva categoría"
+msgstr ""
+
+#: includes/Knowledge_Base.php:166
+#: includes/Knowledge_Base.php:191
+msgid "Nueva categoría"
+msgstr ""
+
+#: includes/Knowledge_Base.php:184
+msgid "Categorías de KB"
+msgstr ""
+
+#: includes/Knowledge_Base.php:185
+msgid "Categoría de KB"
+msgstr ""
+
+#: includes/Knowledge_Base.php:225
+msgid "Palabras clave extra (separadas por coma)"
+msgstr ""
+
+#: includes/Knowledge_Base.php:240
+msgid "Peso en búsquedas (0-10). 0 = peso por defecto del tipo"
+msgstr ""
+
+#: includes/Knowledge_Base.php:256
+#: includes/Knowledge_Base.php:438
+msgid "Excluir del índice del asistente"
+msgstr ""
+
+#: includes/Knowledge_Base.php:281
+msgid "Peso"
+msgstr ""
+
+#: includes/Knowledge_Base.php:282
+msgid "Keywords"
+msgstr ""
+
+#: includes/Knowledge_Base.php:283
+#: includes/Knowledge_Base.php:369
+msgid "Excluido"
+msgstr ""
+
+#: includes/Knowledge_Base.php:321
+msgid "Sí"
+msgstr ""
+
+#: includes/Knowledge_Base.php:323
+msgid "No"
+msgstr ""
+
+#: includes/Knowledge_Base.php:349
+msgid "Asistente"
+msgstr ""
+
+#: includes/Knowledge_Base.php:371
+msgid "Indexado"
+msgstr ""
+
+#: includes/Knowledge_Base.php:417
+msgid "Palabras clave extra:"
+msgstr ""
+
+#: includes/Knowledge_Base.php:423
+msgid "Separadas por coma. Mejoran la búsqueda."
+msgstr ""
+
+#: includes/Knowledge_Base.php:427
+msgid "Peso (0-10):"
+msgstr ""
+
+#: includes/Knowledge_Base.php:433
+#, php-format
+msgid "Defecto: %s"
+msgstr ""
+
+#: includes/providers/FAQ_Provider.php:39
+msgid "Preguntas frecuentes"
+msgstr ""
+
+#: includes/providers/KB_Provider.php:39
+msgid "Artículos de la base de conocimiento"
+msgstr ""
+
+#: includes/providers/Pages_Provider.php:39
+msgid "Páginas estáticas de WordPress"
+msgstr ""
+
+#: includes/providers/Posts_Provider.php:41
+msgid "Entradas estándar de WordPress"
+msgstr ""
+
+#: includes/providers/WooCommerce_Provider.php:32
+msgid "Productos WooCommerce"
+msgstr ""
+
+#: includes/providers/WooCommerce_Provider.php:41
+msgid "Productos con precio y SKU"
+msgstr ""
+
+#: includes/REST_Controller.php:140
+msgid "Demasiadas solicitudes. Inténtalo de nuevo en un minuto."
+msgstr ""
+
+#: includes/REST_Controller.php:251
+msgid "Knowledge index not found."
+msgstr ""
+
+#: includes/REST_Controller.php:260
+msgid "Could not read index."
+msgstr ""
+
+#: includes/REST_Controller.php:269
+msgid "Index is corrupted."
+msgstr ""
+
+#: includes/REST_Controller.php:294
+msgid "La consulta debe tener al menos 2 caracteres."
+msgstr ""
+
+#: includes/REST_Controller.php:395
+msgid "Logs eliminados."
+msgstr ""
+
+#: includes/Widget.php:100
+#: includes/Widget.php:144
+#: includes/Widget.php:168
+msgid "Asistente Virtual"
+msgstr ""
+
+#: includes/Widget.php:116
+msgid "Escribiendo..."
+msgstr ""
+
+#: includes/Widget.php:117
+msgid "Preparando asistente..."
+msgstr ""
+
+#: includes/Widget.php:118
+msgid "No encontré una respuesta. Reformula la pregunta o contacta con nosotros."
+msgstr ""
+
+#: includes/Widget.php:119
+msgid "Ver fuente"
+msgstr ""
+
+#: includes/Widget.php:120
+msgid "Copiar"
+msgstr ""
+
+#: includes/Widget.php:121
+msgid "¡Copiado!"
+msgstr ""
+
+#: includes/Widget.php:122
+msgid "¿Te ha servido?"
+msgstr ""
+
+#: includes/Widget.php:123
+msgid "¡Gracias por tu feedback!"
+msgstr ""
