@@ -1,6 +1,6 @@
 === Convoca Assistant ===
 Contributors: josecnr91
-Tags: chatbot, assistant, fuzzy-search, conversational, support, knowledge-base, gdpr, no-ai, local, fusejs
+Tags: chatbot, search, knowledge-base, support, privacy
 Requires at least: 6.4
 Tested up to: 7.0
 Requires PHP: 8.1
@@ -8,45 +8,43 @@ Stable tag: 0.2.1
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Asistente conversacional local sin IA para WordPress. Búsqueda difusa con Fuse.js sobre tu propia base de conocimiento. Sin APIs, sin cloud. 100% GDPR.
+Local AI-free conversational assistant for WordPress. Fuzzy search with Fuse.js over your own knowledge base. No APIs, no cloud. 100% GDPR-friendly.
 
 == Description ==
 
-= Asistente Virtual 100% Local =
+Convoca Assistant turns your WordPress content into an interactive conversational assistant. Unlike AI-based chatbots, this plugin works completely offline: no external connections, no third-party APIs, no LLM models.
 
-Convoca Assistant transforma tu contenido de WordPress en un asistente conversacional interactivo. A diferencia de los chatbots basados en IA, este plugin funciona completamente sin conexiones externas, sin APIs de terceros, y sin modelos LLM.
+= How it works =
 
-= Cómo funciona =
+The plugin automatically builds a JSON index of all your publishable content (posts, pages, FAQs, knowledge base, and WooCommerce products). When a visitor asks a question, Fuse.js searches this index using multilingual fuzzy search with accent support, typo tolerance, and synonyms.
 
-El plugin genera automáticamente un índice JSON con todo tu contenido publicable (entradas, páginas, FAQs, base de conocimiento y productos WooCommerce). Cuando un visitante hace una pregunta, Fuse.js busca en este índice utilizando búsqueda difusa multilingüe con soporte para acentos, errores ortográficos y sinónimos.
+= Key features =
 
-= Características principales =
-
-* **Sin IA, sin cloud** — Todo es local. Sin llamadas externas, sin costes recurrentes. Tu contenido nunca sale de tu servidor.
-* **Extremadamente rápido** — El índice se descarga una vez en el navegador. Las búsquedas tardan menos de 5ms.
-* **Base de conocimiento automática** — El índice se genera desde tu contenido existente. Sin configuración manual.
-* **Widget flotante moderno** — Interfaz conversacional con modo oscuro, responsive y accesible (WCAG).
-* **Sinónimos inteligentes** — Define sinónimos para mejorar la precisión de las búsquedas.
-* **Analytics integrados** — Consultas, tasa de resolución, tiempo medio, preguntas sin respuesta.
-* **GDPR friendly** — Logging anónimo (IP hasheada), retención configurable, posibilidad de desactivar logs.
-* **Shortcode incluido** — `[convoca_assistant]` para incrustar el chat en cualquier lugar.
-* **API REST** — 7 endpoints para integración con otras aplicaciones.
+* **No AI, no cloud** — Everything is local. No external calls, no recurring costs. Your content never leaves your server.
+* **Extremely fast** — The index downloads once in the browser. Searches take less than 5ms.
+* **Automatic knowledge base** — The index is generated from your existing content. No manual setup.
+* **Modern floating widget** — Conversational interface with dark mode, responsive and accessible (WCAG).
+* **Smart synonyms** — Define synonyms to improve search accuracy.
+* **Built-in analytics** — Queries, resolution rate, average time, unanswered questions.
+* **GDPR friendly** — Anonymous logging (hashed IP), configurable retention, option to disable logging.
+* **Shortcode included** — `[convoca_assistant]` to embed the chat anywhere.
+* **REST API** — 7 endpoints for integration with other applications.
 
 == Installation ==
 
 1. Upload the `convoca-assistant` folder to `/wp-content/plugins/`
 2. Activate the plugin through the 'Plugins' screen in WordPress
-3. Go to **Convoca Assistant > Ajustes** to configure
+3. Go to **Convoca Assistant > Settings** to configure
 4. The floating widget will appear automatically on your site
 
-= Para crear contenido FAQ =
+= Creating FAQ content =
 
-El plugin registra dos tipos de contenido personalizados:
+The plugin registers two custom post types:
 
-* **FAQ** (`convoca_faq`) — Preguntas frecuentes con respuesta
-* **Base de Conocimiento** (`convoca_kb`) — Artículos de ayuda
+* **FAQ** (`convoca_faq`) — Frequently asked questions with answers
+* **Knowledge Base** (`convoca_kb`) — Help articles
 
-Ambos son gestionables desde **Convoca Assistant > Conocimiento** o directamente desde el menú de entradas.
+Both are managed from **Convoca Assistant > Knowledge** or directly from the posts menu.
 
 == Frequently Asked Questions ==
 
@@ -76,43 +74,46 @@ Yes. If WooCommerce is active, you can enable products as a knowledge source fro
 
 == Screenshots ==
 
-1. Widget flotante en la esquina inferior derecha
-2. Chat abierto mostrando sugerencias y mensajes
-3. Panel de administración: Dashboard con estadísticas
-4. Editor de sinónimos
-5. Ajustes del widget
+1. Floating widget in the bottom-right corner
+2. Open chat showing suggestions and messages
+3. Admin panel: Dashboard with statistics
+4. Synonym editor
+5. Widget settings
 
 == Changelog ==
 
+= 0.2.1 =
+* Fix: minor compatibility improvements
+
 = 0.2.0 =
-* Nuevo: Saludos automáticos (hola, buenos días, hey, qué tal)
-* Nuevo: Contenido relacionado como chips clickables
-* Nuevo: Sinónimos expandidos (7 grupos: contactar, hacerse, socio, cuota, actividad, informacion)
-* Nuevo: README.md y CHANGELOG.md
-* Fix: Icono enviar (SVG → Unicode ►)
-* Fix: Orden de carga JS para evitar ReferenceError
-* Fix: Búsqueda prioriza query original antes que expansión semántica
-* Fix: Grafo con edges por tipo de contenido
-* Fix: XSS en markdown links
-* Fix: Sesión contexto solo con 2+ consultas en últimos 10 min
-* Fix: Tipo de entrada en índice (era 'post' siempre, ahora usa post_type real)
-* Fix: Eliminada compresión gzip del índice JSON
+* New: Automatic greetings (hello, good morning, hey, how are you)
+* New: Related content as clickable chips
+* New: Expanded synonyms (7 groups: contact, join, member, fee, activity, information)
+* New: README.md and CHANGELOG.md
+* Fix: Send icon (SVG → Unicode ►)
+* Fix: JS load order to avoid ReferenceError
+* Fix: Search prioritizes original query before semantic expansion
+* Fix: Graph with edges by content type
+* Fix: XSS in markdown links
+* Fix: Session context only with 2+ queries in last 10 minutes
+* Fix: Index entry type (was always 'post', now uses real post_type)
+* Fix: Removed gzip compression of JSON index
 
 = 0.1.0 =
-* Primera versión de desarrollo.
-* Widget flotante con Fuse.js v7.1
-* CPTs: FAQ y Base de Conocimiento
-* Índice automático desde posts, pages, FAQs, KB, WooCommerce
-* Algoritmo de scoring compuesto (fuzzy + exacto + sinónimos + stemming + recencia + peso)
-* Sinónimos y stop words configurables
-* API REST con 7 endpoints y rate limiting
-* Panel de administración completo (dashboard, conocimiento, sinónimos, analytics, ajustes)
-* Export/Import de conocimiento y configuración
-* Modo oscuro, responsive, WCAG accesible
-* Compatible GDPR (logging anónimo)
-* Sin dependencias externas (todo local)
+* First development version.
+* Floating widget with Fuse.js v7.1
+* CPTs: FAQ and Knowledge Base
+* Automatic index from posts, pages, FAQs, KB, WooCommerce
+* Composite scoring algorithm (fuzzy + exact + synonyms + stemming + recency + weight)
+* Configurable synonyms and stop words
+* REST API with 7 endpoints and rate limiting
+* Complete admin panel (dashboard, knowledge, synonyms, analytics, settings)
+* Knowledge and configuration export/import
+* Dark mode, responsive, WCAG accessible
+* GDPR compatible (anonymous logging)
+* No external dependencies (everything local)
 
 == Upgrade Notice ==
 
-= 0.1.0 =
-Versión inicial.
+= 0.2.1 =
+* Minor compatibility and stability improvements.
