@@ -32,9 +32,7 @@ El asistente se muestra como un botón flotante en la esquina inferior derecha. 
 ### Shortcodes
 
 ```
-[convoca_assistant_widget]           — Widget flotante (se añade automáticamente en footer)
-[convoca_assistant_search]           — Buscador embebido
-[convoca_assistant_chat]             — Chat embebido
+[convoca_assistant]                 — Chat embebido en cualquier página
 ```
 
 ### REST API

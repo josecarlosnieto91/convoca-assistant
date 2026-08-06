@@ -46,6 +46,14 @@ El panel tiene 3 pestañas:
 | **🔧 Ajustes** | Apariencia del widget (color, posición, mensajes), fuentes de contenido, sinónimos |
 | **🔍 Preguntas sin respuesta** | Lista de consultas que el asistente no pudo responder |
 
+### Shortcode
+
+El widget flotante aparece automáticamente, pero también puedes incrustar el chat en cualquier página:
+
+```
+[convoca_assistant]
+```
+
 ### Dashboard
 
 - **Consultas totales**: búsquedas realizadas desde el widget
