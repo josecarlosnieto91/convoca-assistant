@@ -126,11 +126,17 @@ See `docs/HOOKS.md` for the complete reference.
 
 ## REST API Extensions
 
-New endpoints registered in KG-5:
+Endpoints reales (namespace `convoca/v1`):
 
 | Method | Endpoint | Purpose |
 |--------|----------|---------|
-| GET | `/convoca/v1/assistant/graph` | Return knowledge graph JSON |
+| GET | `/assistant/index` | Servir el índice generado |
+| POST | `/assistant/search` | Buscar en la base de conocimiento (`{"query": "..."}`) |
+| GET | `/assistant/stats` | Estadísticas de uso |
+| GET | `/assistant/unanswered` | Preguntas sin respuesta |
+| POST | `/assistant/log` | Registrar interacción |
+| POST | `/assistant/rebuild-index` | Regenerar el índice (admin) |
+| POST | `/assistant/clear-logs` | Limpiar logs (admin) |
 
 ## Running Tests
 
