@@ -99,8 +99,7 @@ El plugin expone endpoints para integraciones externas:
 | `/wp-json/convoca/v1/assistant/stats` | GET | Obtener estadísticas |
 | `/wp-json/convoca/v1/assistant/unanswered` | GET | Obtener preguntas sin respuesta |
 | `/wp-json/convoca/v1/assistant/rebuild-index` | POST | Regenerar el índice (admin) |
-| `/wp-json/convoca/v1/assistant/graph` | GET | Obtener el grafo de conocimiento |
-| `/wp-json/convoca/v1/assistant/feedback` | POST | Enviar feedback (👍/👎) |
+| `/wp-json/convoca/v1/assistant/clear-logs` | POST | Limpiar logs (admin) |
 
 ### Ejemplo de búsqueda
 
