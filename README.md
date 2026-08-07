@@ -154,3 +154,9 @@ El asistente detecta automáticamente saludos y responde sin buscar en la KB:
 ## Licencia
 
 GPL-2.0-or-later
+
+## 📖 Documentación
+
+La documentación completa (manual de usuario, API REST, hooks, instalación) vive en la wiki:
+
+👉 **[Convoca assistant](https://docs.getconvoca.app/plugins/convoca-assistant/)**
