@@ -28,7 +28,7 @@
 			this.dom = {
 				widget:      document.getElementById('convoca-assistant-widget'),
 				toggle:      document.getElementById('convoca-assistant-toggle'),
-				container:   document.getElementById('convosa-chat-container'),
+				container:   document.getElementById('convoca-chat-container'),
 				close:       document.querySelector('.convoca-chat-close'),
 				messages:    document.querySelector('.convoca-chat-messages'),
 				input:       document.getElementById('convoca-chat-input'),
@@ -47,7 +47,7 @@
 
 			// Re-query DOM after potential creation
 			this.dom.toggle    = document.getElementById('convoca-assistant-toggle');
-			this.dom.container = document.getElementById('convosa-chat-container');
+			this.dom.container = document.getElementById('convoca-chat-container');
 			this.dom.close     = document.querySelector('.convoca-chat-close');
 			this.dom.messages  = document.querySelector('.convoca-chat-messages');
 			this.dom.input     = document.getElementById('convoca-chat-input');
@@ -239,9 +239,9 @@
 
 			div.innerHTML = `<div class="convoca-message-text">${renderedContent}</div>${sourceLink}
 				<div class="convoca-message-actions">
-					<button class="convoca-action-feedback" data-vote="up" data-query="${this.escapeHtml(query)}" data-id="${entry.id}" data-score="${result.score}" title="Me sirvió">👍</button>
-					<button class="convoca-action-feedback" data-vote="down" data-query="${this.escapeHtml(query)}" title="No me sirvió">👎</button>
-					<button class="convoca-action-copy" title="Copiar respuesta">📋</button>
+					<button class="convoca-action-feedback" data-vote="up" data-query="${this.escapeHtml(query)}" data-id="${entry.id}" data-score="${result.score}" title="Me sirvió" aria-label="Me sirvió esta respuesta">👍</button>
+					<button class="convoca-action-feedback" data-vote="down" data-query="${this.escapeHtml(query)}" title="No me sirvió" aria-label="No me sirvió esta respuesta">👎</button>
+					<button class="convoca-action-copy" title="Copiar respuesta" aria-label="Copiar respuesta">📋</button>
 				</div>`;
 
 			this.dom.messages.appendChild(div);
@@ -337,9 +337,9 @@
 			// Action buttons
 			const actions = `
 				<div class="convoca-message-actions">
-					<button class="convoca-action-feedback" data-vote="up" data-query="${this.escapeHtml(query)}" data-id="${entry.id}" data-score="${top.score}" title="Me sirvió">👍</button>
-					<button class="convoca-action-feedback" data-vote="down" data-query="${this.escapeHtml(query)}" title="No me sirvió">👎</button>
-					<button class="convoca-action-copy" title="Copiar respuesta">📋</button>
+					<button class="convoca-action-feedback" data-vote="up" data-query="${this.escapeHtml(query)}" data-id="${entry.id}" data-score="${top.score}" title="Me sirvió" aria-label="Me sirvió esta respuesta">👍</button>
+					<button class="convoca-action-feedback" data-vote="down" data-query="${this.escapeHtml(query)}" title="No me sirvió" aria-label="No me sirvió esta respuesta">👎</button>
+					<button class="convoca-action-copy" title="Copiar respuesta" aria-label="Copiar respuesta">📋</button>
 				</div>`;
 
 			div.innerHTML = `<div class="convoca-message-text">${renderedContent}</div>${sourceLink}${actions}`;
@@ -548,6 +548,24 @@
 			// Escape to close
 			if (e.key === 'Escape' && this.isOpen) {
 				this.close();
+				return;
+			}
+			// Focus trap: Tab cycles within the open dialog (WCAG 2.1.2).
+			if (e.key === 'Tab' && this.isOpen) {
+				const focusables = this.dom.container.querySelectorAll(
+					'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+				);
+				if (focusables.length === 0) return;
+				const first = focusables[0];
+				const last = focusables[focusables.length - 1];
+
+				if (e.shiftKey && document.activeElement === first) {
+					e.preventDefault();
+					last.focus();
+				} else if (!e.shiftKey && document.activeElement === last) {
+					e.preventDefault();
+					first.focus();
+				}
 			}
 		}
 
@@ -656,7 +674,7 @@
 			w.innerHTML = `
 				<button id="convoca-assistant-toggle" class="convoca-assistant-toggle"
 				        aria-label="Abrir asistente virtual" aria-expanded="false"
-				        aria-controls="convosa-chat-container">
+				        aria-controls="convoca-chat-container">
 					<svg width="36" height="36" viewBox="0 0 24 24" fill="none"
 					     stroke="currentColor" stroke-width="1.8"
 					     stroke-linecap="round" stroke-linejoin="round">
@@ -664,7 +682,7 @@
 						<path d="M8 10h8M8 14h5"/>
 					</svg>
 				</button>
-				<div id="convosa-chat-container" class="convoca-chat-container" role="dialog"
+				<div id="convoca-chat-container" class="convoca-chat-container" role="dialog"
 				     aria-label="${title}" aria-hidden="true" aria-modal="true">
 					<div class="convoca-chat-header">
 						<span class="convoca-chat-title">${title}</span>

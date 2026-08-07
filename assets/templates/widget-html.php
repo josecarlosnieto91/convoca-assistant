@@ -6,7 +6,7 @@
 	<button id="convoca-assistant-toggle" class="convoca-assistant-toggle"
 	        aria-label="<?php esc_attr_e( 'Abrir asistente virtual', 'convoca-assistant' ); ?>"
 	        aria-expanded="false"
-	        aria-controls="convosa-chat-container">
+	        aria-controls="convoca-chat-container">
 		<svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
 			<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
 			<path d="M8 10h8M8 14h5"/>
@@ -14,7 +14,7 @@
 	</button>
 
 	<!-- Chat window -->
-	<div id="convosa-chat-container" class="convoca-chat-container" role="dialog"
+	<div id="convoca-chat-container" class="convoca-chat-container" role="dialog"
 	     aria-label="<?php echo esc_attr( $title ); ?>"
 	     aria-hidden="true"
 	     aria-modal="true">
