@@ -60,6 +60,7 @@ class KB_Provider extends Posts_Provider {
 			array(
 				'post_type'      => 'convoca_kb',
 				'post_status'    => 'publish',
+				'has_password'   => false, // No indexar contenido protegido por contraseña.
 				'posts_per_page' => -1,
 				'fields'         => 'ids',
 				'meta_query'     => array(
@@ -100,6 +101,7 @@ class KB_Provider extends Posts_Provider {
 			array(
 				'post_type'      => 'convoca_kb',
 				'post_status'    => 'publish',
+				'has_password'   => false, // No indexar contenido protegido por contraseña.
 				'posts_per_page' => 10,
 				'fields'         => 'ids',
 				'tax_query'      => array(

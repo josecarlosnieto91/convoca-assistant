@@ -157,22 +157,18 @@ class REST_Controller {
 	 * @return string
 	 */
 	private static function get_client_ip(): string {
-		$headers = array(
-			'HTTP_X_FORWARDED_FOR',
-			'HTTP_X_REAL_IP',
-			'HTTP_CLIENT_IP',
-			'REMOTE_ADDR',
-		);
-
-		foreach ( $headers as $h ) {
-			if ( ! empty( $_SERVER[ $h ] ) ) {
-				$ip = sanitize_text_field( wp_unslash( $_SERVER[ $h ] ) );
-				$ips = explode( ',', $ip );
-				return trim( $ips[0] );
-			}
+		// No confiar en cabeceras forjables (X-Forwarded-For/X-Real-IP/Client-IP)
+		// salvo que haya un proxy de confianza configurado explícitamente.
+		$trusted_proxy = defined( 'CONVOCA_ASSISTANT_TRUSTED_PROXY' ) && CONVOCA_ASSISTANT_TRUSTED_PROXY;
+		if ( $trusted_proxy && ! empty( $_SERVER['HTTP_X_FORWARDED_FOR'] ) ) {
+			$ip  = sanitize_text_field( wp_unslash( $_SERVER['HTTP_X_FORWARDED_FOR'] ) );
+			$ips = explode( ',', $ip );
+			$ip  = trim( $ips[0] );
+			return filter_var( $ip, FILTER_VALIDATE_IP ) ? $ip : 'unknown';
 		}
 
-		return '127.0.0.1';
+		$ip = sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ?? '127.0.0.1' ) );
+		return filter_var( $ip, FILTER_VALIDATE_IP ) ? $ip : 'unknown';
 	}
 
 	/* ── Arg schemas ───────────────────────────── */

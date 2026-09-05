@@ -60,6 +60,7 @@ class Pages_Provider extends Posts_Provider {
 			array(
 				'post_type'      => 'page',
 				'post_status'    => 'publish',
+				'has_password'   => false, // No indexar contenido protegido por contraseña.
 				'posts_per_page' => -1,
 				'fields'         => 'ids',
 				'meta_query'     => array(

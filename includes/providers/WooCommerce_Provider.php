@@ -62,6 +62,7 @@ class WooCommerce_Provider implements Knowledge_Provider_Interface {
 			array(
 				'post_type'      => 'product',
 				'post_status'    => 'publish',
+				'has_password'   => false, // No indexar contenido protegido por contraseña.
 				'posts_per_page' => -1,
 				'fields'         => 'ids',
 				'meta_query'     => array(
@@ -104,6 +105,7 @@ class WooCommerce_Provider implements Knowledge_Provider_Interface {
 			array(
 				'post_type'      => 'product',
 				'post_status'    => 'publish',
+				'has_password'   => false, // No indexar contenido protegido por contraseña.
 				'posts_per_page' => 1,
 				'fields'         => 'ids',
 				'no_found_rows'  => false,
@@ -128,6 +130,7 @@ class WooCommerce_Provider implements Knowledge_Provider_Interface {
 				array(
 					'post_type'      => 'product',
 					'post_status'    => 'publish',
+				'has_password'   => false, // No indexar contenido protegido por contraseña.
 					'posts_per_page' => 10,
 					'fields'         => 'ids',
 					'tax_query'      => array(
@@ -157,6 +160,7 @@ class WooCommerce_Provider implements Knowledge_Provider_Interface {
 				array(
 					'post_type'      => 'product',
 					'post_status'    => 'publish',
+				'has_password'   => false, // No indexar contenido protegido por contraseña.
 					'posts_per_page' => 10,
 					'fields'         => 'ids',
 					'tax_query'      => array(

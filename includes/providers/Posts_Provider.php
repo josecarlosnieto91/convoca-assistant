@@ -62,6 +62,7 @@ class Posts_Provider implements Knowledge_Provider_Interface {
 			array(
 				'post_type'      => 'post',
 				'post_status'    => 'publish',
+				'has_password'   => false, // No indexar contenido protegido por contraseña.
 				'posts_per_page' => -1,
 				'fields'         => 'ids',
 				'meta_query'     => array(
@@ -95,6 +96,7 @@ class Posts_Provider implements Knowledge_Provider_Interface {
 			array(
 				'post_type'      => 'post',
 				'post_status'    => 'publish',
+				'has_password'   => false, // No indexar contenido protegido por contraseña.
 				'posts_per_page' => 1,
 				'fields'         => 'ids',
 				'no_found_rows'  => false,
@@ -124,6 +126,7 @@ class Posts_Provider implements Knowledge_Provider_Interface {
 				array(
 					'post_type'      => 'post',
 					'post_status'    => 'publish',
+					'has_password'   => false, // No indexar contenido protegido por contraseña.
 					'posts_per_page' => 10,
 					'fields'         => 'ids',
 					'category__in'   => $categories,
@@ -147,6 +150,7 @@ class Posts_Provider implements Knowledge_Provider_Interface {
 				array(
 					'post_type'      => 'post',
 					'post_status'    => 'publish',
+					'has_password'   => false, // No indexar contenido protegido por contraseña.
 					'posts_per_page' => 10,
 					'fields'         => 'ids',
 					'tag__in'        => $tags,

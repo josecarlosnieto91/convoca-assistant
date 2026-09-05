@@ -3,7 +3,7 @@
  * Plugin Name:       Convoca Assistant
  * Plugin URI:        https://getconvoca.app
  * Description:       Asistente conversacional local sin IA para WordPress. Busqueda difusa con Fuse.js sobre tu base de conocimiento. Sin APIs externas, sin cloud, compatible GDPR.
- * Version:           0.2.1
+ * Version:           0.2.2
  * Requires at least: 6.4
  * Requires PHP:      8.1
  * Tested up to:      7.0
