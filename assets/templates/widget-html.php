@@ -1,3 +1,8 @@
+<?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+?>
 <div id="convoca-assistant-widget" class="convoca-assistant-widget"
      data-position="<?php echo esc_attr( $position ); ?>"
      style="--convoca-primary: <?php echo esc_attr( $color ); ?>;">

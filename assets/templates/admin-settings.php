@@ -1,3 +1,8 @@
+<?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+?>
 <div class="wrap convoca-assistant-admin">
 	<h1><?php esc_html_e( 'Ajustes', 'convoca-assistant' ); ?></h1>
 

@@ -1,3 +1,8 @@
+<?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+?>
 <div class="wrap convoca-assistant-admin">
 	<h1><?php esc_html_e( 'Consultas sin respuesta', 'convoca-assistant' ); ?></h1>
 	<p><?php esc_html_e( 'Estas consultas de usuarios no encontraron contenido relevante. Añádelas a tu base de conocimiento para mejorar el asistente.', 'convoca-assistant' ); ?></p>

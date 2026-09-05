@@ -47,13 +47,11 @@ $convoca_assistant_upload_dir = wp_upload_dir();
 $convoca_assistant_index_dir  = $convoca_assistant_upload_dir['basedir'] . '/convoca-assistant/';
 
 if ( is_dir( $convoca_assistant_index_dir ) ) {
-	$convoca_assistant_files = glob( $convoca_assistant_index_dir . 'index.*' );
-	if ( is_array( $convoca_assistant_files ) ) {
-		foreach ( $convoca_assistant_files as $convoca_assistant_file ) {
-			// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_file_delete
-			unlink( $convoca_assistant_file );
-		}
+	// Cleanup con WP_Filesystem (requisito wp.org; evita unlink/rmdir directos).
+	require_once ABSPATH . 'wp-admin/includes/file.php';
+	WP_Filesystem();
+	global $wp_filesystem;
+	if ( $wp_filesystem ) {
+		$wp_filesystem->rmdir( $convoca_assistant_index_dir, true );
 	}
-	// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_rmdir
-	@rmdir( $convoca_assistant_index_dir );
 }

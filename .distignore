@@ -1,14 +1,26 @@
+# Archivos de desarrollo que NO deben viajar al paquete de WordPress.org
+# Nota: vendor/ se excluye del repo dev; el script pack-plugin.py regenera
+# vendor --no-dev de PRODUCCIÓN y lo incluye en el zip (wp.org no ejecuta composer).
 .git/
-.github/
 .gitignore
 .gitattributes
 .editorconfig
-dev-tools/
-tests/
+.github/
+.distignore
+.phpcs*
+.phpunit*
+.php-cs-fixer*
+phpstan*
+phpunit*
+composer.lock
 node_modules/
+dev-tools/
+stubs/
+tests/
 vendor/
 *.md
 *.xml
 *.dist
 Makefile
-composer.lock
+CHANGELOG.md
+docs/

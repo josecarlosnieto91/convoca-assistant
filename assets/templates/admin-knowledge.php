@@ -1,3 +1,8 @@
+<?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+?>
 <div class="wrap convoca-assistant-admin">
 	<h1><?php esc_html_e( 'Conocimiento', 'convoca-assistant' ); ?></h1>
 	<p><?php esc_html_e( 'Gestiona las fuentes de conocimiento del asistente. Puedes activar o desactivar tipos de contenido y ajustar su peso en las búsquedas.', 'convoca-assistant' ); ?></p>
