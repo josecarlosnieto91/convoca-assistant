@@ -252,7 +252,7 @@ class WooCommerce_Provider implements Knowledge_Provider_Interface {
 		$text = strip_shortcodes( $text ?? '' );
 		$text = wp_strip_all_tags( $text ?? '' );
 		$text = html_entity_decode( $text, ENT_QUOTES, 'UTF-8' );
-		$text = preg_replace( '/\s+/u', ' ', $text ?? '' );
+		$text = preg_replace( '/\s+/u', ' ', $text );
 		return trim( $text ?? '' );
 	}
 

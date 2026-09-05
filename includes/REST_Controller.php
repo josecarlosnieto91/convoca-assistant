@@ -127,7 +127,7 @@ class REST_Controller {
 	/**
 	 * Check rate limit for public endpoints.
 	 *
-	 * @return bool|WP_Error
+	 * @return bool|\WP_Error
 	 */
 	public static function check_rate_limit() {
 		$ip     = self::get_client_ip();

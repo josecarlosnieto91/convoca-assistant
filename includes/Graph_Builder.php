@@ -199,6 +199,6 @@ class Graph_Builder {
 			}
 		);
 
-		return array_slice( array_values( $related ), 0, $limit );
+		return array_slice( $related, 0, $limit );
 	}
 }

@@ -1,5 +1,5 @@
-includes:
-	- phpstan-baseline.neon
+# includes:
+#     - phpstan-baseline.neon (comentado durante limpieza de deuda)
 
 parameters:
 	level: 5
@@ -15,5 +15,16 @@ parameters:
 	bootstrapFiles:
 		- ../vendor/php-stubs/wordpress-stubs/wordpress-stubs.php
 		- ../phpstan-bootstrap.php
+	ignoreErrors:
+		# ── Falsos positivos del harness de análisis (NO deuda de código) ──
+		# En análisis aislado ABSPATH=/tmp/wp/, así que include()/require_once()
+		# de plantillas y de wp-admin no existen en disco. En runtime WP
+		# resuelve las rutas reales del plugin y del core.
+		-
+			message: '#Path in (?:include|require_once)\(\) "/tmp/wp/#'
+			identifier: include.fileNotFound
+		-
+			message: '#Path in (?:include|require_once)\(\) "/tmp/wp/#'
+			identifier: requireOnce.fileNotFound
 	parallel:
 		maximumNumberOfProcesses: 4
