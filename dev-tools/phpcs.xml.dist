@@ -7,13 +7,19 @@
 	<exclude-pattern>../tests/*</exclude-pattern>
 	<exclude-pattern>../node_modules/*</exclude-pattern>
 	<exclude-pattern>../assets/*</exclude-pattern>
+	<!-- Tooling de análisis estático: redefine constantes de runtime de WP
+	     (ABSPATH, DAY_IN_SECONDS, ...) que por diseño no llevan el prefijo
+	     del plugin. No es código distribuido, se excluye del lint PHPCS. -->
+	<exclude-pattern>../phpstan-bootstrap.php</exclude-pattern>
 
 	<arg name="extensions" value="php"/>
 	<arg value="sp"/>
-	<arg name="basepath" value="."/>
 
 	<rule ref="WordPress">
 		<exclude name="WordPress.Files.FileName.NotHyphenatedLowercase"/>
+		<!-- Autoload PSR-4: el fichero se llama como la clase (Indexer.php),
+		     no class-indexer.php. Igual que NotHyphenatedLowercase. -->
+		<exclude name="WordPress.Files.FileName.InvalidClassFileName"/>
 		<exclude name="WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound"/>
 	</rule>
 
@@ -37,6 +43,13 @@
 
 	<rule ref="Generic.Commenting.Todo">
 		<exclude-pattern>*</exclude-pattern>
+	</rule>
+
+	<!-- El nombre de tabla en {$table} no admite prepare() (SQL no permite
+	     bindear identificadores); procede de Installer::log_table()/
+	     Statistics::table(), valores de confianza del propio plugin. -->
+	<rule ref="WordPress.DB.PreparedSQL">
+		<exclude name="WordPress.DB.PreparedSQL.InterpolatedNotPrepared"/>
 	</rule>
 
 	<rule ref="Generic.Files.LineLength">

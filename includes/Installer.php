@@ -17,20 +17,20 @@ class Installer {
 	 */
 	public static function default_settings(): array {
 		return array(
-			'widget_title'          => 'Asistente Virtual',
-			'widget_greeting'       => __( '¡Hola! Soy el asistente virtual. ¿En qué puedo ayudarte?', 'convoca-assistant' ),
-			'widget_primary_color'  => '#2563eb',
-			'widget_position'       => 'bottom-right',
-			'maintenance_mode'      => false,
-			'maintenance_message'   => '',
-			'log_retention_days'    => 90,
-			'enable_analytics'      => true,
-			'index_post_types'      => array( 'post', 'page', 'convoca_faq', 'convoca_kb' ),
-			'source_post'        => true,
-			'source_page'        => true,
-			'fuse_threshold'     => 0.4,
-			'fuse_distance'         => 100,
-			'session_window_minutes'=> 10,
+			'widget_title'           => 'Asistente Virtual',
+			'widget_greeting'        => __( '¡Hola! Soy el asistente virtual. ¿En qué puedo ayudarte?', 'convoca-assistant' ),
+			'widget_primary_color'   => '#2563eb',
+			'widget_position'        => 'bottom-right',
+			'maintenance_mode'       => false,
+			'maintenance_message'    => '',
+			'log_retention_days'     => 90,
+			'enable_analytics'       => true,
+			'index_post_types'       => array( 'post', 'page', 'convoca_faq', 'convoca_kb' ),
+			'source_post'            => true,
+			'source_page'            => true,
+			'fuse_threshold'         => 0.4,
+			'fuse_distance'          => 100,
+			'session_window_minutes' => 10,
 		);
 	}
 
@@ -39,23 +39,141 @@ class Installer {
 	 */
 	public static function default_stop_words(): array {
 		return array(
-			'a', 'al', 'algo', 'alas', 'ambos', 'ante', 'aquel', 'aquellos',
-			'aqui', 'asi', 'aunque', 'bajo', 'bastante', 'bien', 'cada',
-			'casi', 'como', 'con', 'cual', 'cualquier', 'cuando', 'de',
-			'del', 'demas', 'desde', 'donde', 'dos', 'durante', 'e', 'el',
-			'ella', 'ellas', 'ellos', 'en', 'entre', 'era', 'eran', 'es',
-			'esa', 'esas', 'ese', 'eso', 'esos', 'esta', 'estaba', 'estan',
-			'estas', 'este', 'esto', 'etc', 'fue', 'gracias', 'ha', 'hace',
-			'hacen', 'han', 'has', 'hasta', 'hay', 'la', 'las', 'le', 'les',
-			'lo', 'los', 'mas', 'me', 'menos', 'mi', 'mis', 'mucha', 'muchas',
-			'mucho', 'muchos', 'muy', 'nada', 'ni', 'ningun', 'no', 'nos',
-			'nosotras', 'nosotros', 'nuestra', 'nuestro', 'o', 'os', 'otra',
-			'otro', 'para', 'pero', 'poco', 'podemos', 'por', 'porque',
-			'que', 'quien', 's', 'se', 'segun', 'ser', 'si', 'sido', 'sin',
-			'sobre', 'solo', 'son', 'su', 'sus', 'tambien', 'tampoco', 'tan',
-			'tanto', 'te', 'tenemos', 'tengo', 'ti', 'tiene', 'tienen', 'todo',
-			'todos', 'tu', 'tus', 'un', 'una', 'uno', 'unos', 'usted', 'va',
-			'van', 'vosotras', 'vosotros', 'vuestra', 'vuestro', 'y', 'ya',
+			'a',
+			'al',
+			'algo',
+			'alas',
+			'ambos',
+			'ante',
+			'aquel',
+			'aquellos',
+			'aqui',
+			'asi',
+			'aunque',
+			'bajo',
+			'bastante',
+			'bien',
+			'cada',
+			'casi',
+			'como',
+			'con',
+			'cual',
+			'cualquier',
+			'cuando',
+			'de',
+			'del',
+			'demas',
+			'desde',
+			'donde',
+			'dos',
+			'durante',
+			'e',
+			'el',
+			'ella',
+			'ellas',
+			'ellos',
+			'en',
+			'entre',
+			'era',
+			'eran',
+			'es',
+			'esa',
+			'esas',
+			'ese',
+			'eso',
+			'esos',
+			'esta',
+			'estaba',
+			'estan',
+			'estas',
+			'este',
+			'esto',
+			'etc',
+			'fue',
+			'gracias',
+			'ha',
+			'hace',
+			'hacen',
+			'han',
+			'has',
+			'hasta',
+			'hay',
+			'la',
+			'las',
+			'le',
+			'les',
+			'lo',
+			'los',
+			'mas',
+			'me',
+			'menos',
+			'mi',
+			'mis',
+			'mucha',
+			'muchas',
+			'mucho',
+			'muchos',
+			'muy',
+			'nada',
+			'ni',
+			'ningun',
+			'no',
+			'nos',
+			'nosotras',
+			'nosotros',
+			'nuestra',
+			'nuestro',
+			'o',
+			'os',
+			'otra',
+			'otro',
+			'para',
+			'pero',
+			'poco',
+			'podemos',
+			'por',
+			'porque',
+			'que',
+			'quien',
+			's',
+			'se',
+			'segun',
+			'ser',
+			'si',
+			'sido',
+			'sin',
+			'sobre',
+			'solo',
+			'son',
+			'su',
+			'sus',
+			'tambien',
+			'tampoco',
+			'tan',
+			'tanto',
+			'te',
+			'tenemos',
+			'tengo',
+			'ti',
+			'tiene',
+			'tienen',
+			'todo',
+			'todos',
+			'tu',
+			'tus',
+			'un',
+			'una',
+			'uno',
+			'unos',
+			'usted',
+			'va',
+			'van',
+			'vosotras',
+			'vosotros',
+			'vuestra',
+			'vuestro',
+			'y',
+			'ya',
 			'yo',
 		);
 	}
@@ -72,7 +190,8 @@ class Installer {
 			try {
 				Indexer::regenerate();
 			} catch ( \Throwable $e ) {
-				// Silently fail — index can be rebuilt from admin.
+				// Falla silenciosa — el índice se puede reconstruir desde admin.
+				error_log( 'Convoca Assistant: index regeneration failed: ' . $e->getMessage() ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
 			}
 		}
 	}
@@ -96,12 +215,15 @@ class Installer {
 
 		// Settings defaults.
 		if ( ! get_option( 'convoca_assistant_settings' ) ) {
-			add_option( 'convoca_assistant_settings', array(
-				'widget_title'       => 'Asistente Virtual',
-				'widget_greeting'    => __( '¡Hola! Soy el asistente virtual. ¿En qué puedo ayudarte?', 'convoca-assistant' ),
-				'widget_primary_color' => '#2563eb',
-				'widget_position'    => 'bottom-right',
-			) );
+			add_option(
+				'convoca_assistant_settings',
+				array(
+					'widget_title'         => 'Asistente Virtual',
+					'widget_greeting'      => __( '¡Hola! Soy el asistente virtual. ¿En qué puedo ayudarte?', 'convoca-assistant' ),
+					'widget_primary_color' => '#2563eb',
+					'widget_position'      => 'bottom-right',
+				)
+			);
 		}
 
 		// Synonyms defaults.
@@ -120,6 +242,8 @@ class Installer {
 
 	/**
 	 * Check if a table exists.
+	 *
+	 * @param string $table Table name.
 	 */
 	private static function table_exists( string $table ): bool {
 		global $wpdb;
@@ -128,6 +252,8 @@ class Installer {
 
 	/**
 	 * Create the log table.
+	 *
+	 * @param string $table Table name.
 	 */
 	private static function create_log_table( string $table ): void {
 		global $wpdb;

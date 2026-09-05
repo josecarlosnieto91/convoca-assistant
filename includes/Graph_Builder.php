@@ -45,17 +45,18 @@ class Graph_Builder {
 			$by_type    = array();
 			if ( ! empty( $index_data['entries'] ) ) {
 				foreach ( $index_data['entries'] as $entry ) {
-					$type = $entry['type'] ?? 'unknown';
+					$type               = $entry['type'] ?? 'unknown';
 					$by_type[ $type ][] = $entry['id'];
 				}
 				foreach ( $by_type as $type => $ids ) {
 					if ( ! empty( $nodes[ $ids[0] ] ?? false ) ) {
 						continue; // Already has edges from provider.
 					}
-					for ( $i = 1; $i < count( $ids ); $i++ ) {
+					$count = count( $ids );
+					for ( $i = 1; $i < $count; $i++ ) {
 						$edge_key = min( $ids[ $i - 1 ], $ids[ $i ] ) . '-' . max( $ids[ $i - 1 ], $ids[ $i ] );
 						if ( ! isset( $seen[ $edge_key ] ) ) {
-							$edges[] = array(
+							$edges[]                 = array(
 								'from'   => $ids[ $i - 1 ],
 								'to'     => $ids[ $i ],
 								'type'   => 'same_type_' . $type,
@@ -114,7 +115,7 @@ class Graph_Builder {
 			'success' => true,
 			'nodes'   => $graph['nodes'],
 			'edges'   => count( $graph['edges'] ),
-			'size'    => $size ?: 0,
+			'size'    => $size ? $size : 0,
 		);
 	}
 
@@ -154,7 +155,7 @@ class Graph_Builder {
 
 		foreach ( $graph['edges'] as $edge ) {
 			if ( (int) $edge['from'] === $entry_id || (int) $edge['to'] === $entry_id ) {
-				$edge_count++;
+				++$edge_count;
 			}
 		}
 
@@ -191,9 +192,12 @@ class Graph_Builder {
 			}
 		}
 
-		usort( $related, function ( $a, $b ) {
-			return $b['weight'] <=> $a['weight'];
-		} );
+		usort(
+			$related,
+			function ( $a, $b ) {
+				return $b['weight'] <=> $a['weight'];
+			}
+		);
 
 		return array_slice( array_values( $related ), 0, $limit );
 	}

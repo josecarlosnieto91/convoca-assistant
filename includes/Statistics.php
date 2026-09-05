@@ -83,14 +83,14 @@ class Statistics {
 		$wpdb->insert( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
 			self::table(),
 			array(
-				'session_id'    => self::get_session_id(),
-				'query'         => $query,
-				'response_id'   => $response_id,
-				'response_found' => $response_found ? 1 : 0,
-				'score'         => $score,
-				'clicked'       => $clicked ? 1 : 0,
-				'query_time_ms' => $time_ms,
-				'page_url'      => $page_url ? esc_url_raw( $page_url ) : '',
+				'session_id'      => self::get_session_id(),
+				'query'           => $query,
+				'response_id'     => $response_id,
+				'response_found'  => $response_found ? 1 : 0,
+				'score'           => $score,
+				'clicked'         => $clicked ? 1 : 0,
+				'query_time_ms'   => $time_ms,
+				'page_url'        => $page_url ? esc_url_raw( $page_url ) : '',
 				'user_agent_hash' => $ua_hash,
 			),
 			array( '%s', '%s', '%d', '%d', '%f', '%d', '%d', '%s', '%s' )
@@ -105,52 +105,66 @@ class Statistics {
 	 */
 	public static function get_stats( int $days = 30 ): array {
 		global $wpdb;
-		$table  = self::table();
-		$since  = gmdate( 'Y-m-d H:i:s', time() - ( $days * DAY_IN_SECONDS ) );
+		$table = self::table();
+		$since = gmdate( 'Y-m-d H:i:s', time() - ( $days * DAY_IN_SECONDS ) );
 
-		$total = (int) $wpdb->get_var( $wpdb->prepare(
-			"SELECT COUNT(*) FROM {$table} WHERE created_at >= %s", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-			$since
-		) );
+		$total = (int) $wpdb->get_var(
+			$wpdb->prepare(
+				"SELECT COUNT(*) FROM {$table} WHERE created_at >= %s", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+				$since
+			)
+		);
 
-		$found = (int) $wpdb->get_var( $wpdb->prepare(
-			"SELECT COUNT(*) FROM {$table} WHERE created_at >= %s AND response_found = 1", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-			$since
-		) );
+		$found = (int) $wpdb->get_var(
+			$wpdb->prepare(
+				"SELECT COUNT(*) FROM {$table} WHERE created_at >= %s AND response_found = 1", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+				$since
+			)
+		);
 
-		$avg_score = (float) $wpdb->get_var( $wpdb->prepare(
-			"SELECT AVG(score) FROM {$table} WHERE created_at >= %s AND response_found = 1", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-			$since
-		) );
+		$avg_score = (float) $wpdb->get_var(
+			$wpdb->prepare(
+				"SELECT AVG(score) FROM {$table} WHERE created_at >= %s AND response_found = 1", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+				$since
+			)
+		);
 
-		$avg_time = (float) $wpdb->get_var( $wpdb->prepare(
-			"SELECT AVG(query_time_ms) FROM {$table} WHERE created_at >= %s AND query_time_ms IS NOT NULL", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-			$since
-		) );
+		$avg_time = (float) $wpdb->get_var(
+			$wpdb->prepare(
+				"SELECT AVG(query_time_ms) FROM {$table} WHERE created_at >= %s AND query_time_ms IS NOT NULL", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+				$since
+			)
+		);
 
-		$top_queries = $wpdb->get_results( $wpdb->prepare(
-			"SELECT query, COUNT(*) as count, AVG(score) as avg_score
+		$top_queries = $wpdb->get_results(
+			$wpdb->prepare(
+				"SELECT query, COUNT(*) as count, AVG(score) as avg_score
 			FROM {$table} WHERE created_at >= %s
 			GROUP BY query ORDER BY count DESC LIMIT 10", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-			$since
-		), ARRAY_A );
+				$since
+			),
+			ARRAY_A
+		);
 
-		$daily = $wpdb->get_results( $wpdb->prepare(
-			"SELECT DATE(created_at) as day, COUNT(*) as count
+		$daily = $wpdb->get_results(
+			$wpdb->prepare(
+				"SELECT DATE(created_at) as day, COUNT(*) as count
 			FROM {$table} WHERE created_at >= %s
 			GROUP BY day ORDER BY day ASC", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-			$since
-		), ARRAY_A );
+				$since
+			),
+			ARRAY_A
+		);
 
 		return array(
-			'total'       => $total,
-			'found'       => $found,
-			'not_found'   => $total - $found,
+			'total'           => $total,
+			'found'           => $found,
+			'not_found'       => $total - $found,
 			'resolution_rate' => $total > 0 ? round( ( $found / $total ) * 100, 1 ) : 0,
-			'avg_score'   => round( $avg_score, 4 ),
-			'avg_time_ms' => round( $avg_time, 2 ),
-			'top_queries' => $top_queries,
-			'daily'       => $daily,
+			'avg_score'       => round( $avg_score, 4 ),
+			'avg_time_ms'     => round( $avg_time, 2 ),
+			'top_queries'     => $top_queries,
+			'daily'           => $daily,
 		);
 	}
 
@@ -164,15 +178,18 @@ class Statistics {
 		global $wpdb;
 		$table = self::table();
 
-		return $wpdb->get_results( $wpdb->prepare(
-			"SELECT query, COUNT(*) as count, MAX(created_at) as last_seen
+		return $wpdb->get_results(
+			$wpdb->prepare(
+				"SELECT query, COUNT(*) as count, MAX(created_at) as last_seen
 			FROM {$table}
 			WHERE response_found = 0
 			GROUP BY query
 			ORDER BY count DESC
 			LIMIT %d", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-			$limit
-		), ARRAY_A );
+				$limit
+			),
+			ARRAY_A
+		);
 	}
 
 	/**
@@ -188,10 +205,12 @@ class Statistics {
 		$cutoff = gmdate( 'Y-m-d H:i:s', time() - ( $retention * DAY_IN_SECONDS ) );
 
 		$table = self::table();
-		$wpdb->query( $wpdb->prepare(
-			"DELETE FROM {$table} WHERE created_at < %s", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-			$cutoff
-		) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+		$wpdb->query(
+			$wpdb->prepare(
+				"DELETE FROM {$table} WHERE created_at < %s", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+				$cutoff
+			)
+		); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 	}
 
 	/**
@@ -206,6 +225,6 @@ class Statistics {
 		if ( empty( $_SESSION['convoca_assistant_session'] ) ) {
 			$_SESSION['convoca_assistant_session'] = wp_generate_uuid4();
 		}
-		return $_SESSION['convoca_assistant_session'];
+		return $_SESSION['convoca_assistant_session']; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- UUID generada por el propio plugin (wp_generate_uuid4).
 	}
 }

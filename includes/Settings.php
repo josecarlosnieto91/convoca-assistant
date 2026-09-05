@@ -64,7 +64,7 @@ class Settings {
 	 * @return bool
 	 */
 	public static function set( string $key, $value ): bool {
-		$settings = get_option( self::OPTION_NAME, Installer::default_settings() );
+		$settings         = get_option( self::OPTION_NAME, Installer::default_settings() );
 		$settings[ $key ] = $value;
 		return update_option( self::OPTION_NAME, $settings );
 	}
@@ -141,7 +141,8 @@ class Settings {
 
 				// Sanitized strings.
 				case 'widget_primary_color':
-					$output[ $key ] = sanitize_hex_color( $value ) ?: $defaults[ $key ];
+					$color             = sanitize_hex_color( $value );
+					$output[ $key ] = $color ? $color : $defaults[ $key ];
 					break;
 				case 'widget_title':
 				case 'widget_greeting':

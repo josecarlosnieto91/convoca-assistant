@@ -51,11 +51,14 @@ class Synonyms {
 	 * @return bool
 	 */
 	public static function set( string $term, array $synonyms ): bool {
-		$all = self::get_all();
-		$synonyms = array_map( 'trim', $synonyms );
-		$synonyms = array_filter( $synonyms, function ( $s ) use ( $term ) {
-			return ! empty( $s ) && $s !== $term;
-		} );
+		$all          = self::get_all();
+		$synonyms     = array_map( 'trim', $synonyms );
+		$synonyms     = array_filter(
+			$synonyms,
+			function ( $s ) use ( $term ) {
+				return ! empty( $s ) && $s !== $term;
+			}
+		);
 		$all[ $term ] = array_unique( $synonyms );
 		return update_option( self::SYNONYM_OPTION, $all );
 	}
@@ -94,9 +97,12 @@ class Synonyms {
 	 */
 	public static function set_stop_words( array $words ): bool {
 		$words = array_map( 'trim', $words );
-		$words = array_filter( $words, function ( $w ) {
-			return ! empty( $w );
-		} );
+		$words = array_filter(
+			$words,
+			function ( $w ) {
+				return ! empty( $w );
+			}
+		);
 		return update_option( self::STOP_WORDS_OPTION, array_unique( $words ) );
 	}
 
@@ -159,10 +165,15 @@ class Synonyms {
 		$list = array_filter( array_map( 'trim', explode( "\n", $syns ) ) );
 		self::set( $term, $list );
 
-		wp_safe_redirect( add_query_arg(
-			array( 'page' => 'convoca-assistant-synonyms', 'saved' => '1' ),
-			admin_url( 'admin.php' )
-		) );
+		wp_safe_redirect(
+			add_query_arg(
+				array(
+					'page'  => 'convoca-assistant-synonyms',
+					'saved' => '1',
+				),
+				admin_url( 'admin.php' )
+			)
+		);
 		exit;
 	}
 
@@ -180,10 +191,15 @@ class Synonyms {
 		$term = sanitize_text_field( wp_unslash( $_POST['term'] ?? '' ) );
 		self::remove( $term );
 
-		wp_safe_redirect( add_query_arg(
-			array( 'page' => 'convoca-assistant-synonyms', 'removed' => '1' ),
-			admin_url( 'admin.php' )
-		) );
+		wp_safe_redirect(
+			add_query_arg(
+				array(
+					'page'    => 'convoca-assistant-synonyms',
+					'removed' => '1',
+				),
+				admin_url( 'admin.php' )
+			)
+		);
 		exit;
 	}
 
@@ -202,10 +218,15 @@ class Synonyms {
 		$list = array_filter( array_map( 'trim', explode( "\n", $raw ) ) );
 		self::set_stop_words( $list );
 
-		wp_safe_redirect( add_query_arg(
-			array( 'page' => 'convoca-assistant-synonyms', 'saved' => '1' ),
-			admin_url( 'admin.php' )
-		) );
+		wp_safe_redirect(
+			add_query_arg(
+				array(
+					'page'  => 'convoca-assistant-synonyms',
+					'saved' => '1',
+				),
+				admin_url( 'admin.php' )
+			)
+		);
 		exit;
 	}
 

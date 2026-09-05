@@ -67,8 +67,15 @@ class WooCommerce_Provider implements Knowledge_Provider_Interface {
 				'fields'         => 'ids',
 				'meta_query'     => array(
 					'relation' => 'OR',
-					array( 'key' => '_convoca_assistant_exclude', 'compare' => 'NOT EXISTS' ),
-					array( 'key' => '_convoca_assistant_exclude', 'value' => '0', 'compare' => '=' ),
+					array(
+						'key'     => '_convoca_assistant_exclude',
+						'compare' => 'NOT EXISTS',
+					),
+					array(
+						'key'     => '_convoca_assistant_exclude',
+						'value'   => '0',
+						'compare' => '=',
+					),
 				),
 				'no_found_rows'  => true,
 			)
@@ -130,7 +137,7 @@ class WooCommerce_Provider implements Knowledge_Provider_Interface {
 				array(
 					'post_type'      => 'product',
 					'post_status'    => 'publish',
-				'has_password'   => false, // No indexar contenido protegido por contraseña.
+					'has_password'   => false, // No indexar contenido protegido por contraseña.
 					'posts_per_page' => 10,
 					'fields'         => 'ids',
 					'tax_query'      => array(
@@ -160,7 +167,7 @@ class WooCommerce_Provider implements Knowledge_Provider_Interface {
 				array(
 					'post_type'      => 'product',
 					'post_status'    => 'publish',
-				'has_password'   => false, // No indexar contenido protegido por contraseña.
+					'has_password'   => false, // No indexar contenido protegido por contraseña.
 					'posts_per_page' => 10,
 					'fields'         => 'ids',
 					'tax_query'      => array(
@@ -223,7 +230,7 @@ class WooCommerce_Provider implements Knowledge_Provider_Interface {
 			'content'    => $content,
 			'excerpt'    => $this->clean_content( (string) get_the_excerpt( $post ) ),
 			'url'        => get_permalink( $post ),
-			'thumbnail'  => get_the_post_thumbnail_url( $post, 'thumbnail' ) ?: '',
+			'thumbnail'  => get_the_post_thumbnail_url( $post, 'thumbnail' ) ? get_the_post_thumbnail_url( $post, 'thumbnail' ) : '',
 			'categories' => $this->get_term_names( $post->ID, 'product_cat' ),
 			'tags'       => $this->get_term_names( $post->ID, 'product_tag' ),
 			'keywords'   => $this->parse_keywords( $post->ID ),

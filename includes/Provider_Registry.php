@@ -27,7 +27,7 @@ class Provider_Registry {
 	 */
 	public static function get_all(): array {
 		if ( null === self::$providers ) {
-			$built_in = self::built_in_providers();
+			$built_in        = self::built_in_providers();
 			self::$providers = array();
 
 			// Register built-in providers first.
@@ -72,7 +72,7 @@ class Provider_Registry {
 	 * @return array<string, Knowledge_Provider_Interface>
 	 */
 	public static function get_active(): array {
-		$all   = self::get_all();
+		$all      = self::get_all();
 		$settings = get_option( 'convoca_assistant_settings', Installer::default_settings() );
 		$active   = array();
 
@@ -108,7 +108,7 @@ class Provider_Registry {
 					continue;
 				}
 				$id_seen[ $entry['id'] ] = true;
-				$entries[] = $entry;
+				$entries[]               = $entry;
 			}
 		}
 
@@ -135,7 +135,7 @@ class Provider_Registry {
 						continue;
 					}
 					$seen[ $key ] = true;
-					$edges[] = array(
+					$edges[]      = array(
 						'from'   => $entry['id'],
 						'to'     => $rel['to'],
 						'type'   => $rel['type'],
@@ -166,7 +166,7 @@ class Provider_Registry {
 
 		foreach ( $classes as $class ) {
 			if ( class_exists( $class ) ) {
-				$instance = new $class();
+				$instance                         = new $class();
 				$providers[ $instance->get_id() ] = $instance;
 			}
 		}

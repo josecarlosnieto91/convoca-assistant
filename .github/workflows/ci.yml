@@ -43,9 +43,9 @@ jobs:
         with:
           dependency-versions: highest
 
-      # deuda preexistente: 254 errores y 241 warnings (WordPress Coding Standards)
+      # PHPCS bloqueante: 0 errores (warnings permitidos vía ignore_warnings_on_exit).
       - name: PHPCS
-        run: vendor/bin/phpcs --standard=dev-tools/phpcs.xml.dist --runtime-set ignore_warnings_on_exit 1 || true
+        run: vendor/bin/phpcs --standard=dev-tools/phpcs.xml.dist --runtime-set ignore_warnings_on_exit 1
 
   phpstan:
     name: PHPStan

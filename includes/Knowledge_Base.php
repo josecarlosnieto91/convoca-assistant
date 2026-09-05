@@ -80,15 +80,15 @@ class Knowledge_Base {
 	 */
 	public static function register_faq_cpt(): void {
 		$labels = array(
-			'name'               => __( 'FAQs', 'convoca-assistant' ),
-			'singular_name'      => __( 'FAQ', 'convoca-assistant' ),
-			'add_new'            => __( 'Añadir FAQ', 'convoca-assistant' ),
-			'add_new_item'       => __( 'Añadir nueva FAQ', 'convoca-assistant' ),
-			'edit_item'          => __( 'Editar FAQ', 'convoca-assistant' ),
-			'view_item'          => __( 'Ver FAQ', 'convoca-assistant' ),
-			'search_items'       => __( 'Buscar FAQs', 'convoca-assistant' ),
-			'not_found'          => __( 'No se encontraron FAQs', 'convoca-assistant' ),
-			'all_items'          => __( 'Todas las FAQs', 'convoca-assistant' ),
+			'name'          => __( 'FAQs', 'convoca-assistant' ),
+			'singular_name' => __( 'FAQ', 'convoca-assistant' ),
+			'add_new'       => __( 'Añadir FAQ', 'convoca-assistant' ),
+			'add_new_item'  => __( 'Añadir nueva FAQ', 'convoca-assistant' ),
+			'edit_item'     => __( 'Editar FAQ', 'convoca-assistant' ),
+			'view_item'     => __( 'Ver FAQ', 'convoca-assistant' ),
+			'search_items'  => __( 'Buscar FAQs', 'convoca-assistant' ),
+			'not_found'     => __( 'No se encontraron FAQs', 'convoca-assistant' ),
+			'all_items'     => __( 'Todas las FAQs', 'convoca-assistant' ),
 		);
 
 		$args = array(
@@ -117,15 +117,15 @@ class Knowledge_Base {
 	 */
 	public static function register_kb_cpt(): void {
 		$labels = array(
-			'name'               => __( 'Base de Conocimiento', 'convoca-assistant' ),
-			'singular_name'      => __( 'Artículo', 'convoca-assistant' ),
-			'add_new'            => __( 'Añadir artículo', 'convoca-assistant' ),
-			'add_new_item'       => __( 'Añadir nuevo artículo', 'convoca-assistant' ),
-			'edit_item'          => __( 'Editar artículo', 'convoca-assistant' ),
-			'view_item'          => __( 'Ver artículo', 'convoca-assistant' ),
-			'search_items'       => __( 'Buscar artículos', 'convoca-assistant' ),
-			'not_found'          => __( 'No se encontraron artículos', 'convoca-assistant' ),
-			'all_items'          => __( 'Todos los artículos', 'convoca-assistant' ),
+			'name'          => __( 'Base de Conocimiento', 'convoca-assistant' ),
+			'singular_name' => __( 'Artículo', 'convoca-assistant' ),
+			'add_new'       => __( 'Añadir artículo', 'convoca-assistant' ),
+			'add_new_item'  => __( 'Añadir nuevo artículo', 'convoca-assistant' ),
+			'edit_item'     => __( 'Editar artículo', 'convoca-assistant' ),
+			'view_item'     => __( 'Ver artículo', 'convoca-assistant' ),
+			'search_items'  => __( 'Buscar artículos', 'convoca-assistant' ),
+			'not_found'     => __( 'No se encontraron artículos', 'convoca-assistant' ),
+			'all_items'     => __( 'Todos los artículos', 'convoca-assistant' ),
 		);
 
 		$args = array(
@@ -156,14 +156,14 @@ class Knowledge_Base {
 	 */
 	public static function register_taxonomies(): void {
 		$faq_labels = array(
-			'name'              => __( 'Categorías de FAQ', 'convoca-assistant' ),
-			'singular_name'     => __( 'Categoría de FAQ', 'convoca-assistant' ),
-			'search_items'      => __( 'Buscar categorías', 'convoca-assistant' ),
-			'all_items'         => __( 'Todas las categorías', 'convoca-assistant' ),
-			'edit_item'         => __( 'Editar categoría', 'convoca-assistant' ),
-			'update_item'       => __( 'Actualizar categoría', 'convoca-assistant' ),
-			'add_new_item'      => __( 'Añadir nueva categoría', 'convoca-assistant' ),
-			'new_item_name'     => __( 'Nueva categoría', 'convoca-assistant' ),
+			'name'          => __( 'Categorías de FAQ', 'convoca-assistant' ),
+			'singular_name' => __( 'Categoría de FAQ', 'convoca-assistant' ),
+			'search_items'  => __( 'Buscar categorías', 'convoca-assistant' ),
+			'all_items'     => __( 'Todas las categorías', 'convoca-assistant' ),
+			'edit_item'     => __( 'Editar categoría', 'convoca-assistant' ),
+			'update_item'   => __( 'Actualizar categoría', 'convoca-assistant' ),
+			'add_new_item'  => __( 'Añadir nueva categoría', 'convoca-assistant' ),
+			'new_item_name' => __( 'Nueva categoría', 'convoca-assistant' ),
 		);
 
 		register_taxonomy(
@@ -181,14 +181,14 @@ class Knowledge_Base {
 		);
 
 		$kb_labels = array(
-			'name'              => __( 'Categorías de KB', 'convoca-assistant' ),
-			'singular_name'     => __( 'Categoría de KB', 'convoca-assistant' ),
-			'search_items'      => __( 'Buscar categorías', 'convoca-assistant' ),
-			'all_items'         => __( 'Todas las categorías', 'convoca-assistant' ),
-			'edit_item'         => __( 'Editar categoría', 'convoca-assistant' ),
-			'update_item'       => __( 'Actualizar categoría', 'convoca-assistant' ),
-			'add_new_item'      => __( 'Añadir nueva categoría', 'convoca-assistant' ),
-			'new_item_name'     => __( 'Nueva categoría', 'convoca-assistant' ),
+			'name'          => __( 'Categorías de KB', 'convoca-assistant' ),
+			'singular_name' => __( 'Categoría de KB', 'convoca-assistant' ),
+			'search_items'  => __( 'Buscar categorías', 'convoca-assistant' ),
+			'all_items'     => __( 'Todas las categorías', 'convoca-assistant' ),
+			'edit_item'     => __( 'Editar categoría', 'convoca-assistant' ),
+			'update_item'   => __( 'Actualizar categoría', 'convoca-assistant' ),
+			'add_new_item'  => __( 'Añadir nueva categoría', 'convoca-assistant' ),
+			'new_item_name' => __( 'Nueva categoría', 'convoca-assistant' ),
 		);
 
 		register_taxonomy(
@@ -407,9 +407,9 @@ class Knowledge_Base {
 	public static function render_meta_box( \WP_Post $post ): void {
 		wp_nonce_field( 'convoca_assistant_meta', 'convoca_assistant_meta_nonce' );
 
-		$keywords = get_post_meta( $post->ID, '_convoca_assistant_keywords', true );
-		$weight   = get_post_meta( $post->ID, '_convoca_assistant_weight', true );
-		$exclude  = (bool) get_post_meta( $post->ID, '_convoca_assistant_exclude', true );
+		$keywords       = get_post_meta( $post->ID, '_convoca_assistant_keywords', true );
+		$weight         = get_post_meta( $post->ID, '_convoca_assistant_weight', true );
+		$exclude        = (bool) get_post_meta( $post->ID, '_convoca_assistant_exclude', true );
 		$default_weight = self::get_default_weight( $post->post_type );
 		?>
 		<p>
@@ -417,9 +417,9 @@ class Knowledge_Base {
 				<?php esc_html_e( 'Palabras clave extra:', 'convoca-assistant' ); ?>
 			</label>
 			<input type="text" id="convoca-assistant-keywords"
-			       name="convoca_assistant_keywords"
-			       value="<?php echo esc_attr( $keywords ); ?>"
-			       class="widefat" placeholder="ej: renovación, cuota, alta" />
+					name="convoca_assistant_keywords"
+					value="<?php echo esc_attr( $keywords ); ?>"
+					class="widefat" placeholder="ej: renovación, cuota, alta" />
 			<span class="description"><?php esc_html_e( 'Separadas por coma. Mejoran la búsqueda.', 'convoca-assistant' ); ?></span>
 		</p>
 		<p>
@@ -427,10 +427,10 @@ class Knowledge_Base {
 				<?php esc_html_e( 'Peso (0-10):', 'convoca-assistant' ); ?>
 			</label>
 			<input type="number" id="convoca-assistant-weight"
-			       name="convoca_assistant_weight"
-			       value="<?php echo esc_attr( $weight ?: '' ); ?>"
-			       step="0.1" min="0" max="10" style="width:80px;" />
-			<span class="description"><?php echo esc_html( sprintf( __( 'Defecto: %s', 'convoca-assistant' ), $default_weight ) ); ?></span>
+					name="convoca_assistant_weight"
+					value="<?php echo esc_attr( $weight ? $weight : '' ); ?>"
+					step="0.1" min="0" max="10" style="width:80px;" />
+			<span class="description"><?php /* translators: %s: default weight value. */ echo esc_html( sprintf( __( 'Defecto: %s', 'convoca-assistant' ), $default_weight ) ); ?></span>
 		</p>
 		<p>
 			<label>
@@ -444,7 +444,7 @@ class Knowledge_Base {
 	/**
 	 * Save meta box data.
 	 *
-	 * @param int     $post_id Post ID.
+	 * @param int      $post_id Post ID.
 	 * @param \WP_Post $post    Post object.
 	 * @return void
 	 */
@@ -503,11 +503,11 @@ class Knowledge_Base {
 		$sources  = array();
 
 		$map = array(
-			'post'              => 'source_post',
-			'page'              => 'source_page',
-			'convoca_faq'       => 'source_convoca_faq',
-			'convoca_kb'        => 'source_convoca_kb',
-			'product'           => 'source_woocommerce',
+			'post'        => 'source_post',
+			'page'        => 'source_page',
+			'convoca_faq' => 'source_convoca_faq',
+			'convoca_kb'  => 'source_convoca_kb',
+			'product'     => 'source_woocommerce',
 		);
 
 		foreach ( $map as $post_type => $setting_key ) {
@@ -532,11 +532,11 @@ class Knowledge_Base {
 		$settings = get_option( 'convoca_assistant_settings', Installer::default_settings() );
 
 		$map = array(
-			'convoca_faq'  => 'weight_convoca_faq',
-			'convoca_kb'   => 'weight_convoca_kb',
-			'post'         => 'weight_post',
-			'page'         => 'weight_page',
-			'product'      => 'weight_product',
+			'convoca_faq' => 'weight_convoca_faq',
+			'convoca_kb'  => 'weight_convoca_kb',
+			'post'        => 'weight_post',
+			'page'        => 'weight_page',
+			'product'     => 'weight_product',
 		);
 
 		$key = $map[ $post_type ] ?? 'weight_post';

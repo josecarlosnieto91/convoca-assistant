@@ -48,8 +48,8 @@ class Searcher {
 			return array();
 		}
 
-		$synonyms = $index_data['synonyms'] ?? array();
-		$expanded = self::expand_synonyms( $tokens, $synonyms );
+		$synonyms      = $index_data['synonyms'] ?? array();
+		$expanded      = self::expand_synonyms( $tokens, $synonyms );
 		$use_threshold = max( $threshold, self::SCORE_THRESHOLD );
 
 		$results = array();
@@ -65,9 +65,12 @@ class Searcher {
 			}
 		}
 
-		usort( $results, function ( $a, $b ) {
-			return $b['score'] <=> $a['score'];
-		} );
+		usort(
+			$results,
+			function ( $a, $b ) {
+				return $b['score'] <=> $a['score'];
+			}
+		);
 
 		return array_slice( $results, 0, $max_results );
 	}
@@ -125,14 +128,14 @@ class Searcher {
 		$weight = (float) ( $entry['weight'] ?? 1.0 );
 
 		// Composite with graph score (20%).
-		$score = ( $fuzzy_score   * 0.40 )
-			   + ( $graph_score   * 0.20 )
-			   + ( $exact_bonus   * 0.10 )
-			   + ( $synonym_bonus * 0.10 )
-			   + ( $stem_bonus    * 0.05 )
-			   + ( $coverage      * 0.05 )
-			   + ( $recency       * 0.05 )
-			   + ( ( $weight / 10.0 ) * 0.05 );
+		$score = ( $fuzzy_score * 0.40 )
+				+ ( $graph_score * 0.20 )
+				+ ( $exact_bonus * 0.10 )
+				+ ( $synonym_bonus * 0.10 )
+				+ ( $stem_bonus * 0.05 )
+				+ ( $coverage * 0.05 )
+				+ ( $recency * 0.05 )
+				+ ( ( $weight / 10.0 ) * 0.05 );
 
 		// Boost from weight multiplier.
 		$score = $score * ( 0.5 + ( $weight / 20.0 ) );
@@ -161,7 +164,7 @@ class Searcher {
 				if ( 0 === $len ) {
 					continue;
 				}
-				$lev       = levenshtein( $query_word, $title_word );
+				$lev        = levenshtein( $query_word, $title_word );
 				$word_score = 1.0 - ( $lev / $len );
 				if ( $word_score > $max_score ) {
 					$max_score = $word_score;
@@ -369,16 +372,19 @@ class Searcher {
 	 */
 	private static function tokenize( string $text, array $stop_words ): array {
 		$words = explode( ' ', $text );
-		$words = array_filter( $words, function ( $w ) use ( $stop_words ) {
-			return strlen( $w ) > 1 && ! in_array( $w, $stop_words, true );
-		} );
+		$words = array_filter(
+			$words,
+			function ( $w ) use ( $stop_words ) {
+				return strlen( $w ) > 1 && ! in_array( $w, $stop_words, true );
+			}
+		);
 		return array_values( $words );
 	}
 
 	/**
 	 * Expand query words with synonyms.
 	 *
-	 * @param string[]               $tokens   Tokenized words.
+	 * @param string[]                $tokens   Tokenized words.
 	 * @param array<string, string[]> $synonyms Synonym dictionary.
 	 * @return string[]
 	 */
@@ -407,8 +413,8 @@ class Searcher {
 	 * @return array|null
 	 */
 	private static function load_index(): ?array {
-		$dir    = CONVOCA_ASSISTANT_INDEX_DIR;
-		$file   = $dir . 'index.json';
+		$dir  = CONVOCA_ASSISTANT_INDEX_DIR;
+		$file = $dir . 'index.json';
 
 		if ( file_exists( $file ) ) {
 			$data = file_get_contents( $file ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents

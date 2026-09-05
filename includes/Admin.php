@@ -140,10 +140,10 @@ class Admin {
 			'convoca-assistant-admin',
 			'convocaAdmin',
 			array(
-				'restUrl' => rest_url( 'convoca/v1/assistant/' ),
-				'nonce'   => wp_create_nonce( 'wp_rest' ),
+				'restUrl'      => rest_url( 'convoca/v1/assistant/' ),
+				'nonce'        => wp_create_nonce( 'wp_rest' ),
 				'createFaqUrl' => admin_url( 'post-new.php?post_type=convoca_faq' ),
-				'indexStats' => Indexer::get_stats(),
+				'indexStats'   => Indexer::get_stats(),
 			)
 		);
 	}

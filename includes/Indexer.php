@@ -9,6 +9,7 @@ namespace Convoca\Assistant;
 
 use Convoca\Core\Logger;
 
+// phpcs:disable Generic.Files.LineLength -- @phpstan-type debe declararse en una sola línea.
 /**
  * Builds, caches, and maintains the searchable knowledge index from
  * active content sources. Supports automatic regeneration via cron,
@@ -18,6 +19,7 @@ use Convoca\Core\Logger;
  * @phpstan-type KnowledgeIndex array{version: string, generated: int, locale: string, total: int, hash: string, entries: IndexEntry[], synonyms: array<string, string[]>, stop_words: string[], config: array<string, mixed>}
  */
 class Indexer {
+// phpcs:enable Generic.Files.LineLength
 
 	/**
 	 * Current index schema version. Bump to force full rebuild.
@@ -149,14 +151,20 @@ class Indexer {
 		// Generate hash before writing (without hash in JSON so hash is stable).
 		$json_no_hash = wp_json_encode( $index, JSON_UNESCAPED_UNICODE );
 		if ( false === $json_no_hash ) {
-			return array( 'success' => false, 'error' => __( 'JSON encoding failed.', 'convoca-assistant' ) );
+			return array(
+				'success' => false,
+				'error'   => __( 'JSON encoding failed.', 'convoca-assistant' ),
+			);
 		}
 		$hash          = md5( $json_no_hash );
 		$index['hash'] = $hash;
 
 		$json_final = wp_json_encode( $index, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES );
 		if ( false === $json_final ) {
-			return array( 'success' => false, 'error' => __( 'JSON encoding failed (final).', 'convoca-assistant' ) );
+			return array(
+				'success' => false,
+				'error'   => __( 'JSON encoding failed (final).', 'convoca-assistant' ),
+			);
 		}
 
 		// Ensure directory exists.
@@ -164,7 +172,10 @@ class Indexer {
 		if ( ! is_dir( $dir ) ) {
 			$created = wp_mkdir_p( $dir );
 			if ( ! $created ) {
-				return array( 'success' => false, 'error' => __( 'Could not create index directory.', 'convoca-assistant' ) );
+				return array(
+					'success' => false,
+					'error'   => __( 'Could not create index directory.', 'convoca-assistant' ),
+				);
 			}
 		}
 
@@ -176,7 +187,10 @@ class Indexer {
 		// Write uncompressed JSON.
 		$written_json = file_put_contents( $dir . 'index.json', $json_final ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents
 		if ( false === $written_json ) {
-			return array( 'success' => false, 'error' => __( 'Could not write index.json.', 'convoca-assistant' ) );
+			return array(
+				'success' => false,
+				'error'   => __( 'Could not write index.json.', 'convoca-assistant' ),
+			);
 		}
 
 		// Clean up any leftover .gz files from previous versions.
@@ -207,7 +221,7 @@ class Indexer {
 		do_action( 'convoca_assistant/after_index', $index );
 
 		Logger::info(
-			sprintf( 'Index regenerated: %d entries, %s.', count( $entries ), size_format( $written_json ) ?: $written_json . ' bytes' ),
+			sprintf( 'Index regenerated: %d entries, %s.', count( $entries ), size_format( $written_json ) ? size_format( $written_json ) : $written_json . ' bytes' ),
 			'convoca-assistant'
 		);
 
@@ -254,11 +268,11 @@ class Indexer {
 		return array(
 			'id'         => $post->ID,
 			'type'       => $post_type,
-						'title'      => $post->post_title,
+			'title'      => $post->post_title,
 			'content'    => $content,
 			'excerpt'    => self::clean_content( (string) get_the_excerpt( $post ) ),
 			'url'        => get_permalink( $post ),
-			'thumbnail'  => get_the_post_thumbnail_url( $post, 'thumbnail' ) ?: '',
+			'thumbnail'  => get_the_post_thumbnail_url( $post, 'thumbnail' ) ? get_the_post_thumbnail_url( $post, 'thumbnail' ) : '',
 			'categories' => self::get_taxonomy_terms( $post->ID, $post_type ),
 			'tags'       => self::get_term_names( $post->ID, 'post_tag' ),
 			'keywords'   => self::parse_keywords( $post->ID ),
@@ -358,9 +372,12 @@ class Indexer {
 		}
 
 		$keywords = array_map( 'trim', explode( ',', (string) $raw ) );
-		$keywords = array_filter( $keywords, function ( $kw ) {
-			return strlen( $kw ) > 1;
-		} );
+		$keywords = array_filter(
+			$keywords,
+			function ( $kw ) {
+				return strlen( $kw ) > 1;
+			}
+		);
 
 		return array_values( $keywords );
 	}
@@ -433,9 +450,9 @@ class Indexer {
 	 * @return string
 	 */
 	public static function get_index_url(): string {
-		$upload   = wp_upload_dir();
-		$hash     = get_option( 'convoca_assistant_index_hash', '' );
-		$url      = $upload['baseurl'] . '/convoca-assistant/index.json';
+		$upload = wp_upload_dir();
+		$hash   = get_option( 'convoca_assistant_index_hash', '' );
+		$url    = $upload['baseurl'] . '/convoca-assistant/index.json';
 
 		if ( $hash ) {
 			$url = add_query_arg( 'v', substr( $hash, 0, 8 ), $url );
@@ -469,7 +486,7 @@ class Indexer {
 			return '—';
 		}
 		$size = filesize( $file );
-		return $size ? size_format( $size ) ?: $size . ' bytes' : '—';
+		return $size ? ( size_format( $size ) ? size_format( $size ) : $size . ' bytes' ) : '—';
 	}
 
 	/**

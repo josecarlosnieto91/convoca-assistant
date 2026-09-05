@@ -130,8 +130,8 @@ class REST_Controller {
 	 * @return bool|WP_Error
 	 */
 	public static function check_rate_limit() {
-		$ip = self::get_client_ip();
-		$key = 'convoca_ratelimit_' . md5( $ip );
+		$ip     = self::get_client_ip();
+		$key    = 'convoca_ratelimit_' . md5( $ip );
 		$window = get_transient( $key );
 
 		if ( false !== $window && (int) $window >= self::RATE_LIMIT_MAX ) {
@@ -204,24 +204,24 @@ class REST_Controller {
 				'sanitize_callback' => 'sanitize_text_field',
 			),
 			'response_id'    => array(
-				'type'              => 'integer',
-				'default'           => 0,
+				'type'    => 'integer',
+				'default' => 0,
 			),
 			'response_found' => array(
-				'type'              => 'boolean',
-				'default'           => false,
+				'type'    => 'boolean',
+				'default' => false,
 			),
 			'score'          => array(
-				'type'              => 'number',
-				'default'           => 0.0,
+				'type'    => 'number',
+				'default' => 0.0,
 			),
 			'clicked'        => array(
-				'type'              => 'boolean',
-				'default'           => false,
+				'type'    => 'boolean',
+				'default' => false,
 			),
 			'time_ms'        => array(
-				'type'              => 'integer',
-				'default'           => 0,
+				'type'    => 'integer',
+				'default' => 0,
 			),
 			'page_url'       => array(
 				'type'              => 'string',
@@ -292,7 +292,7 @@ class REST_Controller {
 			);
 		}
 
-		$start  = microtime( true );
+		$start       = microtime( true );
 		$settings    = get_option( 'convoca_assistant_settings', Installer::default_settings() );
 		$max_results = (int) ( $settings['search_max_results'] ?? 10 );
 		$threshold   = (float) ( $settings['search_threshold'] ?? 0.10 );
@@ -332,7 +332,7 @@ class REST_Controller {
 			(float) ( $args['score'] ?? 0.0 ),
 			! empty( $args['clicked'] ),
 			(int) ( $args['time_ms'] ?? 0 ),
-			$request->get_header( 'User-Agent' ) ?: '',
+			$request->get_header( 'User-Agent' ) ? $request->get_header( 'User-Agent' ) : '',
 			$args['page_url'] ?? ''
 		);
 
@@ -388,6 +388,12 @@ class REST_Controller {
 		global $wpdb;
 		$table = $wpdb->prefix . 'convoca_assistant_log';
 		$wpdb->query( "TRUNCATE TABLE {$table}" ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-		return new \WP_REST_Response( array( 'success' => true, 'message' => __( 'Logs eliminados.', 'convoca-assistant' ) ), 200 );
+		return new \WP_REST_Response(
+			array(
+				'success' => true,
+				'message' => __( 'Logs eliminados.', 'convoca-assistant' ),
+			),
+			200
+		);
 	}
 }

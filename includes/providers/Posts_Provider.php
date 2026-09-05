@@ -67,8 +67,15 @@ class Posts_Provider implements Knowledge_Provider_Interface {
 				'fields'         => 'ids',
 				'meta_query'     => array(
 					'relation' => 'OR',
-					array( 'key' => '_convoca_assistant_exclude', 'compare' => 'NOT EXISTS' ),
-					array( 'key' => '_convoca_assistant_exclude', 'value' => '0', 'compare' => '=' ),
+					array(
+						'key'     => '_convoca_assistant_exclude',
+						'compare' => 'NOT EXISTS',
+					),
+					array(
+						'key'     => '_convoca_assistant_exclude',
+						'value'   => '0',
+						'compare' => '=',
+					),
 				),
 				'no_found_rows'  => true,
 			)
@@ -207,7 +214,7 @@ class Posts_Provider implements Knowledge_Provider_Interface {
 			'content'    => $content,
 			'excerpt'    => self::clean_content( (string) get_the_excerpt( $post ) ),
 			'url'        => get_permalink( $post ),
-			'thumbnail'  => get_the_post_thumbnail_url( $post, 'thumbnail' ) ?: '',
+			'thumbnail'  => get_the_post_thumbnail_url( $post, 'thumbnail' ) ? get_the_post_thumbnail_url( $post, 'thumbnail' ) : '',
 			'categories' => self::get_term_names( $post->ID, 'category' ),
 			'tags'       => self::get_term_names( $post->ID, 'post_tag' ),
 			'keywords'   => self::parse_keywords( $post->ID ),

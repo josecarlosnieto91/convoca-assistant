@@ -144,7 +144,10 @@ class Export_Import {
 		// Redirect back with success.
 		wp_safe_redirect(
 			add_query_arg(
-				array( 'page' => 'convoca-assistant-tools', 'imported' => '1' ),
+				array(
+					'page'     => 'convoca-assistant-tools',
+					'imported' => '1',
+				),
 				admin_url( 'admin.php' )
 			)
 		);
@@ -190,11 +193,11 @@ class Export_Import {
 	private static function export_knowledge(): array {
 		$data = array(
 			'_meta'      => array(
-				'type'      => 'knowledge',
-				'version'   => CONVOCA_ASSISTANT_VERSION,
-				'exported'  => gmdate( 'Y-m-d H:i:s' ),
-				'locale'    => get_locale(),
-				'site'      => get_bloginfo( 'url' ),
+				'type'     => 'knowledge',
+				'version'  => CONVOCA_ASSISTANT_VERSION,
+				'exported' => gmdate( 'Y-m-d H:i:s' ),
+				'locale'   => get_locale(),
+				'site'     => get_bloginfo( 'url' ),
 			),
 			'synonyms'   => Synonyms::get_all(),
 			'stop_words' => Synonyms::get_stop_words(),
@@ -212,14 +215,14 @@ class Export_Import {
 		);
 
 		foreach ( $faq_query->posts as $post ) {
-			$exclude = (bool) get_post_meta( $post->ID, '_convoca_assistant_exclude', true );
+			$exclude        = (bool) get_post_meta( $post->ID, '_convoca_assistant_exclude', true );
 			$data['faqs'][] = array(
-				'title'       => $post->post_title,
-				'content'     => $post->post_content,
-				'status'      => $post->post_status,
-				'exclude'     => $exclude,
-				'keywords'    => get_post_meta( $post->ID, '_convoca_assistant_keywords', true ),
-				'weight'      => get_post_meta( $post->ID, '_convoca_assistant_weight', true ),
+				'title'    => $post->post_title,
+				'content'  => $post->post_content,
+				'status'   => $post->post_status,
+				'exclude'  => $exclude,
+				'keywords' => get_post_meta( $post->ID, '_convoca_assistant_keywords', true ),
+				'weight'   => get_post_meta( $post->ID, '_convoca_assistant_weight', true ),
 			);
 		}
 
@@ -233,15 +236,15 @@ class Export_Import {
 		);
 
 		foreach ( $kb_query->posts as $post ) {
-			$exclude = (bool) get_post_meta( $post->ID, '_convoca_assistant_exclude', true );
+			$exclude      = (bool) get_post_meta( $post->ID, '_convoca_assistant_exclude', true );
 			$data['kb'][] = array(
-				'title'       => $post->post_title,
-				'content'     => $post->post_content,
-				'excerpt'     => $post->post_excerpt,
-				'status'      => $post->post_status,
-				'exclude'     => $exclude,
-				'keywords'    => get_post_meta( $post->ID, '_convoca_assistant_keywords', true ),
-				'weight'      => get_post_meta( $post->ID, '_convoca_assistant_weight', true ),
+				'title'    => $post->post_title,
+				'content'  => $post->post_content,
+				'excerpt'  => $post->post_excerpt,
+				'status'   => $post->post_status,
+				'exclude'  => $exclude,
+				'keywords' => get_post_meta( $post->ID, '_convoca_assistant_keywords', true ),
+				'weight'   => get_post_meta( $post->ID, '_convoca_assistant_weight', true ),
 			);
 		}
 
@@ -256,10 +259,10 @@ class Export_Import {
 	private static function export_settings(): array {
 		return array(
 			'_meta'    => array(
-				'type'      => 'settings',
-				'version'   => CONVOCA_ASSISTANT_VERSION,
-				'exported'  => gmdate( 'Y-m-d H:i:s' ),
-				'site'      => get_bloginfo( 'url' ),
+				'type'     => 'settings',
+				'version'  => CONVOCA_ASSISTANT_VERSION,
+				'exported' => gmdate( 'Y-m-d H:i:s' ),
+				'site'     => get_bloginfo( 'url' ),
 			),
 			'settings' => get_option( 'convoca_assistant_settings', Installer::default_settings() ),
 		);

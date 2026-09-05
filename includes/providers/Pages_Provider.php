@@ -65,8 +65,15 @@ class Pages_Provider extends Posts_Provider {
 				'fields'         => 'ids',
 				'meta_query'     => array(
 					'relation' => 'OR',
-					array( 'key' => '_convoca_assistant_exclude', 'compare' => 'NOT EXISTS' ),
-					array( 'key' => '_convoca_assistant_exclude', 'value' => '0', 'compare' => '=' ),
+					array(
+						'key'     => '_convoca_assistant_exclude',
+						'compare' => 'NOT EXISTS',
+					),
+					array(
+						'key'     => '_convoca_assistant_exclude',
+						'value'   => '0',
+						'compare' => '=',
+					),
 				),
 				'no_found_rows'  => true,
 			)
