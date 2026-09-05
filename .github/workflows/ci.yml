@@ -43,6 +43,7 @@ jobs:
         with:
           dependency-versions: highest
 
+      # deuda preexistente: 254 errores y 241 warnings (WordPress Coding Standards)
       - name: PHPCS
         run: vendor/bin/phpcs --standard=dev-tools/phpcs.xml.dist --runtime-set ignore_warnings_on_exit 1 || true
 
@@ -65,4 +66,25 @@ jobs:
           dependency-versions: highest
 
       - name: PHPStan
-        run: vendor/bin/phpstan analyse --configuration=dev-tools/phpstan.neon.dist --memory-limit=4G || true
+        run: vendor/bin/phpstan analyse --configuration=dev-tools/phpstan.neon.dist --memory-limit=4G
+
+  test:
+    name: PHPUnit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cache Composer dependencies
+        uses: actions/cache@v4
+        with:
+          path: vendor/
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.json') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-
+
+      - uses: ramsey/composer-install@v3
+        with:
+          dependency-versions: highest
+
+      - name: Run unit tests
+        run: vendor/bin/phpunit --testsuite unit
