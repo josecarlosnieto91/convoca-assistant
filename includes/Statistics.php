@@ -65,7 +65,7 @@ class Statistics {
 		string $user_agent = '',
 		?string $page_url = ''
 	): void {
-		$settings = get_option( 'convoca_assistant_settings', Installer::default_settings() );
+		$settings = Settings::get_all();
 
 		if ( empty( $settings['log_enabled'] ) ) {
 			return;
@@ -198,7 +198,7 @@ class Statistics {
 	 * @return void
 	 */
 	public static function cleanup(): void {
-		$settings  = get_option( 'convoca_assistant_settings', Installer::default_settings() );
+		$settings  = Settings::get_all();
 		$retention = (int) ( $settings['log_retention_days'] ?? 90 );
 
 		global $wpdb;

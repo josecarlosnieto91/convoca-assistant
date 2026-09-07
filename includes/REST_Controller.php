@@ -293,7 +293,7 @@ class REST_Controller {
 		}
 
 		$start       = microtime( true );
-		$settings    = get_option( 'convoca_assistant_settings', Installer::default_settings() );
+		$settings    = Settings::get_all();
 		$max_results = (int) ( $settings['search_max_results'] ?? 10 );
 		$threshold   = (float) ( $settings['search_threshold'] ?? 0.10 );
 		$results     = Searcher::search( $query, $max_results, $threshold );
@@ -317,7 +317,7 @@ class REST_Controller {
 	 * @return \WP_REST_Response|\WP_Error
 	 */
 	public static function log_interaction( $request ) {
-		$settings = get_option( 'convoca_assistant_settings', Installer::default_settings() );
+		$settings = Settings::get_all();
 
 		if ( empty( $settings['log_enabled'] ) ) {
 			return new \WP_REST_Response( array( 'logged' => false ), 200 );

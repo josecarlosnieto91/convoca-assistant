@@ -264,7 +264,7 @@ class Export_Import {
 				'exported' => gmdate( 'Y-m-d H:i:s' ),
 				'site'     => get_bloginfo( 'url' ),
 			),
-			'settings' => get_option( 'convoca_assistant_settings', Installer::default_settings() ),
+			'settings' => Settings::get_all(),
 		);
 	}
 

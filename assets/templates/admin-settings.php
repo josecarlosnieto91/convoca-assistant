@@ -84,6 +84,61 @@ if ( ! defined( 'ABSPATH' ) ) {
 		</div>
 
 		<div class="convoca-admin-card">
+			<h2><?php esc_html_e( 'Fuentes y prioridad de respuesta', 'convoca-assistant' ); ?></h2>
+			<p class="description"><?php esc_html_e( 'Elige qué contenidos indexa el asistente y cuáles responden primero. Los tipos prioritarios (por defecto FAQ y Wiki) reciben un boost en el ranking; el resto solo responde cuando no hay un match claro.', 'convoca-assistant' ); ?></p>
+			<table class="form-table">
+				<tr>
+					<th scope="row"><?php esc_html_e( 'Fuentes activas', 'convoca-assistant' ); ?></th>
+					<td>
+						<label><input type="checkbox" name="convoca_assistant_settings[source_convoca_faq]" value="1" <?php checked( $settings['source_convoca_faq'] ); ?> /> <?php esc_html_e( 'FAQ', 'convoca-assistant' ); ?></label><br />
+						<label><input type="checkbox" name="convoca_assistant_settings[source_convoca_kb]" value="1" <?php checked( $settings['source_convoca_kb'] ); ?> /> <?php esc_html_e( 'Wiki / Base de conocimiento', 'convoca-assistant' ); ?></label><br />
+						<label><input type="checkbox" name="convoca_assistant_settings[source_page]" value="1" <?php checked( $settings['source_page'] ); ?> /> <?php esc_html_e( 'Páginas', 'convoca-assistant' ); ?></label><br />
+						<label><input type="checkbox" name="convoca_assistant_settings[source_post]" value="1" <?php checked( $settings['source_post'] ); ?> /> <?php esc_html_e( 'Entradas (blog)', 'convoca-assistant' ); ?></label>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row"><?php esc_html_e( 'Tipos prioritarios', 'convoca-assistant' ); ?></th>
+					<td>
+						<label><input type="checkbox" name="convoca_assistant_settings[priority_types][]" value="convoca_faq" <?php checked( in_array( 'convoca_faq', $settings['priority_types'], true ) ); ?> /> <?php esc_html_e( 'FAQ', 'convoca-assistant' ); ?></label><br />
+						<label><input type="checkbox" name="convoca_assistant_settings[priority_types][]" value="convoca_kb" <?php checked( in_array( 'convoca_kb', $settings['priority_types'], true ) ); ?> /> <?php esc_html_e( 'Wiki / Base de conocimiento', 'convoca-assistant' ); ?></label><br />
+						<label><input type="checkbox" name="convoca_assistant_settings[priority_types][]" value="page" <?php checked( in_array( 'page', $settings['priority_types'], true ) ); ?> /> <?php esc_html_e( 'Páginas', 'convoca-assistant' ); ?></label><br />
+						<label><input type="checkbox" name="convoca_assistant_settings[priority_types][]" value="post" <?php checked( in_array( 'post', $settings['priority_types'], true ) ); ?> /> <?php esc_html_e( 'Entradas (blog)', 'convoca-assistant' ); ?></label>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row"><?php esc_html_e( 'Boost de prioridad', 'convoca-assistant' ); ?></th>
+					<td>
+						<input type="number" name="convoca_assistant_settings[priority_boost]" value="<?php echo esc_attr( $settings['priority_boost'] ); ?>" step="0.05" min="1" max="3" />
+						<span class="description"><?php esc_html_e( 'Multiplicador de score para los tipos prioritarios (1.35 por defecto).', 'convoca-assistant' ); ?></span>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row"><?php esc_html_e( 'Peso FAQ', 'convoca-assistant' ); ?></th>
+					<td><input type="number" name="convoca_assistant_settings[weight_convoca_faq]" value="<?php echo esc_attr( $settings['weight_convoca_faq'] ); ?>" step="0.1" min="0" max="10" /></td>
+				</tr>
+				<tr>
+					<th scope="row"><?php esc_html_e( 'Peso Wiki', 'convoca-assistant' ); ?></th>
+					<td><input type="number" name="convoca_assistant_settings[weight_convoca_kb]" value="<?php echo esc_attr( $settings['weight_convoca_kb'] ); ?>" step="0.1" min="0" max="10" /></td>
+				</tr>
+				<tr>
+					<th scope="row"><?php esc_html_e( 'Peso páginas', 'convoca-assistant' ); ?></th>
+					<td><input type="number" name="convoca_assistant_settings[weight_page]" value="<?php echo esc_attr( $settings['weight_page'] ); ?>" step="0.1" min="0" max="10" /></td>
+				</tr>
+				<tr>
+					<th scope="row"><?php esc_html_e( 'Peso entradas (blog)', 'convoca-assistant' ); ?></th>
+					<td><input type="number" name="convoca_assistant_settings[weight_post]" value="<?php echo esc_attr( $settings['weight_post'] ); ?>" step="0.1" min="0" max="10" /></td>
+				</tr>
+				<tr>
+					<th scope="row"><?php esc_html_e( 'Longitud máxima de respuesta', 'convoca-assistant' ); ?></th>
+					<td>
+						<input type="number" name="convoca_assistant_settings[answer_max_length]" value="<?php echo esc_attr( $settings['answer_max_length'] ); ?>" min="100" max="2000" step="50" />
+						<span class="description"><?php esc_html_e( 'Caracteres mostrados por respuesta en el chat (600 por defecto).', 'convoca-assistant' ); ?></span>
+					</td>
+				</tr>
+			</table>
+		</div>
+
+		<div class="convoca-admin-card">
 			<h2><?php esc_html_e( 'Privacidad', 'convoca-assistant' ); ?></h2>
 			<table class="form-table">
 				<tr>

@@ -73,7 +73,7 @@ class Provider_Registry {
 	 */
 	public static function get_active(): array {
 		$all      = self::get_all();
-		$settings = get_option( 'convoca_assistant_settings', Installer::default_settings() );
+		$settings = Settings::get_all();
 		$active   = array();
 
 		foreach ( $all as $id => $provider ) {

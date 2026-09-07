@@ -122,7 +122,7 @@ class Indexer {
 
 		$synonyms   = get_option( 'convoca_assistant_synonyms', array() );
 		$stop_words = get_option( 'convoca_assistant_stop_words', Installer::default_stop_words() );
-		$settings   = get_option( 'convoca_assistant_settings', Installer::default_settings() );
+		$settings   = Settings::get_all();
 
 		$index = array(
 			'version'    => CONVOCA_ASSISTANT_VERSION,
@@ -240,7 +240,7 @@ class Indexer {
 	 * @return array<int, array<string, mixed>>
 	 */
 	private static function collect_entries(): array {
-		$settings    = get_option( 'convoca_assistant_settings', Installer::default_settings() );
+		$settings    = Settings::get_all();
 		$max_content = (int) ( $settings['index_max_content'] ?? 5000 );
 
 		/**

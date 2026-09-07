@@ -28,7 +28,7 @@ class Widget {
 	 * @return void
 	 */
 	public static function enqueue_assets(): void {
-		$settings = get_option( 'convoca_assistant_settings', Installer::default_settings() );
+		$settings = Settings::get_all();
 
 		if ( ! empty( $settings['maintenance_mode'] ) ) {
 			return;
@@ -96,13 +96,16 @@ class Widget {
 				'indexExists' => Indexer::index_exists(),
 				'nonce'       => wp_create_nonce( 'wp_rest' ),
 				'settings'    => array(
-					'primaryColor' => $settings['widget_primary_color'] ?? '#2563eb',
-					'title'        => $settings['widget_title'] ?? __( 'Asistente Virtual', 'convoca-assistant' ),
-					'greeting'     => $settings['widget_greeting'] ?? __( '¡Hola! ¿En qué puedo ayudarte?', 'convoca-assistant' ),
-					'threshold'    => (float) ( $settings['search_fuse_threshold'] ?? 0.4 ),
-					'distance'     => (int) ( $settings['search_fuse_distance'] ?? 100 ),
-					'maxResults'   => (int) ( $settings['search_max_results'] ?? 10 ),
-					'weights'      => array(
+					'primaryColor'    => $settings['widget_primary_color'] ?? '#2563eb',
+					'title'           => $settings['widget_title'] ?? __( 'Asistente Virtual', 'convoca-assistant' ),
+					'greeting'        => $settings['widget_greeting'] ?? __( '¡Hola! ¿En qué puedo ayudarte?', 'convoca-assistant' ),
+					'threshold'       => (float) ( $settings['search_fuse_threshold'] ?? 0.4 ),
+					'distance'        => (int) ( $settings['search_fuse_distance'] ?? 100 ),
+					'maxResults'      => (int) ( $settings['search_max_results'] ?? 10 ),
+					'maxAnswerLength' => (int) ( $settings['answer_max_length'] ?? 600 ),
+					'priorityTypes'   => ! empty( $settings['priority_types'] ) ? (array) $settings['priority_types'] : array( 'convoca_faq', 'convoca_kb' ),
+					'priorityBoost'   => (float) ( $settings['priority_boost'] ?? 1.0 ),
+					'weights'         => array(
 						'title'      => 4,
 						'keywords'   => 3,
 						'categories' => 2,
@@ -133,7 +136,7 @@ class Widget {
 	 * @return void
 	 */
 	public static function render_floating_widget(): void {
-		$settings = get_option( 'convoca_assistant_settings', Installer::default_settings() );
+		$settings = Settings::get_all();
 
 		if ( ! empty( $settings['maintenance_mode'] ) || empty( $settings['widget_enabled'] ) ) {
 			return;
@@ -155,7 +158,7 @@ class Widget {
 	 * @return string
 	 */
 	public static function shortcode( $atts, ?string $content = null ): string {
-		$settings = get_option( 'convoca_assistant_settings', Installer::default_settings() );
+		$settings = Settings::get_all();
 
 		if ( ! empty( $settings['maintenance_mode'] ) ) {
 			return sprintf(

@@ -47,12 +47,14 @@ class Settings {
 	/**
 	 * Get a specific setting value.
 	 *
+	 * Merges stored settings over defaults so new keys always exist.
+	 *
 	 * @param string $key     Setting key.
 	 * @param mixed  $default Fallback value.
 	 * @return mixed
 	 */
 	public static function get( string $key, $default = null ) {
-		$settings = get_option( self::OPTION_NAME, Installer::default_settings() );
+		$settings = self::get_all();
 		return $settings[ $key ] ?? $default;
 	}
 
@@ -64,18 +66,22 @@ class Settings {
 	 * @return bool
 	 */
 	public static function set( string $key, $value ): bool {
-		$settings         = get_option( self::OPTION_NAME, Installer::default_settings() );
+		$settings         = self::get_all();
 		$settings[ $key ] = $value;
 		return update_option( self::OPTION_NAME, $settings );
 	}
 
 	/**
-	 * Get all settings.
+	 * Get all settings, merged over defaults.
 	 *
 	 * @return array<string, mixed>
 	 */
 	public static function get_all(): array {
-		return get_option( self::OPTION_NAME, Installer::default_settings() );
+		$stored = get_option( self::OPTION_NAME, array() );
+		if ( ! is_array( $stored ) ) {
+			$stored = array();
+		}
+		return array_merge( Installer::default_settings(), $stored );
 	}
 
 	/**
@@ -88,9 +94,29 @@ class Settings {
 		$defaults = Installer::default_settings();
 		$output   = $defaults;
 
+		// Checkboxes: ausentes del form = false (no aplicar default true al guardar).
+		$checkboxes = array(
+			'widget_enabled',
+			'source_post',
+			'source_page',
+			'source_convoca_faq',
+			'source_convoca_kb',
+			'source_woocommerce',
+			'search_fallback',
+			'index_auto_regenerate',
+			'index_compress',
+			'log_anonymous',
+			'log_enabled',
+			'maintenance_mode',
+			'debug_mode',
+		);
+		foreach ( $checkboxes as $cb ) {
+			$output[ $cb ] = ! empty( $input[ $cb ] );
+		}
+
 		foreach ( $input as $key => $value ) {
 			switch ( $key ) {
-				// Booleans.
+				// Booleans (ya gestionados arriba, sin default silencioso).
 				case 'widget_enabled':
 				case 'source_post':
 				case 'source_page':
@@ -104,7 +130,6 @@ class Settings {
 				case 'log_enabled':
 				case 'maintenance_mode':
 				case 'debug_mode':
-					$output[ $key ] = ! empty( $value );
 					break;
 
 				// Floats.
@@ -115,14 +140,20 @@ class Settings {
 				case 'weight_product':
 				case 'search_fuse_threshold':
 				case 'search_threshold':
+				case 'priority_boost':
 					$output[ $key ] = (float) $value;
+					break;
+
+				// Arrays.
+				case 'priority_types':
+					$output[ $key ] = is_array( $value ) ? array_map( 'sanitize_key', $value ) : array( 'convoca_faq', 'convoca_kb' );
 					break;
 
 				// Integers.
 				case 'search_fuse_distance':
-				case 'search_fuse_distance':
 				case 'search_max_results':
 				case 'index_max_content':
+				case 'answer_max_length':
 				case 'log_retention_days':
 				case 'widget_auto_open_scroll':
 					$output[ $key ] = absint( $value );

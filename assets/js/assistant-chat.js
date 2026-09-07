@@ -318,14 +318,13 @@
 			// 4. Expand with synonyms + lemmas
 			const expanded = this.expandSemantic(tokens, synonyms);
 
-			// 5. Build search queries — original query first, then expanded.
+			// 5. Build search queries — tokens (sin stopwords) primero: en preguntas
+			// tipo FAQ la palabra clave distingue más que la frase con relleno.
 			const searchQueries = [];
 
-			// Always search the original query first (most reliable).
-			searchQueries.push( normalized );
+			// Tokens limpios primero (más precisos para títulos FAQ).
 			searchQueries.push( tokens.join( ' ' ) );
-
-			// Also try original tokens (without synonym expansion).
+			// Original tokens (without synonym expansion).
 			const originalTokens = this.expandSemantic( tokens, {} );
 			searchQueries.push( originalTokens.join( ' ' ) );
 
@@ -335,6 +334,9 @@
 
 			// Expanded query (with synonyms + lemmas) as final fallback.
 			searchQueries.push( expanded.join( ' ' ) );
+
+			// Frase completa normalizada al final (fallback fuzzy amplio).
+			searchQueries.push( normalized );
 
 			// 6. Run Fuse.js with each query, collect unique results
 			const seen = new Set();
@@ -351,10 +353,17 @@
 			}
 
 			// 7. Score with composite
-			const scored = rawResults.map(r => ({
-				entry: r.item,
-				score: this.compositeScore(r.item, normalized, tokens, expanded, 1 - (r.score || 0)),
-			}));
+			const priorityTypes = this.config.settings?.priorityTypes || ['convoca_faq', 'convoca_kb'];
+			const priorityBoost = parseFloat(this.config.settings?.priorityBoost) || 1.0;
+			const scored = rawResults.map(r => {
+				const base = this.compositeScore(r.item, normalized, tokens, expanded, 1 - (r.score || 0));
+				// Fuentes prioritarias (FAQ/wiki) reciben boost: responden primero cuando hay match.
+				const boosted = priorityTypes.includes(r.item.type) ? base * priorityBoost : base;
+				return {
+					entry: r.item,
+					score: Math.min(boosted, 1.0),
+				};
+			});
 
 			// 8. Filter & sort
 			const filtered = scored.filter(r => r.score >= SCORE_THRESHOLD);

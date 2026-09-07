@@ -231,7 +231,8 @@
 			const div = document.createElement('div');
 			div.className = 'convoca-message convoca-message-bot convoca-result';
 
-			const text = this.truncate(entry.excerpt || entry.content, 2000);
+			const maxLen = parseInt(this.config.settings?.maxAnswerLength, 10) || 600;
+			const text = this.truncate(entry.excerpt || entry.content, maxLen);
 			const renderedContent = this.renderMarkdown(text);
 			const sourceLink = entry.url
 				? `<div class="convoca-message-source"><a href="${this.escapeHtml(entry.url)}" target="_blank" rel="noopener noreferrer">→ ${this.escapeHtml(entry.title)}</a></div>`
@@ -326,7 +327,8 @@
 			div.className = 'convoca-message convoca-message-bot convoca-result';
 
 			// Content with markdown-like rendering
-			const text = this.truncate(entry.excerpt || entry.content, 2000);
+			const maxLen = parseInt(this.config.settings?.maxAnswerLength, 10) || 600;
+			const text = this.truncate(entry.excerpt || entry.content, maxLen);
 			const renderedContent = this.renderMarkdown(text);
 
 			// Source link

@@ -218,7 +218,7 @@ class Posts_Provider implements Knowledge_Provider_Interface {
 			'categories' => self::get_term_names( $post->ID, 'category' ),
 			'tags'       => self::get_term_names( $post->ID, 'post_tag' ),
 			'keywords'   => self::parse_keywords( $post->ID ),
-			'weight'     => self::get_effective_weight( $post->ID ),
+			'weight'     => \Convoca\Assistant\Knowledge_Base::get_effective_weight( $post->ID, $post->post_type ),
 			'date'       => $post->post_date,
 			'modified'   => $post->post_modified,
 		);
@@ -269,16 +269,5 @@ class Posts_Provider implements Knowledge_Provider_Interface {
 		$keywords = array_map( 'trim', explode( ',', (string) $raw ) );
 		$keywords = array_filter( $keywords, fn( $kw ) => strlen( $kw ) > 1 );
 		return array_values( $keywords );
-	}
-
-	/**
-	 * Get effective weight (individual or default).
-	 *
-	 * @param int $post_id Post ID.
-	 * @return float
-	 */
-	private static function get_effective_weight( int $post_id ): float {
-		$individual = get_post_meta( $post_id, '_convoca_assistant_weight', true );
-		return ! empty( $individual ) ? (float) $individual : 1.0;
 	}
 }

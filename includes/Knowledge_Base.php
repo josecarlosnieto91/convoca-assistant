@@ -499,7 +499,7 @@ class Knowledge_Base {
 	 * @return string[]
 	 */
 	public static function get_active_sources(): array {
-		$settings = get_option( 'convoca_assistant_settings', Installer::default_settings() );
+		$settings = Settings::get_all();
 		$sources  = array();
 
 		$map = array(
@@ -529,7 +529,7 @@ class Knowledge_Base {
 	 * @return float
 	 */
 	public static function get_default_weight( string $post_type ): float {
-		$settings = get_option( 'convoca_assistant_settings', Installer::default_settings() );
+		$settings = Settings::get_all();
 
 		$map = array(
 			'convoca_faq' => 'weight_convoca_faq',

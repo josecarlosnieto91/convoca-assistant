@@ -48,14 +48,22 @@ class Searcher {
 			return array();
 		}
 
-		$synonyms      = $index_data['synonyms'] ?? array();
-		$expanded      = self::expand_synonyms( $tokens, $synonyms );
-		$use_threshold = max( $threshold, self::SCORE_THRESHOLD );
+		$synonyms       = $index_data['synonyms'] ?? array();
+		$expanded       = self::expand_synonyms( $tokens, $synonyms );
+		$use_threshold  = max( $threshold, self::SCORE_THRESHOLD );
+		$settings       = Settings::get_all();
+		$priority_types = ! empty( $settings['priority_types'] ) ? (array) $settings['priority_types'] : array( 'convoca_faq', 'convoca_kb' );
+		$priority_boost = (float) ( $settings['priority_boost'] ?? 1.0 );
 
 		$results = array();
 
 		foreach ( $index_data['entries'] as $entry ) {
 			$score = self::calculate_score( $entry, $normalized, $tokens, $expanded );
+
+			// Fuentes prioritarias (FAQ/wiki) reciben boost: responden primero cuando hay match.
+			if ( in_array( $entry['type'] ?? '', $priority_types, true ) && $priority_boost > 1.0 ) {
+				$score = min( $score * $priority_boost, 1.0 );
+			}
 
 			if ( $score >= $use_threshold ) {
 				$results[] = array(
