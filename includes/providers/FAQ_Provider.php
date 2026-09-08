@@ -91,6 +91,32 @@ class FAQ_Provider extends Posts_Provider {
 	}
 
 	/**
+	 * Build a knowledge entry for a FAQ, using convoca_faq_cat as category.
+	 *
+	 * The parent class reads the standard 'category' taxonomy, which is empty
+	 * on convoca_faq posts. Override so clustering and graph relations use
+	 * the FAQ topic taxonomy instead.
+	 *
+	 * @param \WP_Post $post       Post object.
+	 * @param int      $max_content Maximum content length.
+	 * @return array<string, mixed>
+	 */
+	protected function build_entry( \WP_Post $post, int $max_content ): array {
+		$entry = parent::build_entry( $post, $max_content );
+
+		$terms = get_the_terms( $post->ID, 'convoca_faq_cat' );
+		$names = array();
+		if ( $terms && ! is_wp_error( $terms ) ) {
+			foreach ( $terms as $term ) {
+				$names[] = $term->name;
+			}
+		}
+		$entry['categories'] = $names;
+
+		return $entry;
+	}
+
+	/**
 	 * Get relations for a FAQ entry (via convoca_faq_cat taxonomy).
 	 *
 	 * @param int $entry_id Post ID.

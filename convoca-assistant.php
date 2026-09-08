@@ -31,7 +31,7 @@ if ( file_exists( $convoca_assistant_autoload ) ) {
 
 /* ── Constants ────────────────────────────────── */
 if ( ! defined( 'CONVOCA_ASSISTANT_VERSION' ) ) {
-	define( 'CONVOCA_ASSISTANT_VERSION', '0.2.1' );
+	define( 'CONVOCA_ASSISTANT_VERSION', '0.2.2' );
 }
 if ( ! defined( 'CONVOCA_ASSISTANT_DB_VERSION' ) ) {
 	define( 'CONVOCA_ASSISTANT_DB_VERSION', '1.0.0' );

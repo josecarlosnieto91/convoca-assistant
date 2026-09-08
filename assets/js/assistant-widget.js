@@ -186,6 +186,18 @@
 		showClusteredResults(clusters, results, query, elapsed) {
 			const hasMultipleThemes = clusters.length > 1;
 
+			// Respuesta directa si el mejor resultado es una fuente prioritaria con
+			// alta confianza (p. ej. match exacto de título en una FAQ). Así el chat
+			// conversa: pregunta -> respuesta, en lugar de listar fuentes siempre.
+			const top = results[0];
+			const priorityTypes = this.chat?.config?.settings?.priorityTypes || ['convoca_faq', 'convoca_kb'];
+			const directThreshold = parseFloat(this.chat?.config?.settings?.directThreshold) || 0.55;
+			const topIsPriority = top && priorityTypes.includes(top.entry.type);
+			if (topIsPriority && top.score >= directThreshold) {
+				this.showResultEntry(top, query);
+				return;
+			}
+
 			if (hasMultipleThemes && clusters.length >= 2) {
 				// Hybrid response
 				const sourceCount = results.length;

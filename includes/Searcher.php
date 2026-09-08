@@ -65,6 +65,19 @@ class Searcher {
 				$score = min( $score * $priority_boost, 1.0 );
 			}
 
+			// Exact-title priority: si el título normalizado coincide con la consulta
+			// (o uno contiene al otro), la entrada ES la respuesta directa.
+			// Evita que la conectividad del grafo (graph score) opaque un match exacto.
+			$entry_title_norm = self::normalize( $entry['title'] ?? '' );
+			if ( '' !== $entry_title_norm && '' !== $normalized ) {
+				$contains = ( mb_strlen( $normalized ) >= 6 )
+					&& ( false !== mb_strpos( $entry_title_norm, $normalized )
+						|| false !== mb_strpos( $normalized, $entry_title_norm ) );
+				if ( $entry_title_norm === $normalized || $contains ) {
+					$score = max( $score, 0.90 );
+				}
+			}
+
 			if ( $score >= $use_threshold ) {
 				$results[] = array(
 					'entry' => $entry,
@@ -97,12 +110,14 @@ class Searcher {
 	 * @return float Score 0-1.
 	 */
 	private static function calculate_score( array $entry, string $query, array $tokens, array $expanded ): float {
-		$title_lower    = mb_strtolower( $entry['title'] ?? '' );
-		$content_lower  = mb_strtolower( $entry['content'] ?? '' );
-		$keywords_str   = mb_strtolower( implode( ' ', $entry['keywords'] ?? array() ) );
-		$categories_str = mb_strtolower( implode( ' ', $entry['categories'] ?? array() ) );
-		$tags_str       = mb_strtolower( implode( ' ', $entry['tags'] ?? array() ) );
-		$excerpt_lower  = mb_strtolower( $entry['excerpt'] ?? '' );
+		// Normalizar (quitar tildes/signos) igual que el query para que el
+		// exact bonus y el resto de comparaciones funcionen en español.
+		$title_lower    = self::normalize( $entry['title'] ?? '' );
+		$content_lower  = self::normalize( $entry['content'] ?? '' );
+		$keywords_str   = self::normalize( implode( ' ', $entry['keywords'] ?? array() ) );
+		$categories_str = self::normalize( implode( ' ', $entry['categories'] ?? array() ) );
+		$tags_str       = self::normalize( implode( ' ', $entry['tags'] ?? array() ) );
+		$excerpt_lower  = self::normalize( $entry['excerpt'] ?? '' );
 
 		// 1) Fuzzy score via Levenshtein on title.
 		$fuzzy_score = self::fuzzy_match( $title_lower, $tokens );
@@ -135,10 +150,10 @@ class Searcher {
 		// 8) Weight factor.
 		$weight = (float) ( $entry['weight'] ?? 1.0 );
 
-		// Composite with graph score (20%).
-		$score = ( $fuzzy_score * 0.40 )
-				+ ( $graph_score * 0.20 )
-				+ ( $exact_bonus * 0.10 )
+		// Composite with graph score (10% — la conectividad no debe dominar sobre el contenido).
+		$score = ( $fuzzy_score * 0.45 )
+				+ ( $graph_score * 0.10 )
+				+ ( $exact_bonus * 0.15 )
 				+ ( $synonym_bonus * 0.10 )
 				+ ( $stem_bonus * 0.05 )
 				+ ( $coverage * 0.05 )

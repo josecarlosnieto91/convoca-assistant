@@ -358,7 +358,18 @@
 			const scored = rawResults.map(r => {
 				const base = this.compositeScore(r.item, normalized, tokens, expanded, 1 - (r.score || 0));
 				// Fuentes prioritarias (FAQ/wiki) reciben boost: responden primero cuando hay match.
-				const boosted = priorityTypes.includes(r.item.type) ? base * priorityBoost : base;
+				let boosted = priorityTypes.includes(r.item.type) ? base * priorityBoost : base;
+				// Exact-title priority: si el título normalizado coincide con la consulta
+				// (o uno contiene al otro), esta entrada ES la respuesta directa.
+				// Evita que la conectividad del grafo opaque un match exacto de título.
+				const titleNorm = this.normalize(r.item.title || '');
+				if (titleNorm && normalized) {
+					const contains = normalized.length >= 6 &&
+						(titleNorm.includes(normalized) || normalized.includes(titleNorm));
+					if (titleNorm === normalized || contains) {
+						boosted = Math.max(boosted, 0.90);
+					}
+				}
 				return {
 					entry: r.item,
 					score: Math.min(boosted, 1.0),
@@ -412,21 +423,23 @@
 		/* ── Composite score ────────────────────── */
 
 		compositeScore(entry, normalized, tokens, expanded, fuzzyScore) {
-			const title    = (entry.title    || '').toLowerCase();
-			const content  = (entry.content  || '').toLowerCase();
-			const keywords = (entry.keywords || []).join(' ').toLowerCase();
-			const cats     = (entry.categories||[]).join(' ').toLowerCase();
-			const tags     = (entry.tags     || []).join(' ').toLowerCase();
-			const excerpt  = (entry.excerpt  || '').toLowerCase();
+			// Normalizar (quitar tildes/signos) igual que el query para que
+			// exactMatchBonus y el resto de comparaciones funcionen en español.
+			const title    = this.normalize(entry.title    || '');
+			const content  = this.normalize(entry.content  || '');
+			const keywords = this.normalize((entry.keywords || []).join(' '));
+			const cats     = this.normalize((entry.categories||[]).join(' '));
+			const tags     = this.normalize((entry.tags     || []).join(' '));
+			const excerpt  = this.normalize(entry.excerpt  || '');
 			const weight   = entry.weight || 1.0;
 
 			// Graph score (how connected)
 			const graphScore = this.calcGraphScore(entry.id);
 
 			const score =
-				(fuzzyScore        * 0.40) +
-				(graphScore        * 0.20) +
-				(this.exactMatchBonus(normalized, title, keywords, content) * 0.10) +
+				(fuzzyScore        * 0.45) +
+				(graphScore        * 0.10) +
+				(this.exactMatchBonus(normalized, title, keywords, content) * 0.15) +
 				(this.synonymBonus(content + ' ' + title, tokens, expanded) * 0.10) +
 				(this.stemBonus(tokens, title, content, keywords)            * 0.05) +
 				(this.coverageScore(tokens, title, content, keywords, cats, tags, excerpt) * 0.05) +
