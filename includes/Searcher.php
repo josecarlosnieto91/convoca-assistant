@@ -54,11 +54,12 @@ class Searcher {
 		$settings       = Settings::get_all();
 		$priority_types = ! empty( $settings['priority_types'] ) ? (array) $settings['priority_types'] : array( 'convoca_faq', 'convoca_kb' );
 		$priority_boost = (float) ( $settings['priority_boost'] ?? 1.0 );
+		$weights        = self::get_weights();
 
 		$results = array();
 
 		foreach ( $index_data['entries'] as $entry ) {
-			$score = self::calculate_score( $entry, $normalized, $tokens, $expanded );
+			$score = self::calculate_score( $entry, $normalized, $tokens, $expanded, $weights );
 
 			// Fuentes prioritarias (FAQ/wiki) reciben boost: responden primero cuando hay match.
 			if ( in_array( $entry['type'] ?? '', $priority_types, true ) && $priority_boost > 1.0 ) {
@@ -101,15 +102,19 @@ class Searcher {
 	/**
 	 * Calculate the composite score for a single entry.
 	 *
-	 * Formula: same as client-side JS engine.
+	 * Formula: same as client-side JS engine. Ranking weights are configurable
+	 * via the convoca_assistant settings (weights_*).
 	 *
-	 * @param array  $entry     Knowledge entry.
-	 * @param string $query     Normalized query string.
-	 * @param array  $tokens    Tokenized query words.
-	 * @param array  $expanded  Query words expanded with synonyms.
+	 * @param array      $entry     Knowledge entry.
+	 * @param string     $query     Normalized query string.
+	 * @param array      $tokens    Tokenized query words.
+	 * @param array      $expanded  Query words expanded with synonyms.
+	 * @param array|null $weights   Ranking weights (defaults to get_weights()).
 	 * @return float Score 0-1.
 	 */
-	private static function calculate_score( array $entry, string $query, array $tokens, array $expanded ): float {
+	private static function calculate_score( array $entry, string $query, array $tokens, array $expanded, ?array $weights = null ): float {
+		$weights = $weights ?? self::get_weights();
+
 		// Normalizar (quitar tildes/signos) igual que el query para que el
 		// exact bonus y el resto de comparaciones funcionen en español.
 		$title_lower    = self::normalize( $entry['title'] ?? '' );
@@ -125,7 +130,7 @@ class Searcher {
 		// 2) Exact match bonus.
 		$exact_bonus = 0.0;
 		if ( false !== mb_strpos( $title_lower, $query ) ) {
-			$exact_bonus = 0.15;
+			$exact_bonus = $weights['exact_title'];
 		} elseif ( false !== mb_strpos( $keywords_str, $query ) ) {
 			$exact_bonus = 0.10;
 		} elseif ( false !== mb_strpos( $content_lower, $query ) ) {
@@ -150,10 +155,10 @@ class Searcher {
 		// 8) Weight factor.
 		$weight = (float) ( $entry['weight'] ?? 1.0 );
 
-		// Composite with graph score (10% — la conectividad no debe dominar sobre el contenido).
-		$score = ( $fuzzy_score * 0.45 )
-				+ ( $graph_score * 0.10 )
-				+ ( $exact_bonus * 0.15 )
+		// Composite: la conectividad (graph) no debe dominar sobre el contenido.
+		$score = ( $fuzzy_score * $weights['fuzzy'] )
+				+ ( $graph_score * $weights['graph'] )
+				+ ( $exact_bonus * $weights['exact'] )
 				+ ( $synonym_bonus * 0.10 )
 				+ ( $stem_bonus * 0.05 )
 				+ ( $coverage * 0.05 )
@@ -164,6 +169,25 @@ class Searcher {
 		$score = $score * ( 0.5 + ( $weight / 20.0 ) );
 
 		return min( $score, 1.0 );
+	}
+
+	/**
+	 * Get the ranking weights for the composite score.
+	 *
+	 * Reads the convoca_assistant settings (weights_*) and falls back to the
+	 * Lugg-ranking defaults (fuzzy 0.45 / graph 0.10 / exact 0.15 / exact-title 0.15).
+	 *
+	 * @return array<string, float>
+	 */
+	private static function get_weights(): array {
+		$settings = Settings::get_all();
+
+		return array(
+			'fuzzy'       => (float) ( $settings['weights_fuzzy'] ?? 0.45 ),
+			'graph'       => (float) ( $settings['weights_graph'] ?? 0.10 ),
+			'exact'       => (float) ( $settings['weights_exact'] ?? 0.15 ),
+			'exact_title' => (float) ( $settings['weights_exact_title'] ?? 0.15 ),
+		);
 	}
 
 	/**

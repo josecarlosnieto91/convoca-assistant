@@ -40,6 +40,13 @@ class Installer {
 			'weight_product'          => 1.0,
 			'priority_types'          => array( 'convoca_faq', 'convoca_kb' ),
 			'priority_boost'          => 1.35,
+			// Umbral de respuesta directa (fuente prioritaria con score >= umbral).
+			'direct_threshold'        => 0.55,
+			// Pesos del ranking del buscador (composite score, server y mirror cliente).
+			'weights_fuzzy'           => 0.45,
+			'weights_graph'           => 0.10,
+			'weights_exact'           => 0.15,
+			'weights_exact_title'     => 0.15,
 			'answer_max_length'       => 600,
 			'answer_use_excerpt'      => true,
 			'search_mode'             => 'client',

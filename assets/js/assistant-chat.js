@@ -436,10 +436,17 @@
 			// Graph score (how connected)
 			const graphScore = this.calcGraphScore(entry.id);
 
+			// Pesos configurables del ranking (espejo del Searcher.php del servidor).
+			const w = this.config.settings?.rankingWeights || {};
+			const wFuzzy      = parseFloat(w.fuzzy)      || 0.45;
+			const wGraph      = parseFloat(w.graph)      || 0.10;
+			const wExact      = parseFloat(w.exact)      || 0.15;
+			const wExactTitle = parseFloat(w.exactTitle) || 0.15;
+
 			const score =
-				(fuzzyScore        * 0.45) +
-				(graphScore        * 0.10) +
-				(this.exactMatchBonus(normalized, title, keywords, content) * 0.15) +
+				(fuzzyScore        * wFuzzy) +
+				(graphScore        * wGraph) +
+				(this.exactMatchBonus(normalized, title, keywords, content, wExactTitle) * wExact) +
 				(this.synonymBonus(content + ' ' + title, tokens, expanded) * 0.10) +
 				(this.stemBonus(tokens, title, content, keywords)            * 0.05) +
 				(this.coverageScore(tokens, title, content, keywords, cats, tags, excerpt) * 0.05) +
@@ -466,8 +473,8 @@
 
 		/* ── Score components ───────────────────── */
 
-		exactMatchBonus(query, title, keywords, content) {
-			if (title.includes(query))    return 0.15;
+		exactMatchBonus(query, title, keywords, content, exactTitleWeight = 0.15) {
+			if (title.includes(query))    return exactTitleWeight;
 			if (keywords.includes(query)) return 0.10;
 			if (content.includes(query))  return 0.05;
 			return 0;

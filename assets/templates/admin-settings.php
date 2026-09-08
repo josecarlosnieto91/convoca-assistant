@@ -80,6 +80,23 @@ if ( ! defined( 'ABSPATH' ) ) {
 					<th scope="row"><?php esc_html_e( 'Distancia Fuse.js', 'convoca-assistant' ); ?></th>
 					<td><input type="number" name="convoca_assistant_settings[search_fuse_distance]" value="<?php echo esc_attr( $settings['search_fuse_distance'] ); ?>" min="0" max="500" /></td>
 				</tr>
+				<tr>
+					<th scope="row"><?php esc_html_e( 'Umbral respuesta directa', 'convoca-assistant' ); ?></th>
+					<td>
+						<input type="number" name="convoca_assistant_settings[direct_threshold]" value="<?php echo esc_attr( $settings['direct_threshold'] ); ?>" step="0.05" min="0" max="1" />
+						<span class="description"><?php esc_html_e( 'Score mínimo para responder directamente con una fuente prioritaria en vez de listar fuentes (0.55 por defecto).', 'convoca-assistant' ); ?></span>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row"><?php esc_html_e( 'Pesos del ranking', 'convoca-assistant' ); ?></th>
+					<td>
+						<label><?php esc_html_e( 'Fuzzy', 'convoca-assistant' ); ?> <input type="number" name="convoca_assistant_settings[weights_fuzzy]" value="<?php echo esc_attr( $settings['weights_fuzzy'] ); ?>" step="0.05" min="0" max="1" class="small-text" /></label>
+						<label><?php esc_html_e( 'Grafo', 'convoca-assistant' ); ?> <input type="number" name="convoca_assistant_settings[weights_graph]" value="<?php echo esc_attr( $settings['weights_graph'] ); ?>" step="0.05" min="0" max="1" class="small-text" /></label>
+						<label><?php esc_html_e( 'Exacto', 'convoca-assistant' ); ?> <input type="number" name="convoca_assistant_settings[weights_exact]" value="<?php echo esc_attr( $settings['weights_exact'] ); ?>" step="0.05" min="0" max="1" class="small-text" /></label>
+						<label><?php esc_html_e( 'Título exacto', 'convoca-assistant' ); ?> <input type="number" name="convoca_assistant_settings[weights_exact_title]" value="<?php echo esc_attr( $settings['weights_exact_title'] ); ?>" step="0.05" min="0" max="1" class="small-text" /></label>
+						<p class="description"><?php esc_html_e( 'Coeficientes del ranking del buscador (0.45 / 0.10 / 0.15 / 0.15 por defecto).', 'convoca-assistant' ); ?></p>
+					</td>
+				</tr>
 			</table>
 		</div>
 
