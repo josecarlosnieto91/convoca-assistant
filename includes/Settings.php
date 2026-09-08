@@ -141,6 +141,11 @@ class Settings {
 				case 'search_fuse_threshold':
 				case 'search_threshold':
 				case 'priority_boost':
+				case 'direct_threshold':
+				case 'weights_fuzzy':
+				case 'weights_graph':
+				case 'weights_exact':
+				case 'weights_exact_title':
 					$output[ $key ] = (float) $value;
 					break;
 

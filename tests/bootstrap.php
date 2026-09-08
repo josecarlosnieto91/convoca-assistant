@@ -94,6 +94,65 @@ namespace {
 		}
 	}
 
+	// ─── Options y filtros (para Settings) ───
+
+	$GLOBALS['_assistant_options'] = array();
+
+	if ( ! function_exists( 'get_option' ) ) {
+		function get_option( $option, $default = false ) {
+			$store =& $GLOBALS['_assistant_options'];
+			return array_key_exists( $option, $store ) ? $store[ $option ] : $default;
+		}
+	}
+	if ( ! function_exists( 'update_option' ) ) {
+		function update_option( $option, $value, $autoload = null ) {
+			$GLOBALS['_assistant_options'][ $option ] = $value;
+			return true;
+		}
+	}
+	if ( ! function_exists( 'delete_option' ) ) {
+		function delete_option( $option ) {
+			unset( $GLOBALS['_assistant_options'][ $option ] );
+			return true;
+		}
+	}
+	if ( ! function_exists( 'add_option' ) ) {
+		function add_option( $option, $value = '', $deprecated = '', $autoload = 'yes' ) {
+			if ( ! array_key_exists( $option, $GLOBALS['_assistant_options'] ) ) {
+				$GLOBALS['_assistant_options'][ $option ] = $value;
+			}
+			return true;
+		}
+	}
+	if ( ! function_exists( 'apply_filters' ) ) {
+		function apply_filters( $tag, $value, ...$args ) {
+			return $value;
+		}
+	}
+	if ( ! function_exists( 'add_filter' ) ) {
+		function add_filter( $tag, $callback, $priority = 10, $accepted_args = 1 ) {
+			return true;
+		}
+	}
+	if ( ! function_exists( 'absint' ) ) {
+		function absint( $maybeint ) {
+			return abs( (int) $maybeint );
+		}
+	}
+	if ( ! function_exists( 'sanitize_key' ) ) {
+		function sanitize_key( $key ) {
+			return preg_replace( '/[^a-z0-9_\-]/', '', strtolower( (string) $key ) );
+		}
+	}
+	if ( ! function_exists( 'sanitize_hex_color' ) ) {
+		function sanitize_hex_color( $color ) {
+			if ( preg_match( '/^#([a-fA-F0-9]{3}|[a-fA-F0-9]{6})$/', (string) $color ) ) {
+				return strtolower( $color );
+			}
+			return '';
+		}
+	}
+
 	// Cargar el autoload de Composer (PSR-4 de Convoca\Assistant).
 	$autoload = dirname( __DIR__ ) . '/vendor/autoload.php';
 	if ( file_exists( $autoload ) ) {
