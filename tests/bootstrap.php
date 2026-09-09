@@ -14,6 +14,10 @@ namespace {
 		define( 'ABSPATH', dirname( __DIR__ ) . '/' );
 	}
 
+	if ( ! defined( 'HOUR_IN_SECONDS' ) ) {
+		define( 'HOUR_IN_SECONDS', 3600 );
+	}
+
 	// ─── Funciones de WordPress necesarias para las clases bajo test ───
 
 	if ( ! function_exists( 'sanitize_text_field' ) ) {
@@ -161,6 +165,74 @@ namespace {
 			}
 			return '';
 		}
+	}
+
+	// ─── Transients (para Indexer::mark_dirty / is_dirty) ───
+
+	$GLOBALS['_assistant_transients'] = array();
+
+	if ( ! function_exists( 'get_transient' ) ) {
+		function get_transient( $transient ) {
+			return array_key_exists( $transient, $GLOBALS['_assistant_transients'] ) ? $GLOBALS['_assistant_transients'][ $transient ] : false;
+		}
+	}
+	if ( ! function_exists( 'set_transient' ) ) {
+		function set_transient( $transient, $value, $expiration = 0 ) {
+			$GLOBALS['_assistant_transients'][ $transient ] = $value;
+			return true;
+		}
+	}
+	if ( ! function_exists( 'delete_transient' ) ) {
+		function delete_transient( $transient ) {
+			unset( $GLOBALS['_assistant_transients'][ $transient ] );
+			return true;
+		}
+	}
+
+	// ─── Cron API (para Indexer::schedule_regenerate_now / schedule_backup_cron) ───
+
+	$GLOBALS['_assistant_cron'] = array();
+
+	if ( ! function_exists( 'wp_next_scheduled' ) ) {
+		function wp_next_scheduled( $hook, $args = array() ) {
+			return isset( $GLOBALS['_assistant_cron'][ $hook ] ) ? $GLOBALS['_assistant_cron'][ $hook ] : false;
+		}
+	}
+	if ( ! function_exists( 'wp_schedule_single_event' ) ) {
+		function wp_schedule_single_event( $timestamp, $hook, $args = array() ) {
+			$GLOBALS['_assistant_cron'][ $hook ] = $timestamp;
+			return true;
+		}
+	}
+	if ( ! function_exists( 'wp_schedule_event' ) ) {
+		function wp_schedule_event( $timestamp, $recurrence, $hook, $args = array() ) {
+			$GLOBALS['_assistant_cron'][ $hook ] = $timestamp;
+			return true;
+		}
+	}
+	if ( ! function_exists( 'wp_clear_scheduled_hook' ) ) {
+		function wp_clear_scheduled_hook( $hook, $args = array() ) {
+			unset( $GLOBALS['_assistant_cron'][ $hook ] );
+			return true;
+		}
+	}
+
+	// ─── Hooks (no-op) ───
+
+	if ( ! function_exists( 'add_action' ) ) {
+		function add_action( $tag, $callback, $priority = 10, $accepted_args = 1 ) {
+			return true;
+		}
+	}
+	if ( ! function_exists( 'do_action' ) ) {
+		function do_action( $tag, ...$args ) {
+			return true;
+		}
+	}
+
+	// Constante del directorio del índice (para Indexer::index_exists en tests).
+	if ( ! defined( 'CONVOCA_ASSISTANT_INDEX_DIR' ) ) {
+		define( 'CONVOCA_ASSISTANT_INDEX_DIR', sys_get_temp_dir() . '/convoca-assistant-tests/' );
 	}
 
 	// Cargar el autoload de Composer (PSR-4 de Convoca\Assistant).

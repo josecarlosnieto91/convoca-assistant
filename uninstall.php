@@ -34,6 +34,7 @@ delete_transient( 'convoca_assistant_index_debounce' );
 
 /* ── Scheduled hooks ──────────────────────────────── */
 wp_clear_scheduled_hook( 'convoca_assistant_regenerate' );
+wp_clear_scheduled_hook( 'convoca_assistant_regenerate_now' );
 wp_clear_scheduled_hook( 'convoca_assistant_log_cleanup' );
 
 /* ── Custom table ─────────────────────────────────── */
