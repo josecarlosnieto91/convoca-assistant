@@ -240,7 +240,9 @@ class Knowledge_Base {
 					'description'       => __( 'Peso en búsquedas (0-10). 0 = peso por defecto del tipo', 'convoca-assistant' ),
 					'single'            => true,
 					'default'           => 0,
-					'sanitize_callback' => 'floatval',
+					'sanitize_callback' => function ( $value ) {
+						return floatval( $value );
+					},
 					'show_in_rest'      => true,
 					'auth_callback'     => function () {
 						return current_user_can( 'edit_posts' );
