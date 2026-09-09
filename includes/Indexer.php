@@ -33,6 +33,12 @@ class Indexer {
 	private const DEBOUNCE_WINDOW = 30;
 
 	/**
+	 * Delay in seconds before the one-shot immediate regeneration runs.
+	 * Gives the post save request time to finish before the rebuild.
+	 */
+	private const REGENERATE_DELAY = 5;
+
+	/**
 	 * Initialize hooks and custom cron schedule.
 	 *
 	 * @return void
@@ -41,8 +47,14 @@ class Indexer {
 		// Register custom cron interval.
 		add_filter( 'cron_schedules', array( __CLASS__, 'add_cron_interval' ) );
 
-		// Scheduled regeneration.
+		// Scheduled regeneration (recurring backup cron, every 5 minutes).
 		add_action( 'convoca_assistant_regenerate', array( __CLASS__, 'maybe_regenerate' ) );
+
+		// Immediate regeneration after content changes (one-shot, deduped).
+		add_action( 'convoca_assistant_regenerate_now', array( __CLASS__, 'maybe_regenerate' ) );
+
+		// Ensure the recurring backup cron stays scheduled (self-healing).
+		self::schedule_backup_cron();
 
 		// Content change triggers (debounced).
 		add_action( 'wp_insert_post', array( __CLASS__, 'mark_dirty' ), 10, 3 );
@@ -276,6 +288,40 @@ class Indexer {
 
 		set_transient( 'convoca_assistant_index_dirty', time(), HOUR_IN_SECONDS );
 		set_transient( 'convoca_assistant_index_debounce', time(), self::DEBOUNCE_WINDOW + 5 );
+
+		// Rebuild immediately after the save finishes (deduped by wp_next_scheduled).
+		self::schedule_regenerate_now();
+	}
+
+	/**
+	 * Schedule a one-shot immediate regeneration, unless one is already pending.
+	 *
+	 * @return bool True when a new event was scheduled, false when one was pending.
+	 */
+	public static function schedule_regenerate_now(): bool {
+		if ( wp_next_scheduled( 'convoca_assistant_regenerate_now' ) ) {
+			return false;
+		}
+
+		wp_schedule_single_event( time() + self::REGENERATE_DELAY, 'convoca_assistant_regenerate_now' );
+		return true;
+	}
+
+	/**
+	 * Ensure the recurring every-5-minutes backup cron is scheduled.
+	 *
+	 * Self-healing: if the event was lost (e.g. stale cron option after an
+	 * update), it is re-registered. The one-shot immediate regeneration is
+	 * the primary path; this cron is the fallback.
+	 *
+	 * @return bool True when the event is scheduled, false on failure.
+	 */
+	public static function schedule_backup_cron(): bool {
+		if ( wp_next_scheduled( 'convoca_assistant_regenerate' ) ) {
+			return true;
+		}
+
+		return wp_schedule_event( time(), 'every_5_minutes', 'convoca_assistant_regenerate' );
 	}
 
 	/**
