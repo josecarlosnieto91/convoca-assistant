@@ -97,6 +97,18 @@ if ( ! defined( 'ABSPATH' ) ) {
 						<p class="description"><?php esc_html_e( 'Coeficientes del ranking del buscador (0.45 / 0.10 / 0.15 / 0.15 por defecto).', 'convoca-assistant' ); ?></p>
 					</td>
 				</tr>
+				<tr>
+					<th scope="row"><?php esc_html_e( 'Email de contacto (sin respuesta)', 'convoca-assistant' ); ?></th>
+					<td><input type="email" name="convoca_assistant_settings[contact_email]" value="<?php echo esc_attr( $settings['contact_email'] ?? '' ); ?>" class="regular-text" placeholder="hola@asociacion.org" /></td>
+				</tr>
+				<tr>
+					<th scope="row"><?php esc_html_e( 'Teléfono / WhatsApp (sin respuesta)', 'convoca-assistant' ); ?></th>
+					<td>
+						<label><?php esc_html_e( 'Teléfono', 'convoca-assistant' ); ?> <input type="text" name="convoca_assistant_settings[contact_phone]" value="<?php echo esc_attr( $settings['contact_phone'] ?? '' ); ?>" class="regular-text" placeholder="+34 000 000 000" /></label><br />
+						<label><?php esc_html_e( 'WhatsApp (código país + número)', 'convoca-assistant' ); ?> <input type="text" name="convoca_assistant_settings[contact_whatsapp]" value="<?php echo esc_attr( $settings['contact_whatsapp'] ?? '' ); ?>" class="regular-text" placeholder="34000000000" /></label>
+						<p class="description"><?php esc_html_e( 'Cuando el asistente no encuentra respuesta, el widget mostrará «¿Hablamos?» con estos datos.', 'convoca-assistant' ); ?></p>
+					</td>
+				</tr>
 			</table>
 		</div>
 
