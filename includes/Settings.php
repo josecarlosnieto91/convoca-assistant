@@ -185,6 +185,13 @@ class Settings {
 				case 'maintenance_message':
 					$output[ $key ] = sanitize_text_field( $value );
 					break;
+				case 'contact_email':
+					$output[ $key ] = sanitize_email( $value );
+					break;
+				case 'contact_phone':
+				case 'contact_whatsapp':
+					$output[ $key ] = sanitize_text_field( $value );
+					break;
 
 				default:
 					$output[ $key ] = isset( $defaults[ $key ] ) ? $defaults[ $key ] : null;

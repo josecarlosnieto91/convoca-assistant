@@ -63,6 +63,10 @@ class Installer {
 			'debug_mode'              => false,
 			'widget_auto_open'        => 'never',
 			'widget_auto_open_scroll' => 50,
+			// Contacto fallback sin match (decisión 2026-09-09): widget «¿Hablamos?».
+			'contact_email'           => '',
+			'contact_phone'           => '',
+			'contact_whatsapp'        => '',
 		);
 	}
 

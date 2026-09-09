@@ -119,6 +119,11 @@ class Widget {
 						'content'    => 1,
 						'tags'       => 1,
 					),
+					'contact'         => array(
+						'email'    => $settings['contact_email'] ?? '',
+						'phone'    => $settings['contact_phone'] ?? '',
+						'whatsapp' => $settings['contact_whatsapp'] ?? '',
+					),
 				),
 				'i18n'        => array(
 					'placeholder' => __( 'Escribe tu pregunta aquí...', 'convoca-assistant' ),
@@ -126,6 +131,7 @@ class Widget {
 					'typing'      => __( 'Escribiendo...', 'convoca-assistant' ),
 					'loading'     => __( 'Preparando asistente...', 'convoca-assistant' ),
 					'noResults'   => __( 'No encontré una respuesta. Reformula la pregunta o contacta con nosotros.', 'convoca-assistant' ),
+					'talkLabel'   => __( '¿Hablamos?', 'convoca-assistant' ),
 					'viewSource'  => __( 'Ver fuente', 'convoca-assistant' ),
 					'copy'        => __( 'Copiar', 'convoca-assistant' ),
 					'copied'      => __( '¡Copiado!', 'convoca-assistant' ),

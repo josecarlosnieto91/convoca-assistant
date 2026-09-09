@@ -371,7 +371,16 @@
 		showNoResults(query) {
 			const div = document.createElement('div');
 			div.className = 'convoca-message convoca-message-bot convoca-noresult';
-			div.innerHTML = `<div class="convoca-message-text">${this.escapeHtml(this.config.i18n?.noResults || 'No encontré una respuesta. Reformula la pregunta o contacta con nosotros.')}</div>
+			// Contacto fallback configurable (decisión 2026-09-09): «¿Hablamos?».
+			const contact = this.config.settings?.contact || {};
+			const parts = [];
+			if (contact.email) parts.push(`<a href="mailto:${this.escapeHtml(contact.email)}">${this.escapeHtml(contact.email)}</a>`);
+			if (contact.whatsapp) parts.push(`<a href="https://wa.me/${this.escapeHtml(String(contact.whatsapp).replace(/\D/g, ''))}" target="_blank" rel="noopener">WhatsApp</a>`);
+			else if (contact.phone) parts.push(`<a href="tel:${this.escapeHtml(String(contact.phone).replace(/\s/g, ''))}">${this.escapeHtml(contact.phone)}</a>`);
+			const talkHtml = parts.length
+				? `<div class="convoca-noresult-contact"><strong>${this.escapeHtml(this.config.i18n?.talkLabel || '¿Hablamos?')}</strong> ${parts.join(' · ')}</div>`
+				: '';
+			div.innerHTML = `<div class="convoca-message-text">${this.escapeHtml(this.config.i18n?.noResults || 'No encontré una respuesta. Reformula la pregunta o contacta con nosotros.')}</div>${talkHtml}
 				<div class="convoca-message-actions">
 					<button class="convoca-action-feedback" data-vote="down" data-query="${this.escapeHtml(query)}" title="Reportar">📝 Reportar</button>
 				</div>`;
