@@ -22,6 +22,16 @@ namespace {
 		}
 	}
 
+	if ( ! function_exists( 'sanitize_email' ) ) {
+		function sanitize_email( $email ) {
+			if ( ! is_string( $email ) ) {
+				return '';
+			}
+			$email = preg_replace( '/[^a-zA-Z0-9.!#$%&\'*+\/=?^_`{|}~@-]/', '', $email );
+			return ( false !== strpos( $email, '@' ) ) ? $email : '';
+		}
+	}
+
 	if ( ! function_exists( 'wp_unslash' ) ) {
 		function wp_unslash( $value ) {
 			return is_string( $value ) ? stripslashes( $value ) : $value;
