@@ -290,8 +290,8 @@ class Installer {
 	/**
 	 * Create or upgrade the log table.
 	 *
-	 * dbDelta adds missing columns to existing installs, so this both creates
-	 * fresh tables and migrates legacy ones (see db_version below).
+	 * Using dbDelta() adds missing columns to existing installs, so this both
+	 * creates fresh tables and migrates legacy ones (see db_version below).
 	 *
 	 * @param string $table Table name.
 	 */
