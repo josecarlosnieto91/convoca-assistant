@@ -14,7 +14,7 @@
 El plugin se puede probar en el entorno Convoca Dev:
 
 ```bash
-cd ~/.openclaw/workspace/convoca-dev
+cd ~/repos/convoca-dev
 podman compose up -d
 ```
 
