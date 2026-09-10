@@ -18,7 +18,7 @@ class Installer {
 	 * Bump when the log table schema changes so existing installs migrate
 	 * through Installer::maybe_upgrade() instead of silently failing queries.
 	 */
-	public const DB_VERSION = '2026-09-10-1';
+	public const DB_VERSION = '2026-09-10-2';
 
 	/**
 	 * Option storing the installed schema version.
@@ -300,18 +300,21 @@ class Installer {
 		$charset = $wpdb->get_charset_collate();
 
 		// Canonical schema — must match the columns written/read by Statistics.
+		// dbDelta formatting: one column per line, PRIMARY KEY as its own
+		// definition followed by two spaces, lowercase types.
 		$sql = "CREATE TABLE {$table} (
-			id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-			session_id VARCHAR(64) DEFAULT '',
-			query TEXT NOT NULL,
-			response_id BIGINT UNSIGNED DEFAULT 0,
-			response_found TINYINT(1) DEFAULT 0,
-			score FLOAT DEFAULT 0,
-			clicked TINYINT(1) DEFAULT 0,
-			query_time_ms INT DEFAULT 0,
-			page_url VARCHAR(255) DEFAULT '',
-			user_agent_hash VARCHAR(255) DEFAULT '',
-			created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+			id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+			session_id varchar(64) NOT NULL DEFAULT '',
+			query text NOT NULL,
+			response_id bigint(20) unsigned NOT NULL DEFAULT 0,
+			response_found tinyint(1) NOT NULL DEFAULT 0,
+			score float NOT NULL DEFAULT 0,
+			clicked tinyint(1) NOT NULL DEFAULT 0,
+			query_time_ms int(11) NOT NULL DEFAULT 0,
+			page_url varchar(255) NOT NULL DEFAULT '',
+			user_agent_hash varchar(255) NOT NULL DEFAULT '',
+			created_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+			PRIMARY KEY  (id),
 			KEY session_id (session_id),
 			KEY response_found (response_found),
 			KEY created_at (created_at)
