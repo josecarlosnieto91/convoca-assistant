@@ -10,7 +10,7 @@
 (function () {
 	'use strict';
 
-	const admin = window.convocaAdmin || {};
+	const admin = window.convocaAssistant || {};
 	if (!admin.restUrl) return;
 
 	/* ── Dashboard ───────────────────────────────── */
