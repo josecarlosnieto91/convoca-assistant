@@ -204,7 +204,8 @@ class REST_Controller {
 				'sanitize_callback' => 'sanitize_text_field',
 			),
 			'response_id'    => array(
-				'type'    => 'integer',
+				// The widget sends null when nothing was found.
+				'type'    => array( 'integer', 'null' ),
 				'default' => 0,
 			),
 			'response_found' => array(
@@ -220,7 +221,8 @@ class REST_Controller {
 				'default' => false,
 			),
 			'time_ms'        => array(
-				'type'    => 'integer',
+				// The search endpoint returns fractional ms and the widget forwards it as-is.
+				'type'    => 'number',
 				'default' => 0,
 			),
 			'page_url'       => array(
