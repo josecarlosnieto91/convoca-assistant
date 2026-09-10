@@ -92,8 +92,11 @@ class Statistics {
 				'query_time_ms'   => $time_ms,
 				'page_url'        => $page_url ? esc_url_raw( $page_url ) : '',
 				'user_agent_hash' => $ua_hash,
+				// Explicit UTC: analytics/cleanup filter with gmdate(), so never rely on
+				// the DB server default (which follows the server timezone, not UTC).
+				'created_at'      => gmdate( 'Y-m-d H:i:s' ),
 			),
-			array( '%s', '%s', '%d', '%d', '%f', '%d', '%d', '%s', '%s' )
+			array( '%s', '%s', '%d', '%d', '%f', '%d', '%d', '%s', '%s', '%s' )
 		);
 	}
 

@@ -74,6 +74,9 @@ add_action(
 			Settings::init();
 			Synonyms::init();
 			Export_Import::init();
+
+			// Run schema migrations on existing installs (no reactivation needed).
+			add_action( 'admin_init', array( Installer::class, 'maybe_upgrade' ) );
 		}
 	}
 );

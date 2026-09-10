@@ -13,6 +13,19 @@ namespace Convoca\Assistant;
 class Installer {
 
 	/**
+	 * Schema version of the log table.
+	 *
+	 * Bump when the log table schema changes so existing installs migrate
+	 * through Installer::maybe_upgrade() instead of silently failing queries.
+	 */
+	public const DB_VERSION = '2026-09-10-1';
+
+	/**
+	 * Option storing the installed schema version.
+	 */
+	public const DB_VERSION_OPTION = 'convoca_assistant_db_version';
+
+	/**
 	 * Get default settings.
 	 */
 	public static function default_settings(): array {
@@ -219,6 +232,7 @@ class Installer {
 	 */
 	public static function activate(): void {
 		self::db_init();
+		self::maybe_upgrade();
 		flush_rewrite_rules();
 
 		// Regenerate index on activation so the assistant has content immediately.
@@ -243,11 +257,8 @@ class Installer {
 	 * Initialize database tables if needed.
 	 */
 	private static function db_init(): void {
-		// Log table.
-		$table = self::log_table();
-		if ( ! self::table_exists( $table ) ) {
-			self::create_log_table( $table );
-		}
+		// Log table — dbDelta creates it or adds any missing columns.
+		self::create_log_table( self::log_table() );
 
 		// Settings defaults.
 		if ( ! get_option( 'convoca_assistant_settings' ) ) {
@@ -277,17 +288,10 @@ class Installer {
 	}
 
 	/**
-	 * Check if a table exists.
+	 * Create or upgrade the log table.
 	 *
-	 * @param string $table Table name.
-	 */
-	private static function table_exists( string $table ): bool {
-		global $wpdb;
-		return $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $table ) ) === $table;
-	}
-
-	/**
-	 * Create the log table.
+	 * dbDelta adds missing columns to existing installs, so this both creates
+	 * fresh tables and migrates legacy ones (see db_version below).
 	 *
 	 * @param string $table Table name.
 	 */
@@ -295,21 +299,40 @@ class Installer {
 		global $wpdb;
 		$charset = $wpdb->get_charset_collate();
 
+		// Canonical schema — must match the columns written/read by Statistics.
 		$sql = "CREATE TABLE {$table} (
 			id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+			session_id VARCHAR(64) DEFAULT '',
 			query TEXT NOT NULL,
-			response TEXT,
-			answered TINYINT(1) DEFAULT 0,
-			results_count INT DEFAULT 0,
-			time_ms FLOAT DEFAULT 0,
-			user_ip VARCHAR(64) DEFAULT '',
-			user_agent VARCHAR(255) DEFAULT '',
+			response_id BIGINT UNSIGNED DEFAULT 0,
+			response_found TINYINT(1) DEFAULT 0,
+			score FLOAT DEFAULT 0,
+			clicked TINYINT(1) DEFAULT 0,
+			query_time_ms INT DEFAULT 0,
+			page_url VARCHAR(255) DEFAULT '',
+			user_agent_hash VARCHAR(255) DEFAULT '',
 			created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-			KEY answered (answered),
+			KEY session_id (session_id),
+			KEY response_found (response_found),
 			KEY created_at (created_at)
 		) {$charset};";
 
 		require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 		dbDelta( $sql );
+	}
+
+	/**
+	 * Ensure the log table schema is up to date.
+	 *
+	 * Runs on activation and on admin_init so already-active installs pick up
+	 * schema changes without reactivation.
+	 */
+	public static function maybe_upgrade(): void {
+		if ( get_option( self::DB_VERSION_OPTION ) === self::DB_VERSION ) {
+			return;
+		}
+
+		self::create_log_table( self::log_table() );
+		update_option( self::DB_VERSION_OPTION, self::DB_VERSION );
 	}
 }
