@@ -61,17 +61,10 @@
 				return;
 			}
 
-			// Initialize chat engine
+			// Initialize chat engine. The knowledge index (hundreds of KB) is NOT fetched
+			// here: it loads on first open, so a visitor who never opens the chat never
+			// downloads it.
 			this.chat = new window.ConvocaChat();
-			this.showStatus(this.config.i18n?.loading || 'Preparando asistente…');
-
-			const loaded = await this.chat.init();
-			this.hideStatus();
-
-			if (!loaded) {
-				this.showError('No se pudo cargar la base de conocimiento.');
-				return;
-			}
 
 			// Bind events
 			this.dom.toggle.addEventListener('click', () => this.toggle());
@@ -95,8 +88,22 @@
 
 		/* ── Open / Close / Toggle ──────────────── */
 
-		open() {
+		async open() {
 			if (this.isOpen) return;
+
+			// Lazy: load the knowledge index on first open only.
+			if (this.chat && !this.chat.ready && !this.loadingIndex) {
+				this.loadingIndex = true;
+				this.showStatus(this.config.i18n?.loading || 'Preparando asistente…');
+				const loaded = await this.chat.init();
+				this.loadingIndex = false;
+				this.hideStatus();
+				if (!loaded) {
+					this.showError('No se pudo cargar la base de conocimiento.');
+					return;
+				}
+			}
+
 			this.isOpen = true;
 			this.dom.container.classList.add('convoca-open');
 			this.dom.container.setAttribute('aria-hidden', 'false');
