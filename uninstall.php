@@ -11,6 +11,16 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 	exit;
 }
 
+// ─── Modo conservar datos ───
+// Constante en wp-config.php (despliegues) o ajuste de la interfaz. Faltaba: este plugin
+// borraba siempre, sin opción de conservar.
+$convoca_conservar = ( defined( 'CONVOCA_KEEP_DATA_ON_UNINSTALL' ) && CONVOCA_KEEP_DATA_ON_UNINSTALL )
+	|| 1 === (int) get_option( 'convoca_uninstall_keep_data', 0 );
+
+if ( $convoca_conservar ) {
+	return;
+}
+
 /* ── Options ──────────────────────────────────────── */
 $convoca_assistant_options = array(
 	'convoca_assistant_version',
