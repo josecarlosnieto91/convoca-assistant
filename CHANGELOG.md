@@ -1,5 +1,10 @@
 # Changelog — Convoca Assistant
 
+## 0.2.2 (2026-09-05)
+
+### 🔐 Security
+- No indexar contenido protegido con contraseña + rate-limit por IP real
+
 ## 0.2.1 (2026-07-25)
 
 ### 🔧 Correcciones

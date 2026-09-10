@@ -4,6 +4,10 @@
 
 Búsqueda difusa con Fuse.js sobre tu base de conocimiento. Sin APIs externas, sin cloud, compatible GDPR.
 
+## Versión
+
+0.2.4
+
 ## Requisitos
 
 - WordPress 6.4+
@@ -39,10 +43,12 @@ El asistente se muestra como un botón flotante en la esquina inferior derecha. 
 
 | Endpoint | Método | Descripción |
 |----------|--------|-------------|
+| `/wp-json/convoca/v1/assistant/index` | GET | Índice de conocimiento |
 | `/wp-json/convoca/v1/assistant/search` | POST | Búsqueda semántica |
 | `/wp-json/convoca/v1/assistant/log` | POST | Registrar interacción |
 | `/wp-json/convoca/v1/assistant/stats` | GET | Estadísticas |
 | `/wp-json/convoca/v1/assistant/unanswered` | GET | Consultas sin respuesta |
+| `/wp-json/convoca/v1/assistant/recent` | GET | Interacciones recientes |
 | `/wp-json/convoca/v1/assistant/rebuild-index` | POST | Reconstruir índice |
 | `/wp-json/convoca/v1/assistant/clear-logs` | POST | Limpiar logs |
 
@@ -150,6 +156,16 @@ Para crear un provider personalizado, implementa `Knowledge_Provider_Interface`.
 El asistente detecta automáticamente saludos y responde sin buscar en la KB:
 
 `hola`, `buenos días`, `buenas tardes`, `buenas noches`, `hey`, `hello`, `hi`, `saludos`, `qué tal`
+
+## Hooks
+
+| Hook | Tipo | Descripción |
+|------|------|-------------|
+| `convoca_assistant_regenerate` | action | Regenerar índice (cron) |
+| `convoca_assistant_regenerate_now` | action | Regenerar índice de inmediato |
+| `convoca_assistant_log_cleanup` | action | Limpieza de logs (cron) |
+
+Shortcode disponible: `[convoca_assistant]`.
 
 ## Licencia
 
