@@ -200,3 +200,13 @@
 		animation: none;
 	}
 }
+
+/* ── Panel del chat: oculto mientras el motor no esté cargado ─────────
+   assistant-chat.css se inyecta en diferido (config.lazyAssets) al primer
+   gesto sobre el botón; hasta entonces el panel quedaba visible y sin
+   maquetar, así que aparecía desplegado y descolocado en la esquina. Esta
+   hoja sí se carga siempre, de modo que aquí se declara el estado cerrado.
+   La regla base de assistant-chat.css declara el mismo `display:none`. */
+.convoca-chat-container {
+	display: none;
+}
