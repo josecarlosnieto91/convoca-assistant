@@ -38,7 +38,7 @@
 			};
 
 			// Initialize session memory
-			this.session = new window.ConvocaSession();
+			this.session = null;
 
 			// Create widget DOM if not present (theme may not fire wp_footer)
 			if (!this.dom.widget) {
@@ -61,10 +61,17 @@
 				return;
 			}
 
-			// Initialize chat engine. The knowledge index (hundreds of KB) is NOT fetched
-			// here: it loads on first open, so a visitor who never opens the chat never
-			// downloads it.
-			this.chat = new window.ConvocaChat();
+			// El motor del chat (Fuse + memoria de sesión + engine) va en carga
+			// diferida: se descarga la primera vez que alguien abre el widget, así
+			// que quien no abre el chat no lo baja. El índice de conocimiento (cientos
+			// de KB) va un paso más allá: solo al abrir, y una sola vez.
+			// Si la página ya lo traía encolado (chat embebido con [convoca_assistant])
+			// está disponible de entrada y se usa tal cual.
+			if (window.ConvocaChat) {
+				this.initEngine();
+			} else {
+				this.preloadOnIntent();
+			}
 
 			// Bind events
 			this.dom.toggle.addEventListener('click', () => this.toggle());
@@ -86,10 +93,94 @@
 			this.startIdlePulse();
 		}
 
+		/* ── Motor del chat en carga diferida ───── */
+
+		/** Instancia sesión y chat si sus clases ya están cargadas. */
+		initEngine() {
+			this.session = window.ConvocaSession ? new window.ConvocaSession() : null;
+			this.chat = window.ConvocaChat ? new window.ConvocaChat() : null;
+
+			return !!this.chat;
+		}
+
+		/** Adelanta la descarga al primer gesto sobre el botón (ratón, toque, foco). */
+		preloadOnIntent() {
+			const preload = () => {
+				this.loadEngine().catch(() => {});
+			};
+
+			['pointerdown', 'mouseenter', 'touchstart', 'focusin'].forEach((event) => {
+				this.dom.toggle.addEventListener(event, preload, { once: true, passive: true });
+			});
+		}
+
+		/**
+		 * Descarga el motor del chat (Fuse + sesión + engine) la primera vez y lo deja
+		 * instanciado. Repetir la llamada no vuelve a pedir nada: la promesa se cachea.
+		 */
+		loadEngine() {
+			if (this.enginePromise) return this.enginePromise;
+
+			const lazy = this.config.lazyAssets || {};
+
+			(lazy.css || []).forEach((href) => this.injectCss(href));
+
+			this.enginePromise = (lazy.js || [])
+				.reduce((chain, src) => chain.then(() => this.injectScript(src)), Promise.resolve())
+				.then(() => this.initEngine())
+				.catch((error) => {
+					this.enginePromise = null; // permite reintentar en el siguiente clic
+					throw error;
+				});
+
+			return this.enginePromise;
+		}
+
+		injectScript(src) {
+			return new Promise((resolve, reject) => {
+				const script = document.createElement('script');
+				script.src = src;
+				script.async = false; // el orden importa: Fuse antes que el chat
+				script.onload = () => resolve(true);
+				script.onerror = () => reject(new Error('No se pudo cargar ' + src));
+				document.head.appendChild(script);
+			});
+		}
+
+		injectCss(href) {
+			if (document.querySelector('link[data-convoca-lazy="' + href + '"]')) return;
+
+			const link = document.createElement('link');
+			link.rel = 'stylesheet';
+			link.href = href;
+			link.setAttribute('data-convoca-lazy', href);
+			document.head.appendChild(link);
+		}
+
 		/* ── Open / Close / Toggle ──────────────── */
 
 		async open() {
 			if (this.isOpen) return;
+
+			// Motor en carga diferida: si todavía no está, se descarga ahora.
+			if (!this.chat) {
+				this.showStatus(this.config.i18n?.loading || 'Preparando asistente…');
+
+				try {
+					await this.loadEngine();
+				} catch (error) {
+					this.hideStatus();
+					this.showError('No se pudo cargar el asistente. Recarga la página e inténtalo de nuevo.');
+					return;
+				}
+
+				this.hideStatus();
+
+				if (!this.chat) {
+					this.showError('No se pudo cargar el asistente. Recarga la página e inténtalo de nuevo.');
+					return;
+				}
+			}
 
 			// Lazy: load the knowledge index on first open only.
 			if (this.chat && !this.chat.ready && !this.loadingIndex) {

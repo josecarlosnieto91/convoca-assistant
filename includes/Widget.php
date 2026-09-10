@@ -34,8 +34,13 @@ class Widget {
 			return;
 		}
 
-		// Fuse.js bundled.
-		wp_enqueue_script(
+		// Motor del chat: Fuse + memoria de sesión + engine.
+		//
+		// Se REGISTRAN pero NO se encolan. Pesan ~21 KiB comprimidos y solo hacen
+		// falta cuando alguien abre el chat: assistant-widget.js los inyecta en el
+		// primer open() (URLs en convocaAssistant.lazyAssets). Encender los tres en
+		// cada visita era peso muerto para quien nunca abre el widget.
+		wp_register_script(
 			'convoca-assistant-fuse',
 			CONVOCA_ASSISTANT_ASSETS_URL . 'js/fuse.bundle.js',
 			array(),
@@ -43,8 +48,7 @@ class Widget {
 			true
 		);
 
-		// Session memory.
-		wp_enqueue_script(
+		wp_register_script(
 			'convoca-assistant-session',
 			CONVOCA_ASSISTANT_ASSETS_URL . 'js/assistant-session.js',
 			array(),
@@ -52,8 +56,7 @@ class Widget {
 			true
 		);
 
-		// Chat engine.
-		wp_enqueue_script(
+		wp_register_script(
 			'convoca-assistant-chat',
 			CONVOCA_ASSISTANT_ASSETS_URL . 'js/assistant-chat.js',
 			array( 'convoca-assistant-fuse', 'convoca-assistant-session' ),
@@ -61,16 +64,17 @@ class Widget {
 			true
 		);
 
-		// Widget UI.
+		// Widget UI: sí se encola. Es el botón (y quien construye el DOM si el tema
+		// no imprime el pie), así que debe estar desde el principio.
 		wp_enqueue_script(
 			'convoca-assistant-widget',
 			CONVOCA_ASSISTANT_ASSETS_URL . 'js/assistant-widget.js',
-			array( 'convoca-assistant-chat' ),
+			array(),
 			CONVOCA_ASSISTANT_VERSION,
 			true
 		);
 
-		// Styles.
+		// Estilos: el del botón siempre; el del chat solo al abrirlo.
 		wp_enqueue_style(
 			'convoca-assistant-widget',
 			CONVOCA_ASSISTANT_ASSETS_URL . 'css/assistant-widget.css',
@@ -78,16 +82,36 @@ class Widget {
 			CONVOCA_ASSISTANT_VERSION
 		);
 
-		wp_enqueue_style(
+		wp_register_style(
 			'convoca-assistant-chat',
 			CONVOCA_ASSISTANT_ASSETS_URL . 'css/assistant-chat.css',
 			array( 'convoca-assistant-widget' ),
 			CONVOCA_ASSISTANT_VERSION
 		);
 
+		// Con el chat embebido ([convoca_assistant]) el diálogo se ve sin interacción,
+		// así que ahí sí se encola todo: no tiene sentido diferir.
+		$inline_chat = self::page_has_inline_chat();
+
+		if ( $inline_chat ) {
+			wp_enqueue_script( 'convoca-assistant-chat' );
+			wp_enqueue_style( 'convoca-assistant-chat' );
+		}
+
+		$lazy_assets = $inline_chat ? null : array(
+			'css' => array(
+				add_query_arg( 'ver', CONVOCA_ASSISTANT_VERSION, CONVOCA_ASSISTANT_ASSETS_URL . 'css/assistant-chat.css' ),
+			),
+			'js'  => array(
+				add_query_arg( 'ver', '7.1.0', CONVOCA_ASSISTANT_ASSETS_URL . 'js/fuse.bundle.js' ),
+				add_query_arg( 'ver', CONVOCA_ASSISTANT_VERSION, CONVOCA_ASSISTANT_ASSETS_URL . 'js/assistant-session.js' ),
+				add_query_arg( 'ver', CONVOCA_ASSISTANT_VERSION, CONVOCA_ASSISTANT_ASSETS_URL . 'js/assistant-chat.js' ),
+			),
+		);
+
 		// Pass settings to JS.
 		wp_localize_script(
-			'convoca-assistant-chat',
+			'convoca-assistant-widget',
 			'convocaAssistant',
 			array(
 				'ajaxUrl'     => admin_url( 'admin-ajax.php' ),
@@ -139,8 +163,22 @@ class Widget {
 					'thanks'      => __( '¡Gracias por tu feedback!', 'convoca-assistant' ),
 					'maintenance' => ! empty( $settings['maintenance_mode'] ) ? ( $settings['maintenance_message'] ?? '' ) : '',
 				),
+				'lazyAssets'  => $lazy_assets,
 			)
 		);
+	}
+
+	/**
+	 * Whether the current page embeds the chat inline via [convoca_assistant].
+	 *
+	 * En esa página el diálogo se ve sin interacción: se encola todo de entrada.
+	 *
+	 * @return bool
+	 */
+	private static function page_has_inline_chat(): bool {
+		$post = get_post();
+
+		return (bool) ( $post && ! empty( $post->post_content ) && has_shortcode( $post->post_content, 'convoca_assistant' ) );
 	}
 
 	/**
