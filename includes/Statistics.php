@@ -172,6 +172,42 @@ class Statistics {
 	}
 
 	/**
+	 * Get the most recent logged interactions (for the Analytics table).
+	 *
+	 * @param int $limit Max rows.
+	 * @return array<int, array<string, mixed>>
+	 */
+	public static function get_recent( int $limit = 20 ): array {
+		global $wpdb;
+		$table = self::table();
+
+		$rows = $wpdb->get_results(
+			$wpdb->prepare(
+				"SELECT id, query, response_id, response_found, score, clicked, query_time_ms, created_at
+				FROM {$table}
+				ORDER BY created_at DESC, id DESC
+				LIMIT %d", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+				$limit
+			),
+			ARRAY_A
+		);
+
+		if ( ! is_array( $rows ) ) {
+			return array();
+		}
+
+		foreach ( $rows as &$row ) {
+			$response_id    = (int) $row['response_id'];
+			$row['source']  = $response_id > 0 ? (string) get_the_title( $response_id ) : '';
+			$row['score']   = (float) $row['score'];
+			$row['time_ms'] = (int) $row['query_time_ms'];
+		}
+		unset( $row );
+
+		return $rows;
+	}
+
+	/**
 	 * Get unanswered queries.
 	 *
 	 * @param int $limit Max results.

@@ -95,6 +95,19 @@ class REST_Controller {
 			)
 		);
 
+		// Admin: get recent interactions.
+		register_rest_route(
+			self::API_NAMESPACE,
+			'/assistant/recent',
+			array(
+				'methods'             => 'GET',
+				'callback'            => array( __CLASS__, 'get_recent' ),
+				'permission_callback' => function () {
+					return current_user_can( 'manage_options' );
+				},
+			)
+		);
+
 		// Admin: rebuild index.
 		register_rest_route(
 			self::API_NAMESPACE,
@@ -366,6 +379,18 @@ class REST_Controller {
 		$limit = min( (int) $request->get_param( 'limit' ), 200 );
 		$limit = max( $limit, 1 );
 		return new \WP_REST_Response( Statistics::get_unanswered( $limit ), 200 );
+	}
+
+	/**
+	 * GET /assistant/recent — recent interactions for the Analytics table.
+	 *
+	 * @param \WP_REST_Request $request Request object.
+	 * @return \WP_REST_Response
+	 */
+	public static function get_recent( $request ) {
+		$limit = min( (int) $request->get_param( 'limit' ), 200 );
+		$limit = max( $limit, 1 );
+		return new \WP_REST_Response( Statistics::get_recent( $limit ), 200 );
 	}
 
 	/**

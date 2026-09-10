@@ -39,26 +39,37 @@
 			const tEl = el('convoca-stat-time')?.querySelector('.convoca-stat-value');
 			if (tEl) tEl.textContent = (data.avg_time_ms || 0) + 'ms';
 
-			// Top queries
+			// Top queries (all user data rendered via textContent).
 			const topList = el('convoca-top-queries');
-			if (topList && data.top_queries) {
+			if (topList) {
 				topList.innerHTML = '';
-				data.top_queries.forEach(q => {
+				if (!data.top_queries || data.top_queries.length === 0) {
 					const li = document.createElement('li');
-					li.textContent = `${q.query} (${q.count}x, score: ${parseFloat(q.avg_score).toFixed(2)})`;
+					li.style.color = '#999';
+					li.textContent = 'Todavía no hay consultas registradas.';
 					topList.appendChild(li);
-				});
+				} else {
+					data.top_queries.forEach(q => {
+						const li = document.createElement('li');
+						li.textContent = `${q.query} (${q.count}x, score: ${parseFloat(q.avg_score).toFixed(2)})`;
+						topList.appendChild(li);
+					});
+				}
 			}
 
-			// Daily mini chart
+			// Daily mini chart (values are counts; labels escaped via title attribute).
 			const chartEl = el('convoca-chart-daily');
-			if (chartEl && data.daily) {
-				const max = Math.max(...data.daily.map(d => d.count), 1);
-				chartEl.innerHTML =
-					'<div style="display:flex;align-items:flex-end;gap:2px;height:180px;padding:10px;">' +
-					data.daily.map(d =>
-						`<div title="${d.day}: ${d.count}" style="flex:1;background:#2563eb;height:${(d.count/max)*100}%;min-height:2px;border-radius:2px 2px 0 0;"></div>`
-					).join('') + '</div>';
+			if (chartEl) {
+				if (!data.daily || data.daily.length === 0) {
+					chartEl.innerHTML = '<p style="color:#999;padding:16px;">Sin datos todavía.</p>';
+				} else {
+					const max = Math.max(...data.daily.map(d => d.count), 1);
+					chartEl.innerHTML =
+						'<div style="display:flex;align-items:flex-end;gap:2px;height:180px;padding:10px;">' +
+						data.daily.map(d =>
+							`<div title="${escapeHtml(d.day)}: ${parseInt(d.count, 10)}" style="flex:1;background:#2563eb;height:${(d.count/max)*100}%;min-height:2px;border-radius:2px 2px 0 0;"></div>`
+						).join('') + '</div>';
+				}
 			}
 		} catch (err) {
 			console.error('[Convoca Admin] Stats error:', err);
@@ -162,30 +173,53 @@
 
 	/* ── Analytics table ──────────────────────────── */
 
-	async function loadAnalyticsTable() {
-		const tbody = document.getElementById('convoca-analytics-rows');
-		if (!tbody) return;
+	async function loadAnalytics() {
+		const summary = document.getElementById('convoca-analytics-summary');
+		const tbody   = document.getElementById('convoca-analytics-rows');
+		if (!summary && !tbody) return;
+
+		const notice = el => {
+			if (el) el.innerHTML = '<table class="convoca-status-table"><tr><td>' +
+				escapeHtml('Se encontró un error al cargar los datos.') + '</td></tr></table>';
+		};
 
 		try {
-			const res = await fetch(admin.restUrl + 'stats?days=7', {
-				headers: { 'X-WP-Nonce': admin.nonce },
-			});
-			const data = await res.json();
+			if (summary) {
+				const res  = await fetch(admin.restUrl + 'stats?days=7', { headers: { 'WP-Nonce': admin.nonce, 'X-WP-Nonce': admin.nonce } });
+				const data = await res.json();
+				summary.innerHTML =
+					'<table class="convoca-status-table">' +
+					`<tr><td>Consultas (7 días):</td><td><strong>${data.total || 0}</strong></td></tr>` +
+					`<tr><td>Tasa de resolución:</td><td><strong>${data.resolution_rate || 0}%</strong></td></tr>` +
+					`<tr><td>Sin respuesta:</td><td><strong>${data.not_found || 0}</strong></td></tr>` +
+					`<tr><td>Tiempo medio:</td><td><strong>${data.avg_time_ms || 0} ms</strong></td></tr>` +
+					'</table>';
+			}
 
-			if (data.top_queries && data.top_queries.length > 0) {
-				tbody.innerHTML = data.top_queries.map(q =>
+			if (tbody) {
+				const res  = await fetch(admin.restUrl + 'recent?limit=20', { headers: { 'X-WP-Nonce': admin.nonce } });
+				const rows = await res.json();
+
+				if (!Array.isArray(rows) || rows.length === 0) {
+					tbody.innerHTML = '<tr><td colspan="6">' +
+						escapeHtml('Todavía no hay consultas registradas.') + '</td></tr>';
+					return;
+				}
+
+				tbody.innerHTML = rows.map(r =>
 					`<tr>
-						<td>${escapeHtml(q.query)}</td>
-						<td>${parseFloat(q.avg_score).toFixed(2)}</td>
-						<td>—</td>
-						<td>—</td>
-						<td>—</td>
-						<td>—</td>
+						<td>${escapeHtml(r.query || '')}</td>
+						<td>${(parseFloat(r.score) || 0).toFixed(2)}</td>
+						<td>${r.source ? escapeHtml(r.source) : (parseInt(r.response_found, 10) ? '—' : escapeHtml('Sin resultado'))}</td>
+						<td>${parseInt(r.clicked, 10) ? '✔' : '—'}</td>
+						<td>${parseInt(r.time_ms, 10) || 0} ms</td>
+						<td>${escapeHtml(r.created_at || '')}</td>
 					</tr>`
 				).join('');
 			}
 		} catch (err) {
-			console.error(err);
+			console.error('[Convoca Admin] Analytics error:', err);
+			notice(tbody || summary);
 		}
 	}
 
@@ -236,7 +270,7 @@
 	function init() {
 		loadDashboardStats();
 		loadUnanswered();
-		loadAnalyticsTable();
+		loadAnalytics();
 		initDebugSearch();
 
 		const rebuildBtn = document.getElementById('convoca-rebuild-index') ||
