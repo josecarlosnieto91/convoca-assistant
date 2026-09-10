@@ -4,7 +4,7 @@ Tags: chatbot, search, knowledge-base, support, privacy
 Requires at least: 6.4
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 0.2.6
+Stable tag: 0.2.7
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -81,6 +81,9 @@ Yes. If WooCommerce is active, you can enable products as a knowledge source fro
 5. Widget settings
 
 == Changelog ==
+
+= 0.2.7 =
+* Fix: el panel del chat se veía desplegado y descolocado antes de la primera interacción, porque su CSS se carga en diferido desde 0.2.6. `assistant-widget.css` (que sí es síncrono) declara ahora el estado cerrado (`display:none`).
 
 = 0.2.6 =
 * Rendimiento: el motor del chat (Fuse + memoria de sesión + engine) y su CSS se cargan al abrir el widget, no en cada visita; el índice ya se cargaba al abrir.
