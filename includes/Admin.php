@@ -138,7 +138,7 @@ class Admin {
 
 		wp_localize_script(
 			'convoca-assistant-admin',
-			'convocaAdmin',
+			'convocaAssistant',
 			array(
 				'restUrl'      => rest_url( 'convoca/v1/assistant/' ),
 				'nonce'        => wp_create_nonce( 'wp_rest' ),
