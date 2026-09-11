@@ -2,23 +2,23 @@
 # This file is distributed under the GPL-2.0-or-later.
 msgid ""
 msgstr ""
-"Project-Id-Version: convoca-assistant\n"
+"Project-Id-Version: Convoca Assistant 0.2.7\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/convoca-assistant\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-08-05T07:14:55+00:00\n"
+"POT-Creation-Date: 2026-09-11T11:41:18+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"X-Domain: convoca-assistant\n"
 "X-Generator: WP-CLI 2.12.0\n"
+"X-Domain: convoca-assistant\n"
 
 #. Plugin Name of the plugin
 #: convoca-assistant.php
 #: includes/Admin.php:33
 #: includes/Admin.php:34
-#: includes/Knowledge_Base.php:393
+#: includes/Knowledge_Base.php:395
 msgid "Convoca Assistant"
 msgstr ""
 
@@ -38,487 +38,603 @@ msgstr ""
 msgid "Jose Carlos Nieto Ramos"
 msgstr ""
 
-#: assets/templates/admin-analytics.php:2
+#: assets/templates/admin-analytics.php:7
 #: includes/Admin.php:75
 #: includes/Admin.php:76
 msgid "Analytics"
 msgstr ""
 
-#: assets/templates/admin-analytics.php:3
+#: assets/templates/admin-analytics.php:8
 msgid "Estadísticas de uso del asistente virtual."
 msgstr ""
 
-#: assets/templates/admin-analytics.php:6
+#: assets/templates/admin-analytics.php:11
 msgid "Resumen"
 msgstr ""
 
-#: assets/templates/admin-analytics.php:8
-#: assets/templates/admin-dashboard.php:28
+#: assets/templates/admin-analytics.php:13
+#: assets/templates/admin-dashboard.php:33
 msgid "Cargando datos…"
 msgstr ""
 
-#: assets/templates/admin-analytics.php:13
+#: assets/templates/admin-analytics.php:18
 msgid "Últimas consultas"
 msgstr ""
 
-#: assets/templates/admin-analytics.php:17
-#: assets/templates/admin-unanswered.php:9
+#: assets/templates/admin-analytics.php:22
+#: assets/templates/admin-unanswered.php:14
 msgid "Consulta"
 msgstr ""
 
-#: assets/templates/admin-analytics.php:18
+#: assets/templates/admin-analytics.php:23
 msgid "Score"
 msgstr ""
 
-#: assets/templates/admin-analytics.php:19
+#: assets/templates/admin-analytics.php:24
 msgid "Fuente"
 msgstr ""
 
-#: assets/templates/admin-analytics.php:20
+#: assets/templates/admin-analytics.php:25
 msgid "Click"
 msgstr ""
 
-#: assets/templates/admin-analytics.php:21
+#: assets/templates/admin-analytics.php:26
 msgid "Tiempo"
 msgstr ""
 
-#: assets/templates/admin-analytics.php:22
+#: assets/templates/admin-analytics.php:27
 msgid "Fecha"
 msgstr ""
 
-#: assets/templates/admin-analytics.php:26
-#: assets/templates/admin-dashboard.php:36
-#: assets/templates/admin-unanswered.php:16
+#: assets/templates/admin-analytics.php:31
+#: assets/templates/admin-dashboard.php:41
+#: assets/templates/admin-unanswered.php:21
 msgid "Cargando…"
 msgstr ""
 
-#: assets/templates/admin-dashboard.php:2
+#: assets/templates/admin-dashboard.php:7
 msgid "Convoca Assistant — Dashboard"
 msgstr ""
 
-#: assets/templates/admin-dashboard.php:7
+#: assets/templates/admin-dashboard.php:12
 msgid "Consultas (30d)"
 msgstr ""
 
-#: assets/templates/admin-dashboard.php:11
+#: assets/templates/admin-dashboard.php:16
 msgid "Tasa de resolución"
 msgstr ""
 
-#: assets/templates/admin-dashboard.php:15
+#: assets/templates/admin-dashboard.php:20
 msgid "Sin respuesta (30d)"
 msgstr ""
 
-#: assets/templates/admin-dashboard.php:19
+#: assets/templates/admin-dashboard.php:24
 msgid "Tiempo medio"
 msgstr ""
 
-#: assets/templates/admin-dashboard.php:26
+#: assets/templates/admin-dashboard.php:31
 msgid "Consultas por día"
 msgstr ""
 
-#: assets/templates/admin-dashboard.php:34
+#: assets/templates/admin-dashboard.php:39
 msgid "Top consultas"
 msgstr ""
 
-#: assets/templates/admin-dashboard.php:43
+#: assets/templates/admin-dashboard.php:48
 msgid "Estado del índice"
 msgstr ""
 
-#: assets/templates/admin-dashboard.php:46
+#: assets/templates/admin-dashboard.php:51
 msgid "Estado:"
 msgstr ""
 
-#: assets/templates/admin-dashboard.php:49
+#: assets/templates/admin-dashboard.php:54
 msgid "Generado"
 msgstr ""
 
-#: assets/templates/admin-dashboard.php:51
+#: assets/templates/admin-dashboard.php:56
 msgid "(pendiente de regenerar)"
 msgstr ""
 
-#: assets/templates/admin-dashboard.php:54
+#: assets/templates/admin-dashboard.php:59
 msgid "No generado"
 msgstr ""
 
-#: assets/templates/admin-dashboard.php:59
+#: assets/templates/admin-dashboard.php:64
 msgid "Entradas:"
 msgstr ""
 
-#: assets/templates/admin-dashboard.php:63
+#: assets/templates/admin-dashboard.php:68
 msgid "Tamaño:"
 msgstr ""
 
-#: assets/templates/admin-dashboard.php:67
+#: assets/templates/admin-dashboard.php:72
 msgid "Última generación:"
 msgstr ""
 
-#: assets/templates/admin-dashboard.php:71
+#: assets/templates/admin-dashboard.php:76
 msgid "Hash:"
 msgstr ""
 
-#: assets/templates/admin-dashboard.php:76
+#: assets/templates/admin-dashboard.php:81
 msgid "Regenerar índice ahora"
 msgstr ""
 
-#: assets/templates/admin-knowledge.php:2
+#: assets/templates/admin-knowledge.php:7
 #: includes/Admin.php:55
 #: includes/Admin.php:56
 msgid "Conocimiento"
 msgstr ""
 
-#: assets/templates/admin-knowledge.php:3
+#: assets/templates/admin-knowledge.php:8
 msgid "Gestiona las fuentes de conocimiento del asistente. Puedes activar o desactivar tipos de contenido y ajustar su peso en las búsquedas."
 msgstr ""
 
-#: assets/templates/admin-knowledge.php:6
+#: assets/templates/admin-knowledge.php:11
 msgid "Ajustes guardados."
 msgstr ""
 
-#: assets/templates/admin-knowledge.php:10
+#: assets/templates/admin-knowledge.php:15
 msgid "Contenido indexable"
 msgstr ""
 
-#: assets/templates/admin-knowledge.php:11
+#: assets/templates/admin-knowledge.php:16
 msgid "Accede directamente a los listados para gestionar el contenido:"
 msgstr ""
 
-#: assets/templates/admin-knowledge.php:13
+#: assets/templates/admin-knowledge.php:18
 msgid "Gestionar FAQs"
 msgstr ""
 
-#: assets/templates/admin-knowledge.php:14
+#: assets/templates/admin-knowledge.php:19
 msgid "Gestionar Base de Conocimiento"
 msgstr ""
 
-#: assets/templates/admin-knowledge.php:15
+#: assets/templates/admin-knowledge.php:20
 #: includes/providers/Posts_Provider.php:32
 msgid "Entradas"
 msgstr ""
 
-#: assets/templates/admin-knowledge.php:16
+#: assets/templates/admin-knowledge.php:21
+#: assets/templates/admin-settings.php:124
+#: assets/templates/admin-settings.php:133
 #: includes/providers/Pages_Provider.php:30
 msgid "Páginas"
 msgstr ""
 
-#: assets/templates/admin-knowledge.php:26
+#: assets/templates/admin-knowledge.php:31
+#: assets/templates/admin-settings.php:120
 msgid "Fuentes activas"
 msgstr ""
 
-#: assets/templates/admin-knowledge.php:27
+#: assets/templates/admin-knowledge.php:32
 msgid "Marca las fuentes de conocimiento que quieres incluir en el asistente."
 msgstr ""
 
-#: assets/templates/admin-knowledge.php:34
+#: assets/templates/admin-knowledge.php:39
 msgid "no disponible"
 msgstr ""
 
-#: assets/templates/admin-knowledge.php:51
+#: assets/templates/admin-knowledge.php:56
 msgid "Peso por tipo de contenido"
 msgstr ""
 
-#: assets/templates/admin-knowledge.php:52
+#: assets/templates/admin-knowledge.php:57
 msgid "A mayor peso, más relevante será ese tipo de contenido en las búsquedas."
 msgstr ""
 
-#: assets/templates/admin-knowledge.php:63
+#: assets/templates/admin-knowledge.php:68
 msgid "defecto:"
 msgstr ""
 
-#: assets/templates/admin-knowledge.php:70
+#: assets/templates/admin-knowledge.php:75
 msgid "Guardar cambios"
 msgstr ""
 
-#: assets/templates/admin-settings.php:2
+#: assets/templates/admin-settings.php:7
 #: includes/Admin.php:95
 #: includes/Admin.php:96
 msgid "Ajustes"
 msgstr ""
 
-#: assets/templates/admin-settings.php:9
+#: assets/templates/admin-settings.php:14
 msgid "Widget"
 msgstr ""
 
-#: assets/templates/admin-settings.php:12
+#: assets/templates/admin-settings.php:17
 msgid "Habilitar widget flotante"
 msgstr ""
 
-#: assets/templates/admin-settings.php:16
+#: assets/templates/admin-settings.php:21
 msgid "Posición"
 msgstr ""
 
-#: assets/templates/admin-settings.php:19
+#: assets/templates/admin-settings.php:24
 msgid "Abajo derecha"
 msgstr ""
 
-#: assets/templates/admin-settings.php:20
+#: assets/templates/admin-settings.php:25
 msgid "Abajo izquierda"
 msgstr ""
 
-#: assets/templates/admin-settings.php:25
+#: assets/templates/admin-settings.php:30
 msgid "Color primario"
 msgstr ""
 
-#: assets/templates/admin-settings.php:29
+#: assets/templates/admin-settings.php:34
 msgid "Título"
 msgstr ""
 
-#: assets/templates/admin-settings.php:33
+#: assets/templates/admin-settings.php:38
 msgid "Mensaje de bienvenida"
 msgstr ""
 
-#: assets/templates/admin-settings.php:37
+#: assets/templates/admin-settings.php:42
 msgid "Auto-apertura"
 msgstr ""
 
-#: assets/templates/admin-settings.php:40
-#: includes/Indexer.php:502
+#: assets/templates/admin-settings.php:45
+#: includes/Indexer.php:432
 msgid "Nunca"
 msgstr ""
 
-#: assets/templates/admin-settings.php:41
+#: assets/templates/admin-settings.php:46
 msgid "Siempre"
 msgstr ""
 
-#: assets/templates/admin-settings.php:42
+#: assets/templates/admin-settings.php:47
 msgid "Al hacer scroll"
 msgstr ""
 
-#: assets/templates/admin-settings.php:50
+#: assets/templates/admin-settings.php:55
 msgid "Búsqueda"
 msgstr ""
 
-#: assets/templates/admin-settings.php:53
+#: assets/templates/admin-settings.php:58
 msgid "Modo de búsqueda"
 msgstr ""
 
-#: assets/templates/admin-settings.php:56
+#: assets/templates/admin-settings.php:61
 msgid "Cliente (Fuse.js)"
 msgstr ""
 
-#: assets/templates/admin-settings.php:57
+#: assets/templates/admin-settings.php:62
 msgid "Servidor"
 msgstr ""
 
-#: assets/templates/admin-settings.php:58
+#: assets/templates/admin-settings.php:63
 msgid "Ambos"
 msgstr ""
 
-#: assets/templates/admin-settings.php:63
+#: assets/templates/admin-settings.php:68
 msgid "Fallback servidor"
 msgstr ""
 
-#: assets/templates/admin-settings.php:67
+#: assets/templates/admin-settings.php:72
 msgid "Máx. resultados"
 msgstr ""
 
-#: assets/templates/admin-settings.php:71
+#: assets/templates/admin-settings.php:76
 msgid "Umbral Fuse.js"
 msgstr ""
 
-#: assets/templates/admin-settings.php:75
+#: assets/templates/admin-settings.php:80
 msgid "Distancia Fuse.js"
 msgstr ""
 
-#: assets/templates/admin-settings.php:82
-msgid "Privacidad"
+#: assets/templates/admin-settings.php:84
+msgid "Umbral respuesta directa"
 msgstr ""
 
-#: assets/templates/admin-settings.php:85
-msgid "Registrar interacciones"
+#: assets/templates/admin-settings.php:87
+msgid "Score mínimo para responder directamente con una fuente prioritaria en vez de listar fuentes (0.55 por defecto)."
 msgstr ""
 
-#: assets/templates/admin-settings.php:89
-msgid "Anonimizar IP/UA"
+#: assets/templates/admin-settings.php:91
+msgid "Pesos del ranking"
 msgstr ""
 
 #: assets/templates/admin-settings.php:93
-msgid "Retención (días)"
+msgid "Fuzzy"
 msgstr ""
 
-#: assets/templates/admin-settings.php:100
-#: assets/templates/admin-tools.php:40
-msgid "Mantenimiento"
+#: assets/templates/admin-settings.php:94
+msgid "Grafo"
 msgstr ""
 
-#: assets/templates/admin-settings.php:103
-msgid "Modo mantenimiento"
+#: assets/templates/admin-settings.php:95
+msgid "Exacto"
+msgstr ""
+
+#: assets/templates/admin-settings.php:96
+msgid "Título exacto"
+msgstr ""
+
+#: assets/templates/admin-settings.php:97
+msgid "Coeficientes del ranking del buscador (0.45 / 0.10 / 0.15 / 0.15 por defecto)."
+msgstr ""
+
+#: assets/templates/admin-settings.php:101
+msgid "Email de contacto (sin respuesta)"
+msgstr ""
+
+#: assets/templates/admin-settings.php:105
+msgid "Teléfono / WhatsApp (sin respuesta)"
 msgstr ""
 
 #: assets/templates/admin-settings.php:107
+msgid "Teléfono"
+msgstr ""
+
+#: assets/templates/admin-settings.php:108
+msgid "WhatsApp (código país + número)"
+msgstr ""
+
+#: assets/templates/admin-settings.php:109
+msgid "Cuando el asistente no encuentra respuesta, el widget mostrará «¿Hablamos?» con estos datos."
+msgstr ""
+
+#: assets/templates/admin-settings.php:116
+msgid "Fuentes y prioridad de respuesta"
+msgstr ""
+
+#: assets/templates/admin-settings.php:117
+msgid "Elige qué contenidos indexa el asistente y cuáles responden primero. Los tipos prioritarios (por defecto FAQ y Wiki) reciben un boost en el ranking; el resto solo responde cuando no hay un match claro."
+msgstr ""
+
+#: assets/templates/admin-settings.php:122
+#: assets/templates/admin-settings.php:131
+#: includes/Knowledge_Base.php:84
+#: includes/providers/FAQ_Provider.php:30
+msgid "FAQ"
+msgstr ""
+
+#: assets/templates/admin-settings.php:123
+#: assets/templates/admin-settings.php:132
+msgid "Wiki / Base de conocimiento"
+msgstr ""
+
+#: assets/templates/admin-settings.php:125
+#: assets/templates/admin-settings.php:134
+msgid "Entradas (blog)"
+msgstr ""
+
+#: assets/templates/admin-settings.php:129
+msgid "Tipos prioritarios"
+msgstr ""
+
+#: assets/templates/admin-settings.php:138
+msgid "Boost de prioridad"
+msgstr ""
+
+#: assets/templates/admin-settings.php:141
+msgid "Multiplicador de score para los tipos prioritarios (1.35 por defecto)."
+msgstr ""
+
+#: assets/templates/admin-settings.php:145
+msgid "Peso FAQ"
+msgstr ""
+
+#: assets/templates/admin-settings.php:149
+msgid "Peso Wiki"
+msgstr ""
+
+#: assets/templates/admin-settings.php:153
+msgid "Peso páginas"
+msgstr ""
+
+#: assets/templates/admin-settings.php:157
+msgid "Peso entradas (blog)"
+msgstr ""
+
+#: assets/templates/admin-settings.php:161
+msgid "Longitud máxima de respuesta"
+msgstr ""
+
+#: assets/templates/admin-settings.php:164
+msgid "Caracteres mostrados por respuesta en el chat (600 por defecto)."
+msgstr ""
+
+#: assets/templates/admin-settings.php:171
+msgid "Privacidad"
+msgstr ""
+
+#: assets/templates/admin-settings.php:174
+msgid "Registrar interacciones"
+msgstr ""
+
+#: assets/templates/admin-settings.php:178
+msgid "Anonimizar IP/UA"
+msgstr ""
+
+#: assets/templates/admin-settings.php:182
+msgid "Retención (días)"
+msgstr ""
+
+#: assets/templates/admin-settings.php:189
+#: assets/templates/admin-tools.php:45
+msgid "Mantenimiento"
+msgstr ""
+
+#: assets/templates/admin-settings.php:192
+msgid "Modo mantenimiento"
+msgstr ""
+
+#: assets/templates/admin-settings.php:196
 msgid "Mensaje"
 msgstr ""
 
-#: assets/templates/admin-settings.php:113
+#: assets/templates/admin-settings.php:202
 msgid "Guardar ajustes"
 msgstr ""
 
-#: assets/templates/admin-synonyms.php:2
-#: assets/templates/admin-synonyms.php:24
-#: assets/templates/admin-synonyms.php:48
+#: assets/templates/admin-synonyms.php:7
+#: assets/templates/admin-synonyms.php:29
+#: assets/templates/admin-synonyms.php:53
 #: includes/Admin.php:65
 #: includes/Admin.php:66
 msgid "Sinónimos"
 msgstr ""
 
-#: assets/templates/admin-synonyms.php:5
+#: assets/templates/admin-synonyms.php:10
 msgid "Sinónimos guardados correctamente."
 msgstr ""
 
-#: assets/templates/admin-synonyms.php:8
+#: assets/templates/admin-synonyms.php:13
 msgid "Sinónimo eliminado."
 msgstr ""
 
-#: assets/templates/admin-synonyms.php:14
-#: assets/templates/admin-synonyms.php:31
+#: assets/templates/admin-synonyms.php:19
+#: assets/templates/admin-synonyms.php:36
 msgid "Añadir sinónimo"
 msgstr ""
 
-#: assets/templates/admin-synonyms.php:20
-#: assets/templates/admin-synonyms.php:47
+#: assets/templates/admin-synonyms.php:25
+#: assets/templates/admin-synonyms.php:52
 msgid "Término"
 msgstr ""
 
-#: assets/templates/admin-synonyms.php:27
+#: assets/templates/admin-synonyms.php:32
 msgid "Un sinónimo por línea."
 msgstr ""
 
-#: assets/templates/admin-synonyms.php:38
+#: assets/templates/admin-synonyms.php:43
 msgid "Sinónimos existentes"
 msgstr ""
 
-#: assets/templates/admin-synonyms.php:42
+#: assets/templates/admin-synonyms.php:47
 msgid "No hay sinónimos definidos."
 msgstr ""
 
-#: assets/templates/admin-synonyms.php:49
-#: assets/templates/admin-unanswered.php:12
+#: assets/templates/admin-synonyms.php:54
+#: assets/templates/admin-unanswered.php:17
 msgid "Acción"
 msgstr ""
 
-#: assets/templates/admin-synonyms.php:62
+#: assets/templates/admin-synonyms.php:67
 msgid "Eliminar"
 msgstr ""
 
-#: assets/templates/admin-synonyms.php:75
+#: assets/templates/admin-synonyms.php:80
 msgid "Stop Words"
 msgstr ""
 
-#: assets/templates/admin-synonyms.php:82
+#: assets/templates/admin-synonyms.php:87
 msgid "Una palabra por línea. Estas palabras se ignorarán en las búsquedas."
 msgstr ""
 
-#: assets/templates/admin-synonyms.php:83
+#: assets/templates/admin-synonyms.php:88
 msgid "Guardar stop words"
 msgstr ""
 
-#: assets/templates/admin-tools.php:2
+#: assets/templates/admin-tools.php:7
 #: includes/Admin.php:105
 #: includes/Admin.php:106
 msgid "Herramientas"
 msgstr ""
 
-#: assets/templates/admin-tools.php:5
+#: assets/templates/admin-tools.php:10
 msgid "Importación completada."
 msgstr ""
 
-#: assets/templates/admin-tools.php:11
-#: assets/templates/admin-tools.php:20
+#: assets/templates/admin-tools.php:16
+#: assets/templates/admin-tools.php:25
 msgid "Exportar"
 msgstr ""
 
-#: assets/templates/admin-tools.php:12
+#: assets/templates/admin-tools.php:17
 msgid "Exporta tu base de conocimiento o configuración como archivo JSON."
 msgstr ""
 
-#: assets/templates/admin-tools.php:17
+#: assets/templates/admin-tools.php:22
 msgid "Conocimiento (FAQ + KB + sinónimos)"
 msgstr ""
 
-#: assets/templates/admin-tools.php:18
+#: assets/templates/admin-tools.php:23
 msgid "Configuración"
 msgstr ""
 
-#: assets/templates/admin-tools.php:27
-#: assets/templates/admin-tools.php:33
+#: assets/templates/admin-tools.php:32
+#: assets/templates/admin-tools.php:38
 msgid "Importar"
 msgstr ""
 
-#: assets/templates/admin-tools.php:28
+#: assets/templates/admin-tools.php:33
 msgid "Importa un archivo JSON de conocimiento o configuración."
 msgstr ""
 
-#: assets/templates/admin-tools.php:42
+#: assets/templates/admin-tools.php:47
 msgid "Regenerar índice"
 msgstr ""
 
-#: assets/templates/admin-tools.php:45
+#: assets/templates/admin-tools.php:50
 msgid "Limpiar logs antiguos"
 msgstr ""
 
-#: assets/templates/admin-tools.php:51
+#: assets/templates/admin-tools.php:56
 msgid "Debug"
 msgstr ""
 
-#: assets/templates/admin-tools.php:57
+#: assets/templates/admin-tools.php:62
 msgid "Modo debug"
 msgstr ""
 
-#: assets/templates/admin-tools.php:61
+#: assets/templates/admin-tools.php:66
 msgid "Guardar"
 msgstr ""
 
-#: assets/templates/admin-tools.php:64
+#: assets/templates/admin-tools.php:69
 msgid "Probar búsqueda"
 msgstr ""
 
-#: assets/templates/admin-tools.php:65
+#: assets/templates/admin-tools.php:70
 msgid "Escribe una consulta de prueba…"
 msgstr ""
 
-#: assets/templates/admin-tools.php:66
+#: assets/templates/admin-tools.php:71
 msgid "Buscar"
 msgstr ""
 
-#: assets/templates/admin-unanswered.php:2
+#: assets/templates/admin-unanswered.php:7
 msgid "Consultas sin respuesta"
 msgstr ""
 
-#: assets/templates/admin-unanswered.php:3
+#: assets/templates/admin-unanswered.php:8
 msgid "Estas consultas de usuarios no encontraron contenido relevante. Añádelas a tu base de conocimiento para mejorar el asistente."
 msgstr ""
 
-#: assets/templates/admin-unanswered.php:10
+#: assets/templates/admin-unanswered.php:15
 msgid "Veces"
 msgstr ""
 
-#: assets/templates/admin-unanswered.php:11
+#: assets/templates/admin-unanswered.php:16
 msgid "Última vez"
 msgstr ""
 
-#: assets/templates/widget-html.php:7
+#: assets/templates/widget-html.php:12
 msgid "Abrir asistente virtual"
 msgstr ""
 
-#: assets/templates/widget-html.php:25
+#: assets/templates/widget-html.php:30
 msgid "Cerrar"
 msgstr ""
 
-#: assets/templates/widget-html.php:31
-#: includes/Widget.php:101
+#: assets/templates/widget-html.php:36
+#: includes/Widget.php:125
 msgid "¡Hola! ¿En qué puedo ayudarte?"
 msgstr ""
 
-#: assets/templates/widget-html.php:42
-#: includes/Widget.php:114
+#: assets/templates/widget-html.php:47
+#: includes/Widget.php:153
 msgid "Escribe tu pregunta aquí..."
 msgstr ""
 
-#: assets/templates/widget-html.php:43
+#: assets/templates/widget-html.php:48
 msgid "Pregunta"
 msgstr ""
 
-#: assets/templates/widget-html.php:46
-#: includes/Widget.php:115
+#: assets/templates/widget-html.php:51
+#: includes/Widget.php:154
 msgid "Enviar"
 msgstr ""
 
@@ -534,9 +650,9 @@ msgstr ""
 
 #: includes/Export_Import.php:39
 #: includes/Export_Import.php:85
-#: includes/Synonyms.php:147
-#: includes/Synonyms.php:176
-#: includes/Synonyms.php:197
+#: includes/Synonyms.php:153
+#: includes/Synonyms.php:187
+#: includes/Synonyms.php:213
 msgid "No tienes permisos."
 msgstr ""
 
@@ -545,7 +661,7 @@ msgid "Tipo de exportación no válido."
 msgstr ""
 
 #: includes/Export_Import.php:92
-#: includes/Export_Import.php:175
+#: includes/Export_Import.php:178
 msgid "No se seleccionó ningún archivo."
 msgstr ""
 
@@ -575,72 +691,67 @@ msgstr ""
 msgid "Tipo de importación no reconocido."
 msgstr ""
 
-#: includes/Export_Import.php:172
+#: includes/Export_Import.php:175
 msgid "El archivo excede el tamaño máximo permitido por el servidor."
 msgstr ""
 
-#: includes/Export_Import.php:173
+#: includes/Export_Import.php:176
 msgid "El archivo excede el tamaño máximo del formulario."
 msgstr ""
 
-#: includes/Export_Import.php:174
+#: includes/Export_Import.php:177
 msgid "El archivo se subió parcialmente."
 msgstr ""
 
-#: includes/Export_Import.php:176
+#: includes/Export_Import.php:179
 msgid "Error del servidor: falta directorio temporal."
 msgstr ""
 
-#: includes/Export_Import.php:177
+#: includes/Export_Import.php:180
 msgid "Error del servidor: no se pudo escribir."
 msgstr ""
 
-#: includes/Export_Import.php:180
+#: includes/Export_Import.php:183
 msgid "Error desconocido al subir el archivo."
 msgstr ""
 
-#: includes/Indexer.php:70
+#: includes/Indexer.php:84
 msgid "Cada 5 minutos"
 msgstr ""
 
-#: includes/Indexer.php:87
+#: includes/Indexer.php:101
 msgid "Index is up to date."
 msgstr ""
 
-#: includes/Indexer.php:152
+#: includes/Indexer.php:168
 msgid "JSON encoding failed."
 msgstr ""
 
-#: includes/Indexer.php:159
+#: includes/Indexer.php:178
 msgid "JSON encoding failed (final)."
 msgstr ""
 
-#: includes/Indexer.php:167
+#: includes/Indexer.php:189
 msgid "Could not create index directory."
 msgstr ""
 
-#: includes/Indexer.php:179
+#: includes/Indexer.php:204
 msgid "Could not write index.json."
 msgstr ""
 
 #. translators: %s: human-readable time diff
-#: includes/Indexer.php:500
+#: includes/Indexer.php:430
 #, php-format
 msgid "Hace %s"
 msgstr ""
 
-#: includes/Installer.php:21
-#: includes/Installer.php:101
+#: includes/Installer.php:34
+#: includes/Installer.php:269
 msgid "¡Hola! Soy el asistente virtual. ¿En qué puedo ayudarte?"
 msgstr ""
 
 #: includes/Knowledge_Base.php:83
 msgid "FAQs"
-msgstr ""
-
-#: includes/Knowledge_Base.php:84
-#: includes/providers/FAQ_Provider.php:30
-msgid "FAQ"
 msgstr ""
 
 #: includes/Knowledge_Base.php:85
@@ -762,53 +873,54 @@ msgstr ""
 msgid "Peso en búsquedas (0-10). 0 = peso por defecto del tipo"
 msgstr ""
 
-#: includes/Knowledge_Base.php:256
-#: includes/Knowledge_Base.php:438
+#: includes/Knowledge_Base.php:258
+#: includes/Knowledge_Base.php:440
 msgid "Excluir del índice del asistente"
 msgstr ""
 
-#: includes/Knowledge_Base.php:281
+#: includes/Knowledge_Base.php:283
 msgid "Peso"
 msgstr ""
 
-#: includes/Knowledge_Base.php:282
+#: includes/Knowledge_Base.php:284
 msgid "Keywords"
 msgstr ""
 
-#: includes/Knowledge_Base.php:283
-#: includes/Knowledge_Base.php:369
+#: includes/Knowledge_Base.php:285
+#: includes/Knowledge_Base.php:371
 msgid "Excluido"
 msgstr ""
 
-#: includes/Knowledge_Base.php:321
+#: includes/Knowledge_Base.php:323
 msgid "Sí"
 msgstr ""
 
-#: includes/Knowledge_Base.php:323
+#: includes/Knowledge_Base.php:325
 msgid "No"
 msgstr ""
 
-#: includes/Knowledge_Base.php:349
+#: includes/Knowledge_Base.php:351
 msgid "Asistente"
 msgstr ""
 
-#: includes/Knowledge_Base.php:371
+#: includes/Knowledge_Base.php:373
 msgid "Indexado"
 msgstr ""
 
-#: includes/Knowledge_Base.php:417
+#: includes/Knowledge_Base.php:419
 msgid "Palabras clave extra:"
 msgstr ""
 
-#: includes/Knowledge_Base.php:423
+#: includes/Knowledge_Base.php:425
 msgid "Separadas por coma. Mejoran la búsqueda."
 msgstr ""
 
-#: includes/Knowledge_Base.php:427
+#: includes/Knowledge_Base.php:429
 msgid "Peso (0-10):"
 msgstr ""
 
-#: includes/Knowledge_Base.php:433
+#. translators: %s: default weight value.
+#: includes/Knowledge_Base.php:435
 #, php-format
 msgid "Defecto: %s"
 msgstr ""
@@ -837,64 +949,68 @@ msgstr ""
 msgid "Productos con precio y SKU"
 msgstr ""
 
-#: includes/REST_Controller.php:140
+#: includes/REST_Controller.php:153
 msgid "Demasiadas solicitudes. Inténtalo de nuevo en un minuto."
 msgstr ""
 
-#: includes/REST_Controller.php:251
+#: includes/REST_Controller.php:262
 msgid "Knowledge index not found."
 msgstr ""
 
-#: includes/REST_Controller.php:260
+#: includes/REST_Controller.php:271
 msgid "Could not read index."
 msgstr ""
 
-#: includes/REST_Controller.php:269
+#: includes/REST_Controller.php:280
 msgid "Index is corrupted."
 msgstr ""
 
-#: includes/REST_Controller.php:294
+#: includes/REST_Controller.php:305
 msgid "La consulta debe tener al menos 2 caracteres."
 msgstr ""
 
-#: includes/REST_Controller.php:395
+#: includes/REST_Controller.php:421
 msgid "Logs eliminados."
 msgstr ""
 
-#: includes/Widget.php:100
-#: includes/Widget.php:144
-#: includes/Widget.php:168
+#: includes/Widget.php:124
+#: includes/Widget.php:198
+#: includes/Widget.php:222
 msgid "Asistente Virtual"
 msgstr ""
 
-#: includes/Widget.php:116
+#: includes/Widget.php:155
 msgid "Escribiendo..."
 msgstr ""
 
-#: includes/Widget.php:117
+#: includes/Widget.php:156
 msgid "Preparando asistente..."
 msgstr ""
 
-#: includes/Widget.php:118
+#: includes/Widget.php:157
 msgid "No encontré una respuesta. Reformula la pregunta o contacta con nosotros."
 msgstr ""
 
-#: includes/Widget.php:119
+#: includes/Widget.php:158
+msgid "¿Hablamos?"
+msgstr ""
+
+#: includes/Widget.php:159
 msgid "Ver fuente"
 msgstr ""
 
-#: includes/Widget.php:120
+#: includes/Widget.php:160
 msgid "Copiar"
 msgstr ""
 
-#: includes/Widget.php:121
+#: includes/Widget.php:161
 msgid "¡Copiado!"
 msgstr ""
 
-#: includes/Widget.php:122
+#: includes/Widget.php:162
 msgid "¿Te ha servido?"
 msgstr ""
 
-#: includes/Widget.php:123
+#: includes/Widget.php:163
 msgid "¡Gracias por tu feedback!"
 msgstr ""
