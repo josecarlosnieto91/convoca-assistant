@@ -1,5 +1,11 @@
 # Changelog — Convoca Assistant
 
+## v0.2.8 (2026-09-23)
+
+### 🐛 Correcciones
+- El botón flotante del asistente no aparecía: `Widget::render_floating_widget()` existía pero nadie lo enganchaba, así que el widget solo salía en los sitios que traían su propio mu-plugin (Ejemplo tenía uno que lo pintaba en `shutdown`). Ahora el plugin lo pinta en el pie, una sola vez por petición.
+- Con eso, el mu-plugin de Ejemplo deja de ser necesario: se retira.
+
 ## 0.2.2 (2026-09-05)
 
 ### 🔐 Security
