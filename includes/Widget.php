@@ -19,6 +19,11 @@ class Widget {
 	 */
 	public static function init(): void {
 		add_action( 'wp_enqueue_scripts', array( __CLASS__, 'enqueue_assets' ) );
+		// Botón flotante en el pie. El método existía y NINGÚN sitio lo llamaba:
+		// por eso el widget solo salía donde alguien había puesto su propio
+		// mu-plugin (el de Lugg). Va antes de que se impriman los scripts del pie
+		// para que el HTML ya esté en el DOM cuando el JS se ejecute.
+		add_action( 'wp_footer', array( __CLASS__, 'render_floating_widget' ), 10 );
 		add_shortcode( 'convoca_assistant', array( __CLASS__, 'shortcode' ) );
 	}
 
@@ -187,11 +192,20 @@ class Widget {
 	 * @return void
 	 */
 	public static function render_floating_widget(): void {
+		// Una sola vez por petición: si un sitio conserva su mu-plugin antiguo,
+		// no se pintan dos botones.
+		static $pintado = false;
+		if ( $pintado ) {
+			return;
+		}
+
 		$settings = Settings::get_all();
 
 		if ( ! empty( $settings['maintenance_mode'] ) || empty( $settings['widget_enabled'] ) ) {
 			return;
 		}
+
+		$pintado = true;
 
 		$position = $settings['widget_position'] ?? 'bottom-right';
 		$color    = $settings['widget_primary_color'] ?? '#2563eb';
