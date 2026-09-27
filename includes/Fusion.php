@@ -55,7 +55,7 @@ class Fusion {
 		foreach ( $rankings as $ranking ) {
 			$rank = 0;
 			foreach ( (array) $ranking as $item ) {
-				$rank++;
+				++$rank;
 				if ( $rank > $depth ) {
 					break;
 				}
