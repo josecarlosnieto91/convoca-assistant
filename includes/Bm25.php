@@ -58,7 +58,11 @@ class Bm25 {
 	 * @return array<int, array<string, mixed>> Entradas ordenadas por BM25 descendente.
 	 */
 	public static function rank( array $index_data, array $tokens, float $k1 = 1.2, float $b = 0.75 ): array {
-		/** @var array<int, array<string, mixed>> $entries */
+		/**
+		 * Entradas del índice.
+		 *
+		 * @var array<int, array<string, mixed>> $entries
+		 */
 		$entries = $index_data['entries'] ?? array();
 		if ( empty( $entries ) || empty( $tokens ) ) {
 			return array();
@@ -75,12 +79,20 @@ class Bm25 {
 		$k1    = $k1 > 0 ? $k1 : 1.2;
 		$b     = ( $b >= 0 && $b <= 1 ) ? $b : 0.75;
 
-		/** @var array<int, array<string, mixed>> $scored */
+		/**
+		 * Resultados puntuados, en el orden en que se van calculando.
+		 *
+		 * @var array<int, array<string, mixed>> $scored
+		 */
 		$scored = array();
 		foreach ( $entries as $pos => $entry ) {
-			/** @var array<string, float> $tf */
-			$tf = $stats['tf'][ $pos ] ?? array();
-			$dl = (float) ( $stats['dl'][ $pos ] ?? 0.0 );
+			/**
+			 * Frecuencias ponderadas de este documento.
+			 *
+			 * @var array<string, float> $tf
+			 */
+			$tf    = $stats['tf'][ $pos ] ?? array();
+			$dl    = (float) ( $stats['dl'][ $pos ] ?? 0.0 );
 			$score = 0.0;
 
 			foreach ( $terms as $term ) {
@@ -147,18 +159,34 @@ class Bm25 {
 			return self::$stats;
 		}
 
-		/** @var array<int, array<string, float>> $tf */
+		/**
+		 * Frecuencias ponderadas de cada documento, por posición.
+		 *
+		 * @var array<int, array<string, float>> $tf
+		 */
 		$tf = array();
-		/** @var array<int, float> $dl */
+		/**
+		 * Longitud ponderada de cada documento.
+		 *
+		 * @var array<int, float> $dl
+		 */
 		$dl = array();
-		/** @var array<string, int> $df */
-		$df = array();
+		/**
+		 * En cuántos documentos aparece cada término.
+		 *
+		 * @var array<string, int> $df
+		 */
+		$df  = array();
 		$sum = 0.0;
 
 		foreach ( (array) ( $index_data['entries'] ?? array() ) as $pos => $entry ) {
-			/** @var array<string, float> $freq */
+			/**
+			 * Frecuencias del documento que se está procesando.
+			 *
+			 * @var array<string, float> $freq
+			 */
 			$freq = array();
-			$len = 0.0;
+			$len  = 0.0;
 
 			foreach ( self::FIELD_WEIGHTS as $field => $weight ) {
 				$text = self::field_text( $entry, $field );
@@ -182,7 +210,7 @@ class Bm25 {
 
 		$total = count( $index_data['entries'] ?? array() );
 
-		self::$stats = array(
+		self::$stats     = array(
 			'tf'    => $tf,
 			'dl'    => $dl,
 			'df'    => $df,
