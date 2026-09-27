@@ -14,6 +14,9 @@ namespace {
 		define( 'ABSPATH', dirname( __DIR__ ) . '/' );
 	}
 
+	if ( ! defined( 'DAY_IN_SECONDS' ) ) {
+		define( 'DAY_IN_SECONDS', 86400 );
+	}
 	if ( ! defined( 'HOUR_IN_SECONDS' ) ) {
 		define( 'HOUR_IN_SECONDS', 3600 );
 	}
@@ -231,6 +234,33 @@ namespace {
 	}
 
 	// Constante del directorio del índice (para Indexer::index_exists en tests).
+	// ─── remove_accents() del núcleo (lo usa Searcher::normalize) ───
+	// Equivalente al del núcleo para el rango latino, que es el que aparece en este corpus.
+	// Con la guarda de siempre, para no pisar el del núcleo si algún día se corre con WordPress.
+	if ( ! function_exists( 'remove_accents' ) ) {
+		function remove_accents( $string ) {
+			if ( ! preg_match( '/[\x80-\xff]/', (string) $string ) ) {
+				return $string;
+			}
+			if ( function_exists( 'transliterator_transliterate' ) ) {
+				return transliterator_transliterate( 'Any-Latin; Latin-ASCII;', $string );
+			}
+			return strtr(
+				$string,
+				array(
+					'á' => 'a', 'à' => 'a', 'ä' => 'a', 'â' => 'a', 'ā' => 'a', 'ã' => 'a', 'å' => 'a',
+					'é' => 'e', 'è' => 'e', 'ë' => 'e', 'ê' => 'e', 'ē' => 'e',
+					'í' => 'i', 'ì' => 'i', 'ï' => 'i', 'î' => 'i', 'ī' => 'i',
+					'ó' => 'o', 'ò' => 'o', 'ö' => 'o', 'ô' => 'o', 'ō' => 'o', 'õ' => 'o',
+					'ú' => 'u', 'ù' => 'u', 'ü' => 'u', 'û' => 'u', 'ū' => 'u',
+					'ñ' => 'n', 'ç' => 'c',
+					'Á' => 'A', 'É' => 'E', 'Í' => 'I', 'Ó' => 'O', 'Ú' => 'U', 'Ñ' => 'N', 'Ç' => 'C',
+					'º' => 'o', 'ª' => 'a', '€' => 'EUR', '¡' => '!', '¿' => '?',
+				)
+			);
+		}
+	}
+
 	if ( ! defined( 'CONVOCA_ASSISTANT_INDEX_DIR' ) ) {
 		define( 'CONVOCA_ASSISTANT_INDEX_DIR', sys_get_temp_dir() . '/convoca-assistant-tests/' );
 	}
