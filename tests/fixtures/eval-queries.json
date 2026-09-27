@@ -1,0 +1,362 @@
+{
+  "_que_es": "Set de consultas para la línea base del buscador (Fase 0). Esquema del goal: {query, frecuencia, esperados:[entry_id], nota}.",
+  "_estado": "BORRADOR PENDIENTE DE REVISIÓN DE JC. El goal exige su revisión antes de usar el set como referencia: un set mal etiquetado mide ruido. Las que escriba él se añaden con origen=\"manual_jc\".",
+  "_corpus": {
+    "fichero": "index-lugg-20260927.json",
+    "md5": "a20b40d56a5c6a7212da85724233c114",
+    "entradas": 336
+  },
+  "_por_que_no_hay_consultas_reales": "Se rastrearon los registros de Lugg (7 filas) y de la demo (16). NO son de personas: 5 de Lugg comparten sesión y salen de la página de pago con ?convoca_gateway_pago=12226, y en la demo 11 de 16 llevan el mismo user-agent dentro de una tanda de 40 minutos en julio. Son tandas automáticas, con clicked=0 y (en Lugg) score=0.9 idéntico. Por eso frecuencia queda a null: no hay demanda real que medir todavía.",
+  "_huecos_declarados": [
+    "¿Qué servicios ofrecéis? (sin respuesta en los dos sitios)"
+  ],
+  "consultas": [
+    {
+      "query": "cuota",
+      "frecuencia": null,
+      "esperados": [
+        "12154"
+      ],
+      "nota": "Intención corta: la FAQ de cuota. Candidato claro.",
+      "origen": "propuesta",
+      "revisar": true
+    },
+    {
+      "query": "taller",
+      "frecuencia": null,
+      "esperados": [
+        "12480"
+      ],
+      "nota": "El taller de reparación de octubre es el vigente; 10657 y 9847 son talleres antiguos.",
+      "origen": "propuesta",
+      "revisar": true
+    },
+    {
+      "query": "socio",
+      "frecuencia": null,
+      "esperados": [
+        "12154",
+        "11234"
+      ],
+      "nota": "Ambiguo a propósito: la FAQ de cuota o la página «Hazte socio/a». Aquí se ve si el motor sabe desempatar.",
+      "origen": "propuesta",
+      "revisar": true
+    },
+    {
+      "query": "darme de baja",
+      "frecuencia": null,
+      "esperados": [
+        "11923"
+      ],
+      "nota": "La FAQ existe y el título no se parece: el caso típico de Levenshtein sobre título fallando.",
+      "origen": "propuesta",
+      "revisar": true
+    },
+    {
+      "query": "huerto",
+      "frecuencia": null,
+      "esperados": [
+        "12105",
+        "12111",
+        "12110"
+      ],
+      "nota": "Tema amplio con tres FAQ válidas.",
+      "origen": "propuesta",
+      "revisar": true
+    },
+    {
+      "query": "cocina",
+      "frecuencia": null,
+      "esperados": [
+        "12097",
+        "12100"
+      ],
+      "nota": "La FAQ «¿Hay una cocina disponible?» es la puerta de entrada del tema.",
+      "origen": "propuesta",
+      "revisar": true
+    },
+    {
+      "query": "eventos",
+      "frecuencia": null,
+      "esperados": [
+        "12113",
+        "12117"
+      ],
+      "nota": "Organizar eventos y vender entradas.",
+      "origen": "propuesta",
+      "revisar": true
+    },
+    {
+      "query": "asamblea",
+      "frecuencia": null,
+      "esperados": [
+        "12075"
+      ],
+      "nota": "«¿Cómo funcionan las asambleas?».",
+      "origen": "propuesta",
+      "revisar": true
+    },
+    {
+      "query": "voluntariado",
+      "frecuencia": null,
+      "esperados": [
+        "12033",
+        "12017"
+      ],
+      "nota": "Ser voluntario sin ser socio y qué se obtiene.",
+      "origen": "propuesta",
+      "revisar": true
+    },
+    {
+      "query": "mascotas",
+      "frecuencia": null,
+      "esperados": [
+        "12088"
+      ],
+      "nota": "Coincidencia directa por sinónimo: el índice trae «mascota: mascotas, perro, …».",
+      "origen": "propuesta",
+      "revisar": true
+    },
+    {
+      "query": "contacto",
+      "frecuencia": null,
+      "esperados": [
+        "12089",
+        "12092"
+      ],
+      "nota": "Correo y teléfono: dos respuestas igual de válidas.",
+      "origen": "propuesta",
+      "revisar": true
+    },
+    {
+      "query": "horario",
+      "frecuencia": null,
+      "esperados": [
+        "11898",
+        "12095"
+      ],
+      "nota": "Cuándo abre el Mercasocial.",
+      "origen": "propuesta",
+      "revisar": true
+    },
+    {
+      "query": "inscribirme",
+      "frecuencia": null,
+      "esperados": [
+        "11927"
+      ],
+      "nota": "«¿Cómo inscribirme en actividades?».",
+      "origen": "propuesta",
+      "revisar": true
+    },
+    {
+      "query": "¿Qué servicios ofrecéis?",
+      "frecuencia": null,
+      "esperados": [],
+      "nota": "HUECO MEDIDO: en Lugg y en la demo esta consulta se quedó sin respuesta (response_found=0). Entra a propósito, sin respuesta esperada, para que la tabla diga si sigue fallando.",
+      "origen": "hueco_medido",
+      "revisar": false
+    },
+    {
+      "query": "¿Pueden participar los niños y niñas en el huerto?",
+      "frecuencia": null,
+      "esperados": [
+        "12156"
+      ],
+      "nota": "Consulta tomada del TÍTULO de la propia FAQ del corpus. La respuesta esperada es ella misma, así que el techo está garantizado y sirve de control: si esto no sale bien, el problema es el motor, no el etiquetado. Hay que revisar que la frase sea como la diría una persona.",
+      "origen": "titulo_faq",
+      "revisar": true
+    },
+    {
+      "query": "¿Cómo puedo llegar al centro?",
+      "frecuencia": null,
+      "esperados": [
+        "12155"
+      ],
+      "nota": "Consulta tomada del TÍTULO de la propia FAQ del corpus. La respuesta esperada es ella misma, así que el techo está garantizado y sirve de control: si esto no sale bien, el problema es el motor, no el etiquetado. Hay que revisar que la frase sea como la diría una persona.",
+      "origen": "titulo_faq",
+      "revisar": true
+    },
+    {
+      "query": "¿Cuánto cuesta ser socio o colaborador?",
+      "frecuencia": null,
+      "esperados": [
+        "12154"
+      ],
+      "nota": "Consulta tomada del TÍTULO de la propia FAQ del corpus. La respuesta esperada es ella misma, así que el techo está garantizado y sirve de control: si esto no sale bien, el problema es el motor, no el etiquetado. Hay que revisar que la frase sea como la diría una persona.",
+      "origen": "titulo_faq",
+      "revisar": true
+    },
+    {
+      "query": "¿Los eventos tienen que ser gratuitos?",
+      "frecuencia": null,
+      "esperados": [
+        "12120"
+      ],
+      "nota": "Consulta tomada del TÍTULO de la propia FAQ del corpus. La respuesta esperada es ella misma, así que el techo está garantizado y sirve de control: si esto no sale bien, el problema es el motor, no el etiquetado. Hay que revisar que la frase sea como la diría una persona.",
+      "origen": "titulo_faq",
+      "revisar": true
+    },
+    {
+      "query": "¿Hay un límite de aforo para los eventos?",
+      "frecuencia": null,
+      "esperados": [
+        "12118"
+      ],
+      "nota": "Consulta tomada del TÍTULO de la propia FAQ del corpus. La respuesta esperada es ella misma, así que el techo está garantizado y sirve de control: si esto no sale bien, el problema es el motor, no el etiquetado. Hay que revisar que la frase sea como la diría una persona.",
+      "origen": "titulo_faq",
+      "revisar": true
+    },
+    {
+      "query": "¿Con cuánta antelación hay que proponer un evento?",
+      "frecuencia": null,
+      "esperados": [
+        "12115"
+      ],
+      "nota": "Consulta tomada del TÍTULO de la propia FAQ del corpus. La respuesta esperada es ella misma, así que el techo está garantizado y sirve de control: si esto no sale bien, el problema es el motor, no el etiquetado. Hay que revisar que la frase sea como la diría una persona.",
+      "origen": "titulo_faq",
+      "revisar": true
+    },
+    {
+      "query": "¿Se puede visitar el huerto sin participar en su mantenimiento?",
+      "frecuencia": null,
+      "esperados": [
+        "12112"
+      ],
+      "nota": "Consulta tomada del TÍTULO de la propia FAQ del corpus. La respuesta esperada es ella misma, así que el techo está garantizado y sirve de control: si esto no sale bien, el problema es el motor, no el etiquetado. Hay que revisar que la frase sea como la diría una persona.",
+      "origen": "titulo_faq",
+      "revisar": true
+    },
+    {
+      "query": "¿Cómo se organiza el trabajo en el huerto?",
+      "frecuencia": null,
+      "esperados": [
+        "12109"
+      ],
+      "nota": "Consulta tomada del TÍTULO de la propia FAQ del corpus. La respuesta esperada es ella misma, así que el techo está garantizado y sirve de control: si esto no sale bien, el problema es el motor, no el etiquetado. Hay que revisar que la frase sea como la diría una persona.",
+      "origen": "titulo_faq",
+      "revisar": true
+    },
+    {
+      "query": "¿Quién puede participar en el huerto?",
+      "frecuencia": null,
+      "esperados": [
+        "12106"
+      ],
+      "nota": "Consulta tomada del TÍTULO de la propia FAQ del corpus. La respuesta esperada es ella misma, así que el techo está garantizado y sirve de control: si esto no sale bien, el problema es el motor, no el etiquetado. Hay que revisar que la frase sea como la diría una persona.",
+      "origen": "titulo_faq",
+      "revisar": true
+    },
+    {
+      "query": "¿Hay microondas o nevera para uso de los socios fuera de actividades?",
+      "frecuencia": null,
+      "esperados": [
+        "12104"
+      ],
+      "nota": "Consulta tomada del TÍTULO de la propia FAQ del corpus. La respuesta esperada es ella misma, así que el techo está garantizado y sirve de control: si esto no sale bien, el problema es el motor, no el etiquetado. Hay que revisar que la frase sea como la diría una persona.",
+      "origen": "titulo_faq",
+      "revisar": true
+    },
+    {
+      "query": "¿Cómo se organiza la limpieza de la cocina?",
+      "frecuencia": null,
+      "esperados": [
+        "12102"
+      ],
+      "nota": "Consulta tomada del TÍTULO de la propia FAQ del corpus. La respuesta esperada es ella misma, así que el techo está garantizado y sirve de control: si esto no sale bien, el problema es el motor, no el etiquetado. Hay que revisar que la frase sea como la diría una persona.",
+      "origen": "titulo_faq",
+      "revisar": true
+    },
+    {
+      "query": "¿Se puede usar la cocina para eventos privados?",
+      "frecuencia": null,
+      "esperados": [
+        "12099"
+      ],
+      "nota": "Consulta tomada del TÍTULO de la propia FAQ del corpus. La respuesta esperada es ella misma, así que el techo está garantizado y sirve de control: si esto no sale bien, el problema es el motor, no el etiquetado. Hay que revisar que la frase sea como la diría una persona.",
+      "origen": "titulo_faq",
+      "revisar": true
+    },
+    {
+      "query": "¿Cómo puedo presentar una queja o sugerencia?",
+      "frecuencia": null,
+      "esperados": [
+        "12096"
+      ],
+      "nota": "Consulta tomada del TÍTULO de la propia FAQ del corpus. La respuesta esperada es ella misma, así que el techo está garantizado y sirve de control: si esto no sale bien, el problema es el motor, no el etiquetado. Hay que revisar que la frase sea como la diría una persona.",
+      "origen": "titulo_faq",
+      "revisar": true
+    },
+    {
+      "query": "¿Hay un boletín de noticias o newsletter?",
+      "frecuencia": null,
+      "esperados": [
+        "12094"
+      ],
+      "nota": "Consulta tomada del TÍTULO de la propia FAQ del corpus. La respuesta esperada es ella misma, así que el techo está garantizado y sirve de control: si esto no sale bien, el problema es el motor, no el etiquetado. Hay que revisar que la frase sea como la diría una persona.",
+      "origen": "titulo_faq",
+      "revisar": true
+    },
+    {
+      "query": "¿En qué redes sociales está presente el centro?",
+      "frecuencia": null,
+      "esperados": [
+        "12090"
+      ],
+      "nota": "Consulta tomada del TÍTULO de la propia FAQ del corpus. La respuesta esperada es ella misma, así que el techo está garantizado y sirve de control: si esto no sale bien, el problema es el motor, no el etiquetado. Hay que revisar que la frase sea como la diría una persona.",
+      "origen": "titulo_faq",
+      "revisar": true
+    },
+    {
+      "query": "¿Se permiten mascotas en el centro?",
+      "frecuencia": null,
+      "esperados": [
+        "12088"
+      ],
+      "nota": "Consulta tomada del TÍTULO de la propia FAQ del corpus. La respuesta esperada es ella misma, así que el techo está garantizado y sirve de control: si esto no sale bien, el problema es el motor, no el etiquetado. Hay que revisar que la frase sea como la diría una persona.",
+      "origen": "titulo_faq",
+      "revisar": true
+    },
+    {
+      "query": "¿Se puede grabar o fotografiar en el centro?",
+      "frecuencia": null,
+      "esperados": [
+        "12087"
+      ],
+      "nota": "Consulta tomada del TÍTULO de la propia FAQ del corpus. La respuesta esperada es ella misma, así que el techo está garantizado y sirve de control: si esto no sale bien, el problema es el motor, no el etiquetado. Hay que revisar que la frase sea como la diría una persona.",
+      "origen": "titulo_faq",
+      "revisar": true
+    },
+    {
+      "query": "¿Las personas no socias pueden asistir a las asambleas?",
+      "frecuencia": null,
+      "esperados": [
+        "12086"
+      ],
+      "nota": "Consulta tomada del TÍTULO de la propia FAQ del corpus. La respuesta esperada es ella misma, así que el techo está garantizado y sirve de control: si esto no sale bien, el problema es el motor, no el etiquetado. Hay que revisar que la frase sea como la diría una persona.",
+      "origen": "titulo_faq",
+      "revisar": true
+    },
+    {
+      "query": "¿Qué pasa si alguien incumple las normas?",
+      "frecuencia": null,
+      "esperados": [
+        "12084"
+      ],
+      "nota": "Consulta tomada del TÍTULO de la propia FAQ del corpus. La respuesta esperada es ella misma, así que el techo está garantizado y sirve de control: si esto no sale bien, el problema es el motor, no el etiquetado. Hay que revisar que la frase sea como la diría una persona.",
+      "origen": "titulo_faq",
+      "revisar": true
+    },
+    {
+      "query": "¿Cuáles son las normas de convivencia?",
+      "frecuencia": null,
+      "esperados": [
+        "12078"
+      ],
+      "nota": "Consulta tomada del TÍTULO de la propia FAQ del corpus. La respuesta esperada es ella misma, así que el techo está garantizado y sirve de control: si esto no sale bien, el problema es el motor, no el etiquetado. Hay que revisar que la frase sea como la diría una persona.",
+      "origen": "titulo_faq",
+      "revisar": true
+    }
+  ],
+  "pendiente_jc": []
+}

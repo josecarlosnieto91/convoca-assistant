@@ -1,0 +1,27 @@
+{
+  "_que_es": "Metadatos del corpus congelado. El JSON del índice NO se puede comentar (no es JSON5), así que la procedencia va aquí al lado, con el md5 del fichero tal cual.",
+  "fichero": "index-lugg-20260927.json",
+  "md5": "a20b40d56a5c6a7212da85724233c114",
+  "bytes": 863241,
+  "entradas": 336,
+  "por_tipo": {
+    "convoca_faq": 134,
+    "page": 21,
+    "post": 181
+  },
+  "origen": "https://lugg.biodevas.org/wp-content/uploads/convoca-assistant/index.json",
+  "origen_en_disco": "/datos/www/lugg.biodevas.org/wp-content/uploads/convoca-assistant/index.json",
+  "congelado": "2026-09-27",
+  "generado_en_el_sitio": 1790490303,
+  "version_del_indice": "0.2.7",
+  "schema": 1,
+  "hash_interno": "bab65c750a93b880c0cc0f2020a310f1",
+  "sitio": "Centro social los Lugg",
+  "locale": "es_ES",
+  "nota": "El fichero es byte a byte el mismo que sirve el sitio. El md5 anotado en el goal (a20b40d56a5c6a7212da85724233c114) es el de ESTE fichero. No se toca: si Lugg regenera su índice, este fixture no cambia.",
+  "trae_dentro": [
+    "synonyms",
+    "stop_words",
+    "config (fuse_threshold, fuse_distance, weights)"
+  ]
+}
