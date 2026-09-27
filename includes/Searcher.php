@@ -55,13 +55,26 @@ class Searcher {
 		$priority_types = ! empty( $settings['priority_types'] ) ? (array) $settings['priority_types'] : array( 'convoca_faq', 'convoca_kb' );
 		$priority_boost = (float) ( $settings['priority_boost'] ?? 1.0 );
 		$engine = (string) ( $settings['search_engine'] ?? 'composite' );
+		$rerank = ! empty( $settings['search_rerank'] );
 
 		// Motor de fusión (Fase 1): compuesto + BM25 por posiciones. Apagado por defecto.
 		if ( 'fusion' === $engine ) {
-			return self::search_fusion( $index_data, $normalized, $tokens, $synonyms, $max_results, $settings );
+			$results = self::search_fusion( $index_data, $normalized, $tokens, $synonyms, $max_results, $settings, $rerank );
+		} else {
+			$results = self::rank_composite( $index_data['entries'], $normalized, $tokens, $expanded, $priority_types, $priority_boost, $use_threshold );
 		}
 
-		$results = self::rank_composite( $index_data['entries'], $normalized, $tokens, $expanded, $priority_types, $priority_boost, $use_threshold );
+		// Reranking heurístico del top-N (Fase 2). Apagado por defecto.
+		if ( $rerank ) {
+			$results = Reranker::rerank(
+				$results,
+				$normalized,
+				$tokens,
+				$settings,
+				(int) ( $settings['search_rerank_depth'] ?? Reranker::DEFAULT_DEPTH ),
+				(float) ( $settings['search_rerank_weight'] ?? Reranker::DEFAULT_WEIGHT )
+			);
+		}
 
 		return array_slice( $results, 0, $max_results );
 	}
@@ -78,9 +91,10 @@ class Searcher {
 	 * @param array<string, mixed> $synonyms    Sinónimos del índice.
 	 * @param int                  $max_results Tope de resultados.
 	 * @param array<string, mixed> $settings    Ajustes del plugin.
+	 * @param bool                 $rerank      Si el reranker va a entrar después (entonces se fusiona más hondo).
 	 * @return array<int, array<string, mixed>>
 	 */
-	private static function search_fusion( array $index_data, string $normalized, array $tokens, array $synonyms, int $max_results, array $settings ): array {
+	private static function search_fusion( array $index_data, string $normalized, array $tokens, array $synonyms, int $max_results, array $settings, bool $rerank = false ): array {
 		$k1 = (float) ( $settings['search_bm25_k1'] ?? 1.2 );
 		$b  = (float) ( $settings['search_bm25_b'] ?? 0.75 );
 		$k  = (int) ( $settings['search_rrf_k'] ?? Fusion::DEFAULT_K );
@@ -95,7 +109,10 @@ class Searcher {
 
 		$depth = (int) ( $settings['search_rrf_depth'] ?? Fusion::DEFAULT_DEPTH );
 
-		return Fusion::rrf( array( $composite, $bm25 ), $k, $max_results, $depth );
+		// Con el reranker delante hay que fusionar más hondo, o no tendría material que reordenar.
+		$limit = $rerank ? max( $max_results, (int) ( $settings['search_rerank_depth'] ?? Reranker::DEFAULT_DEPTH ) ) : $max_results;
+
+		return Fusion::rrf( array( $composite, $bm25 ), $k, $limit, $depth );
 	}
 
 	/**

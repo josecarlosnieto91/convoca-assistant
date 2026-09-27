@@ -109,6 +109,7 @@ class Settings {
 			'log_enabled',
 			'maintenance_mode',
 			'debug_mode',
+			'search_rerank',
 		);
 		foreach ( $checkboxes as $cb ) {
 			$output[ $cb ] = ! empty( $input[ $cb ] );
@@ -130,6 +131,7 @@ class Settings {
 				case 'log_enabled':
 				case 'maintenance_mode':
 				case 'debug_mode':
+				case 'search_rerank':
 					break;
 
 				// Floats.
@@ -148,6 +150,7 @@ class Settings {
 				case 'weights_exact_title':
 				case 'search_bm25_k1':
 				case 'search_bm25_b':
+				case 'search_rerank_weight':
 					$output[ $key ] = (float) $value;
 					break;
 
@@ -165,6 +168,7 @@ class Settings {
 				// Integers.
 				case 'search_fuse_distance':
 				case 'search_rrf_k':
+				case 'search_rerank_depth':
 				case 'search_max_results':
 				case 'index_max_content':
 				case 'answer_max_length':

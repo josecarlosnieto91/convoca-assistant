@@ -4,7 +4,7 @@ Tags: chatbot, search, knowledge-base, support, privacy
 Requires at least: 6.4
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 0.2.8
+Stable tag: 0.2.9
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -82,6 +82,14 @@ Yes. If WooCommerce is active, you can enable products as a knowledge source fro
 
 == Changelog ==
 
+= 0.2.9 =
+* Nuevo, **apagado por defecto**: motor de búsqueda conmutable (`search_engine`: compuesto o fusión BM25 + RRF) y reordenación heurística del top-N. Los dos se midieron con un banco de pruebas reproducible y **ninguno de los dos supera al compuesto**, así que no se activan: el comportamiento del buscador no cambia.
+* Nuevo: arnés de calidad del buscador con corpus congelado y 34 consultas (`composer test:quality`), que corre en la integración continua.
+* Fix: la constante de versión del plugin se había quedado en 0.2.7, así que el JavaScript y el CSS se servían con `?ver=0.2.7` (los navegadores podían quedarse con copias viejas tras una actualización) y el índice declaraba también la versión antigua.
+
+= 0.2.8 =
+* Fix: el botón flotante del asistente no aparecía; nadie enganchaba `Widget::render_floating_widget()`, así que el widget solo salía en los sitios que traían su propio mu-plugin. Ahora el plugin lo pinta en el pie, una sola vez por petición.
+
 = 0.2.7 =
 * Fix: el panel del chat se veía desplegado y descolocado antes de la primera interacción, porque su CSS se carga en diferido desde 0.2.6. `assistant-widget.css` (que sí es síncrono) declara ahora el estado cerrado (`display:none`).
 
@@ -125,6 +133,9 @@ Yes. If WooCommerce is active, you can enable products as a knowledge source fro
 * No external dependencies (everything local)
 
 == Upgrade Notice ==
+
+= 0.2.9 =
+* Se añaden un motor de búsqueda alternativo y una reordenación heurística, ambos desactivados por defecto, y se arregla la versión de los assets. No hay cambios de comportamiento.
 
 = 0.2.1 =
 * Minor compatibility and stability improvements.

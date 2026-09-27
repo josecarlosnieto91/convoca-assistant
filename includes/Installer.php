@@ -74,6 +74,10 @@ class Installer {
 			'search_bm25_k1'          => 1.2,
 			'search_bm25_b'           => 0.75,
 			'search_rrf_k'            => 60,
+			// Reranking heurístico del top-N (Fase 2). Apagado por defecto.
+			'search_rerank'           => false,
+			'search_rerank_weight'    => 0.5,
+			'search_rerank_depth'     => 20,
 			'session_window_minutes'  => 10,
 			'index_auto_regenerate'   => true,
 			'index_compress'          => false,

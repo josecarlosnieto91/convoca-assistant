@@ -96,6 +96,20 @@ if ( ! defined( 'ABSPATH' ) ) {
 					</td>
 				</tr>
 				<tr>
+					<th scope="row"><?php esc_html_e( 'Reordenar resultados (reranking)', 'convoca-assistant' ); ?></th>
+					<td>
+						<label>
+							<input type="checkbox" name="convoca_assistant_settings[search_rerank]" value="1" <?php checked( ! empty( $settings['search_rerank'] ) ); ?> />
+							<?php esc_html_e( 'Reordenar las primeras entradas con el heurístico propio', 'convoca-assistant' ); ?>
+						</label>
+						<p>
+							<label>peso <input type="number" name="convoca_assistant_settings[search_rerank_weight]" value="<?php echo esc_attr( $settings['search_rerank_weight'] ?? 0.5 ); ?>" step="0.05" min="0" max="1" /></label>
+							<label>profundidad <input type="number" name="convoca_assistant_settings[search_rerank_depth]" value="<?php echo esc_attr( $settings['search_rerank_depth'] ?? 20 ); ?>" step="1" min="1" max="50" /></label>
+						</p>
+						<p class="description"><?php esc_html_e( 'Apagado por defecto. Se midió: sube el nDCG@5 y no empeora ninguna consulta, pero está pendiente de tu revisión del set antes de plantearlo como opción de producción.', 'convoca-assistant' ); ?></p>
+					</td>
+				</tr>
+				<tr>
 					<th scope="row"><?php esc_html_e( 'Distancia Fuse.js', 'convoca-assistant' ); ?></th>
 					<td><input type="number" name="convoca_assistant_settings[search_fuse_distance]" value="<?php echo esc_attr( $settings['search_fuse_distance'] ); ?>" min="0" max="500" /></td>
 				</tr>
