@@ -171,18 +171,54 @@ cd tests && npx jest search-quality-client
 
 ---
 
-## 7. Línea base
+## 7. Línea base (medida el 27/09/2026)
 
-Se rellena al correr el arnés. Sin estos números la Fase 0 no está cerrada.
-
-| Consulta | Motor | Esperado | 1.º devuelto | Posición | Recall@1 | Recall@3 | MRR@10 | nDCG@5 |
-|---|---|---|---|---|---|---|---|---|
-| _(pendiente)_ | | | | | | | | |
+Se mide con `composer test:quality` (PHP 8.5 · Node 26 · Fuse 7.1.0, el bundle del sitio). Corre sin
+red y sin WordPress, contra el corpus congelado.
 
 | Resumen | Consultas | Recall@1 | Recall@3 | MRR@10 | nDCG@5 |
 |---|---|---|---|---|---|
-| Servidor | | | | | |
-| Cliente | | | | | |
+| **Servidor** (`Searcher`) | 33 | **81,8 %** | **90,9 %** | **0,878** | **0,898** |
+| **Cliente** (Fuse + pipeline propio) | 33 | **78,8 %** | **87,9 %** | **0,849** | **0,879** |
+
+(Cada motor mide 33 consultas puntuables; la 34.ª, «¿Qué servicios ofrecéis?», no tiene respuesta
+esperada y se cuenta aparte: el servidor **devuelve algo** para ella —10 entradas— y el registro decía
+que el cliente no encontraba respuesta. Sin respuesta correcta conocida no puede puntuar.)
+
+**Lo que no acierta a la primera** — éste es el material de trabajo de la Fase 1:
+
+| Consulta | Servidor | Cliente |
+|---|---|---|
+| `cuota` | pos 1 | **FALLA** (ni en el top-10) |
+| `voluntariado` | pos 7 | pos 5 |
+| `huerto` | pos 3 | pos 3 |
+| `cocina` | pos 4 | pos 4 |
+| `eventos` | pos 4 | pos 4 |
+| `asamblea` | pos 2 | pos 2 |
+| `contacto` | pos 2 | pos 2 |
+
+**Los dos motores discrepan en dos consultas, y cada uno falla en la que el otro acierta:**
+
+- **`cuota`**: el servidor devuelve la FAQ de cuota (`12154`) **primera**; el cliente **falla entera**
+  (devuelve `12051`, `12088`, `9513`, `12539`, `12477`). Es una palabra sola y corta, el caso donde Fuse
+  con umbral 0,4 y sin el cuerpo del texto no encuentra la FAQ.
+- **`voluntariado`**: al contrario. El cliente lo pone en la 5 y el servidor en la 7.
+
+El grupo de control (las 20 consultas tomadas del título de una FAQ) acierta **20 de 20 a la primera** en
+los dos motores. Eso confirma que el banco está bien montado: cuando la respuesta está bien etiquetada y
+el título se parece a la consulta, los dos motores aciertan. Las que fallan son las coloquiales y cortas,
+que es justo lo que el goal esperaba encontrar.
+
+**Aviso de provisionalidad:** estos números son de un set **pendiente de revisión de JC** (ver §5). Al
+revisarlo cambiarán. La Fase 1 no debe apoyarse en diferencias de un punto: los fallos de arriba son
+gruesos y no dependen de un par de etiquetas discutibles.
+
+### Notas de infraestructura del banco
+
+Para correr el motor del servidor **sin WordPress** hizo falta completar `tests/bootstrap.php` con dos
+simulaciones que faltaban y que usa `Searcher`: `remove_accents()` (equivalente a la del núcleo en el
+rango latino) y la constante `DAY_IN_SECONDS`. Con la guarda de siempre, para no pisarlas si algún día se
+corre con WordPress de verdad. Sin ellas el arnés ni arrancaba; no son un defecto del motor.
 
 ---
 

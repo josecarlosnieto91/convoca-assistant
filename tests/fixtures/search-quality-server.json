@@ -1,0 +1,542 @@
+{
+    "motor": "servidor",
+    "corpus": "index-ejemplo-20260927.json",
+    "ajustes": {
+        "search_threshold": 0.1,
+        "search_max_results": 10,
+        "priority_types": [
+            "convoca_faq",
+            "convoca_kb"
+        ],
+        "priority_boost": 1.35,
+        "weights_fuzzy": 0.45,
+        "weights_graph": 0.1,
+        "weights_exact": 0.15,
+        "weights_exact_title": 0.15
+    },
+    "resumen": {
+        "consultas": 33,
+        "recall1": 0.8181818181818182,
+        "recall3": 0.9090909090909091,
+        "mrr10": 0.878066378066378,
+        "ndcg5": 0.8976731097966577
+    },
+    "filas": [
+        {
+            "query": "cuota",
+            "esperados": [
+                "12154"
+            ],
+            "devueltos": [
+                "12154",
+                "12539",
+                "12009",
+                "12115",
+                "11895"
+            ],
+            "posicion": 1,
+            "cobertura": true
+        },
+        {
+            "query": "taller",
+            "esperados": [
+                "12480"
+            ],
+            "devueltos": [
+                "12480",
+                "11374",
+                "11371",
+                "11332",
+                "11230"
+            ],
+            "posicion": 1,
+            "cobertura": true
+        },
+        {
+            "query": "socio",
+            "esperados": [
+                "12154",
+                "11234"
+            ],
+            "devueltos": [
+                "12154",
+                "12033",
+                "11905",
+                "11921",
+                "11919"
+            ],
+            "posicion": 1,
+            "cobertura": true
+        },
+        {
+            "query": "darme de baja",
+            "esperados": [
+                "11923"
+            ],
+            "devueltos": [
+                "11923",
+                "12049",
+                "11919",
+                "11896",
+                "12110"
+            ],
+            "posicion": 1,
+            "cobertura": true
+        },
+        {
+            "query": "huerto",
+            "esperados": [
+                "12105",
+                "12111",
+                "12110"
+            ],
+            "devueltos": [
+                "12156",
+                "12112",
+                "12111",
+                "12110",
+                "12109"
+            ],
+            "posicion": 3,
+            "cobertura": true
+        },
+        {
+            "query": "cocina",
+            "esperados": [
+                "12097",
+                "12100"
+            ],
+            "devueltos": [
+                "12477",
+                "12102",
+                "12101",
+                "12100",
+                "12099"
+            ],
+            "posicion": 4,
+            "cobertura": true
+        },
+        {
+            "query": "eventos",
+            "esperados": [
+                "12113",
+                "12117"
+            ],
+            "devueltos": [
+                "12120",
+                "12119",
+                "12118",
+                "12117",
+                "12116"
+            ],
+            "posicion": 4,
+            "cobertura": true
+        },
+        {
+            "query": "asamblea",
+            "esperados": [
+                "12075"
+            ],
+            "devueltos": [
+                "12086",
+                "12075",
+                "11984",
+                "12009",
+                "12033"
+            ],
+            "posicion": 2,
+            "cobertura": true
+        },
+        {
+            "query": "voluntariado",
+            "esperados": [
+                "12033",
+                "12017"
+            ],
+            "devueltos": [
+                "12540",
+                "12038",
+                "12012",
+                "12007",
+                "12028"
+            ],
+            "posicion": 7,
+            "cobertura": true
+        },
+        {
+            "query": "mascotas",
+            "esperados": [
+                "12088"
+            ],
+            "devueltos": [
+                "12088",
+                "12053",
+                "12011",
+                "12465",
+                "11987"
+            ],
+            "posicion": 1,
+            "cobertura": true
+        },
+        {
+            "query": "contacto",
+            "esperados": [
+                "12089",
+                "12092"
+            ],
+            "devueltos": [
+                "12093",
+                "12092",
+                "12089",
+                "12105",
+                "12090"
+            ],
+            "posicion": 2,
+            "cobertura": true
+        },
+        {
+            "query": "horario",
+            "esperados": [
+                "11898",
+                "12095"
+            ],
+            "devueltos": [
+                "12095",
+                "11992",
+                "11909",
+                "12089",
+                "12112"
+            ],
+            "posicion": 1,
+            "cobertura": true
+        },
+        {
+            "query": "inscribirme",
+            "esperados": [
+                "11927"
+            ],
+            "devueltos": [
+                "11927",
+                "12084",
+                "12119",
+                "11932",
+                "11894"
+            ],
+            "posicion": 1,
+            "cobertura": true
+        },
+        {
+            "query": "¿Qué servicios ofrecéis?",
+            "esperados": [],
+            "devueltos": [
+                "11992",
+                "11988",
+                "11973",
+                "11968",
+                "11981"
+            ],
+            "posicion": null,
+            "cobertura": true
+        },
+        {
+            "query": "¿Pueden participar los niños y niñas en el huerto?",
+            "esperados": [
+                "12156"
+            ],
+            "devueltos": [
+                "12156",
+                "12105",
+                "11992",
+                "12119",
+                "12112"
+            ],
+            "posicion": 1,
+            "cobertura": true
+        },
+        {
+            "query": "¿Cómo puedo llegar al centro?",
+            "esperados": [
+                "12155"
+            ],
+            "devueltos": [
+                "12155",
+                "12096",
+                "11998",
+                "12054",
+                "12011"
+            ],
+            "posicion": 1,
+            "cobertura": true
+        },
+        {
+            "query": "¿Cuánto cuesta ser socio o colaborador?",
+            "esperados": [
+                "12154"
+            ],
+            "devueltos": [
+                "12154",
+                "12009",
+                "11917",
+                "11905",
+                "12028"
+            ],
+            "posicion": 1,
+            "cobertura": true
+        },
+        {
+            "query": "¿Los eventos tienen que ser gratuitos?",
+            "esperados": [
+                "12120"
+            ],
+            "devueltos": [
+                "12120",
+                "12119",
+                "12118",
+                "12117",
+                "12116"
+            ],
+            "posicion": 1,
+            "cobertura": true
+        },
+        {
+            "query": "¿Hay un límite de aforo para los eventos?",
+            "esperados": [
+                "12118"
+            ],
+            "devueltos": [
+                "12118",
+                "12113",
+                "12099",
+                "12119",
+                "12120"
+            ],
+            "posicion": 1,
+            "cobertura": true
+        },
+        {
+            "query": "¿Con cuánta antelación hay que proponer un evento?",
+            "esperados": [
+                "12115"
+            ],
+            "devueltos": [
+                "12115",
+                "11990",
+                "12114",
+                "11895",
+                "11914"
+            ],
+            "posicion": 1,
+            "cobertura": true
+        },
+        {
+            "query": "¿Se puede visitar el huerto sin participar en su mantenimiento?",
+            "esperados": [
+                "12112"
+            ],
+            "devueltos": [
+                "12112",
+                "12156",
+                "12107",
+                "12110",
+                "12106"
+            ],
+            "posicion": 1,
+            "cobertura": true
+        },
+        {
+            "query": "¿Cómo se organiza el trabajo en el huerto?",
+            "esperados": [
+                "12109"
+            ],
+            "devueltos": [
+                "12109",
+                "12106",
+                "12012",
+                "12112",
+                "12156"
+            ],
+            "posicion": 1,
+            "cobertura": true
+        },
+        {
+            "query": "¿Quién puede participar en el huerto?",
+            "esperados": [
+                "12106"
+            ],
+            "devueltos": [
+                "12106",
+                "12112",
+                "12156",
+                "12110",
+                "12107"
+            ],
+            "posicion": 1,
+            "cobertura": true
+        },
+        {
+            "query": "¿Hay microondas o nevera para uso de los socios fuera de actividades?",
+            "esperados": [
+                "12104"
+            ],
+            "devueltos": [
+                "12104",
+                "11992",
+                "11999",
+                "11981",
+                "11895"
+            ],
+            "posicion": 1,
+            "cobertura": true
+        },
+        {
+            "query": "¿Cómo se organiza la limpieza de la cocina?",
+            "esperados": [
+                "12102"
+            ],
+            "devueltos": [
+                "12102",
+                "12101",
+                "12100",
+                "12099",
+                "12109"
+            ],
+            "posicion": 1,
+            "cobertura": true
+        },
+        {
+            "query": "¿Se puede usar la cocina para eventos privados?",
+            "esperados": [
+                "12099"
+            ],
+            "devueltos": [
+                "12099",
+                "11992",
+                "11915",
+                "12103",
+                "12120"
+            ],
+            "posicion": 1,
+            "cobertura": true
+        },
+        {
+            "query": "¿Cómo puedo presentar una queja o sugerencia?",
+            "esperados": [
+                "12096"
+            ],
+            "devueltos": [
+                "12096",
+                "12011",
+                "12002",
+                "12029",
+                "11915"
+            ],
+            "posicion": 1,
+            "cobertura": true
+        },
+        {
+            "query": "¿Hay un boletín de noticias o newsletter?",
+            "esperados": [
+                "12094"
+            ],
+            "devueltos": [
+                "12094",
+                "12086",
+                "12084",
+                "12078",
+                "11981"
+            ],
+            "posicion": 1,
+            "cobertura": true
+        },
+        {
+            "query": "¿En qué redes sociales está presente el centro?",
+            "esperados": [
+                "12090"
+            ],
+            "devueltos": [
+                "12090",
+                "12087",
+                "12116",
+                "12092",
+                "12054"
+            ],
+            "posicion": 1,
+            "cobertura": true
+        },
+        {
+            "query": "¿Se permiten mascotas en el centro?",
+            "esperados": [
+                "12088"
+            ],
+            "devueltos": [
+                "12088",
+                "12054",
+                "11998",
+                "11968",
+                "12087"
+            ],
+            "posicion": 1,
+            "cobertura": true
+        },
+        {
+            "query": "¿Se puede grabar o fotografiar en el centro?",
+            "esperados": [
+                "12087"
+            ],
+            "devueltos": [
+                "12087",
+                "11998",
+                "12054",
+                "12088",
+                "11910"
+            ],
+            "posicion": 1,
+            "cobertura": true
+        },
+        {
+            "query": "¿Las personas no socias pueden asistir a las asambleas?",
+            "esperados": [
+                "12086"
+            ],
+            "devueltos": [
+                "12086",
+                "12075",
+                "11992",
+                "12117",
+                "12113"
+            ],
+            "posicion": 1,
+            "cobertura": true
+        },
+        {
+            "query": "¿Qué pasa si alguien incumple las normas?",
+            "esperados": [
+                "12084"
+            ],
+            "devueltos": [
+                "12084",
+                "12078",
+                "11981",
+                "11913",
+                "11896"
+            ],
+            "posicion": 1,
+            "cobertura": true
+        },
+        {
+            "query": "¿Cuáles son las normas de convivencia?",
+            "esperados": [
+                "12078"
+            ],
+            "devueltos": [
+                "12078",
+                "11981",
+                "11908",
+                "12084",
+                "11907"
+            ],
+            "posicion": 1,
+            "cobertura": true
+        }
+    ]
+}

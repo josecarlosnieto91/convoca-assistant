@@ -132,3 +132,41 @@ jobs:
 
       - name: Run unit tests
         run: vendor/bin/phpunit --testsuite unit
+
+  quality:
+    name: Calidad del buscador
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: mbstring, iconv
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Cache Composer dependencies
+        uses: actions/cache@v4
+        with:
+          path: vendor/
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.json') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-
+
+      - uses: ramsey/composer-install@v3
+        with:
+          dependency-versions: highest
+
+      - name: Instalar dependencias de los tests de cliente
+        run: cd tests && npm ci
+
+      # El arnés mide los dos motores con el corpus congelado y pinta la tabla.
+      # No fija notas: la Fase 0 mide, no exige. Comprueba que el banco está bien
+      # montado y que ninguna consulta queda sin diagnosticar.
+      - name: Linea base medida (servidor + cliente)
+        run: composer test:quality

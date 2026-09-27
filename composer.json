@@ -30,6 +30,11 @@
             "@phpcs",
             "@phpstan",
             "@phpunit"
+        ],
+        "test:quality": [
+            "@php vendor/bin/phpunit --no-coverage --filter SearchQualityTest",
+            "cd tests && npx jest search-quality-client",
+            "@php tests/quality-table.php"
         ]
     },
     "config": {
