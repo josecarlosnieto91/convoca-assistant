@@ -1,5 +1,25 @@
 # Changelog — Convoca Assistant
 
+## v0.2.9 (2026-09-27)
+
+### ✨ Añadido
+- Motor de búsqueda conmutable: `search_engine` = `composite` (por defecto, el de siempre) o `fusion`
+  (BM25 propio + Reciprocal Rank Fusion sobre posiciones). Ver `docs/buscador-fusion-spec.md`.
+- Reordenación heurística del top-N (`search_rerank`, apagada por defecto). Ver
+  `docs/buscador-rerank-spec.md`.
+- Banco de pruebas del buscador: corpus congelado de Ejemplo, 34 consultas y arnés de métricas
+  (Recall@1/3, MRR@10, nDCG@5) para el motor de servidor y para el de cliente. `composer test:quality`,
+  en CI. Ver `docs/buscador-evaluacion-spec.md`.
+
+### ⚖️ Medido, y por eso apagado
+- La fusión **no** supera al compuesto (recall@1 72,7 % frente a 81,8 %) y el reranking **no** alcanza su
+  criterio (nDCG@5 +0,002 cuando pedía +0,05). Ninguno de los dos se activa: el buscador sigue
+  comportándose igual. Los ajustes existen, con su explicación, para que la medición se pueda repetir.
+
+### 🐛 Corregido
+- La constante `CONVOCA_ASSISTANT_VERSION` se había quedado en 0.2.7, así que los assets se servían con
+  `?ver=0.2.7` y el índice declaraba esa versión antigua. Ahora coincide con la versión real.
+
 ## v0.2.8 (2026-09-23)
 
 ### 🐛 Correcciones

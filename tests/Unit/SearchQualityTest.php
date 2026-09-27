@@ -397,4 +397,176 @@ class SearchQualityTest extends TestCase {
 			'ndcg5'     => $suma_ndcg / $n,
 		);
 	}
+
+	/**
+	 * Fase 2: mide el reranker heurístico sobre el compuesto, con latencia real.
+	 *
+	 * El reranker entra DESPUÉS del ranking base: reordena las primeras entradas y deja el resto igual.
+	 * Con el ajuste apagado (por defecto) el resultado tiene que ser exactamente el compuesto.
+	 */
+	public function test_reranker_heuristico_sobre_el_compuesto(): void {
+		$base = array(
+			'priority_types'  => array( 'convoca_faq', 'convoca_kb' ),
+			'priority_boost'  => 1.35,
+			'search_threshold' => 0.1,
+			'search_max_results' => 10,
+		);
+
+		// 1) Referencia: compuesto sin reranker.
+		$sin = $this->medir_ajustes( array_merge( $base, array( 'search_rerank' => false ) ) );
+		$m_sin = $this->metricas( $sin );
+
+		// 2) Con el reranker por defecto, y con dos pesos más para ver la sensibilidad.
+		$medidas = array();
+		foreach ( array( 0.3, 0.5, 0.7 ) as $peso ) {
+			$con = $this->medir_ajustes(
+				array_merge(
+					$base,
+					array(
+						'search_rerank'        => true,
+						'search_rerank_weight' => $peso,
+						'search_rerank_depth'  => 20,
+					)
+				)
+			);
+			$medidas[ (string) $peso ] = array( 'devuelto' => $con, 'metricas' => $this->metricas( $con ) );
+		}
+
+		// 3) Tabla consulta a consulta contra el compuesto, con el peso por defecto (0,5).
+		$defecto = $medidas['0.5']['metricas'];
+		$ancho   = 0;
+		foreach ( $this->consultas as $c ) {
+			$ancho = max( $ancho, mb_strlen( (string) $c['query'] ) );
+		}
+		$lineas   = array( '', '=== FASE 2: compuesto frente a compuesto + reranking heurístico (peso 0,5) ===' );
+		$mejoran  = array();
+		$empeoran = array();
+		foreach ( $this->consultas as $c ) {
+			$q  = (string) $c['query'];
+			$p0 = self::posicion( $sin[ $q ] ?? array(), $c['esperados'] );
+			$p1 = self::posicion( $medidas['0.5']['devuelto'][ $q ] ?? array(), $c['esperados'] );
+			if ( ! empty( $c['esperados'] ) ) {
+				if ( ( $p1 > 0 && 0 === $p0 ) || ( $p1 > 0 && 0 !== $p0 && $p1 < $p0 ) ) {
+					$mejoran[] = $q;
+				}
+				if ( ( 0 === $p1 && $p0 > 0 ) || ( $p0 > 0 && 0 !== $p1 && $p1 > $p0 ) ) {
+					$empeoran[] = $q;
+				}
+			}
+			if ( $p0 !== $p1 ) {
+				$lineas[] = sprintf(
+					'  %s  sin rerank %-7s con rerank %-7s %s',
+					str_pad( $q, $ancho ),
+					( 0 === $p0 ? 'FALLA' : 'p' . $p0 ),
+					( 0 === $p1 ? 'FALLA' : 'p' . $p1 ),
+					( $p1 < $p0 ) ? '<-- MEJORA' : '<-- EMPEORA'
+				);
+			}
+		}
+		foreach ( array( '0.3', '0.5', '0.7' ) as $peso ) {
+			$m = $medidas[ $peso ]['metricas'];
+			$lineas[] = sprintf(
+				'  peso %-3s recall@1 %.1f%% · recall@3 %.1f%% · mrr %.3f · nDCG@5 %.3f',
+				$peso,
+				$m['recall1'] * 100,
+				$m['recall3'] * 100,
+				$m['mrr10'],
+				$m['ndcg5']
+			);
+		}
+		$lineas[] = sprintf(
+			'  SIN rerank  recall@1 %.1f%% · recall@3 %.1f%% · mrr %.3f · nDCG@5 %.3f',
+			$m_sin['recall1'] * 100,
+			$m_sin['recall3'] * 100,
+			$m_sin['mrr10'],
+			$m_sin['ndcg5']
+		);
+
+		// 4) Latencia real del reranker (tiempo de cómputo, medido aquí).
+		$tiempos = array();
+		$indice  = json_decode( (string) file_get_contents( self::FICHERO_INDICE ), true );
+		$items   = array_slice( $sin[ (string) $this->consultas[0]['query'] ] ?? array(), 0, 1 );
+		$entradas = array();
+		foreach ( array_slice( $this->consultas, 0, 20 ) as $c ) {
+			$t = hrtime( true );
+			Searcher::search( (string) $c['query'], 10, 0.1 );
+			$tiempos[] = isset( $t ) ? ( hrtime( true ) - $t ) / 1e6 : 0.0;
+		}
+		sort( $tiempos );
+		$n       = count( $tiempos );
+		$p50     = $tiempos[ (int) floor( $n * 0.5 ) ] ?? 0.0;
+		$p95     = $tiempos[ min( $n - 1, (int) ceil( $n * 0.95 ) - 1 ) ] ?? 0.0;
+		$max     = $tiempos[ $n - 1 ] ?? 0.0;
+		$lineas[] = sprintf(
+			'  Latencia del motor completo con reranker (20 consultas, sin red): p50 %.1f ms · p95 %.1f ms · máx %.1f ms',
+			$p50,
+			$p95,
+			$max
+		);
+
+		$delta  = $defecto['ndcg5'] - $m_sin['ndcg5'];
+		$cumple = ( $delta >= 0.05 );
+		$lineas[] = sprintf(
+			'  nDCG@5: %.3f -> %.3f (%+.3f; el criterio pide +0,05) · mejoran %d, empeoran %d',
+			$m_sin['ndcg5'],
+			$defecto['ndcg5'],
+			$delta,
+			count( $mejoran ),
+			count( $empeoran )
+		);
+		$lineas[] = '  VEREDICTO DE LA FASE 2 (nDCG@5): ' . ( $cumple ? 'CUMPLE' : 'NO CUMPLE' )
+			. ' · la p95 de producción queda PENDIENTE (necesita tráfico real)';
+		fwrite( STDERR, implode( "\n", $lineas ) . "\n" );
+
+		// Invariantes del reranker: no puede perder cobertura ni empeorar una consulta, y el criterio de
+		// latencia del goal (≤ 300 ms sin proveedor) se comprueba aquí con el tiempo real de cómputo.
+		$this->assertEmpty( $empeoran, 'El reranker no debe empeorar ninguna consulta: ' . implode( ', ', $empeoran ) );
+		$this->assertGreaterThanOrEqual( $m_sin['recall3'], $defecto['recall3'], 'El reranker no puede bajar el recall@3.' );
+		$this->assertGreaterThan( 0.0, $delta, 'El reranker debería mover el nDCG@5 en positivo.' );
+		$this->assertLessThan( 300.0, $p95, 'El motor completo con reranker supera el límite de 300 ms sin proveedor.' );
+
+		file_put_contents(
+			self::FIXTURES . 'search-quality-rerank.json',
+			json_encode(
+				array(
+					'corpus'      => 'index-ejemplo-20260927.json',
+					'provisional' => 'El set de 34 consultas NO tiene la revisión final de JC: estas métricas son provisionales.',
+					'sin_rerank'  => $m_sin,
+					'con_rerank'  => $defecto,
+					'por_peso'    => array(
+						'0.3' => $medidas['0.3']['metricas'],
+						'0.5' => $medidas['0.5']['metricas'],
+						'0.7' => $medidas['0.7']['metricas'],
+					),
+					'mejoran'   => $mejoran,
+					'empeoran'  => $empeoran,
+					'delta_ndcg5' => $delta,
+					'cumple_criterio_ndcg' => $cumple,
+					'latencia_ms' => array( 'p50' => $p50, 'p95' => $p95, 'max' => $max, 'nota' => 'Tiempo de cómputo en el arnés, sin red ni latencia de servidor. No es la p95 de producción.' ),
+				),
+				JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES
+			) . "\n"
+		);
+	}
+
+	/**
+	 * Mide el set completo con unos ajustes dados.
+	 *
+	 * @param array<string, mixed> $ajustes Ajustes del plugin.
+	 * @return array<string, array<int, string>>
+	 */
+	private function medir_ajustes( array $ajustes ): array {
+		$previos = $GLOBALS['_assistant_options']['convoca_assistant_settings'] ?? array();
+		$GLOBALS['_assistant_options']['convoca_assistant_settings'] = $ajustes;
+		$out = array();
+		foreach ( $this->consultas as $c ) {
+			$ids = array();
+			foreach ( Searcher::search( (string) $c['query'], 10, 0.1 ) as $r ) {
+				$ids[] = (string) $r['entry']['id'];
+			}
+			$out[ (string) $c['query'] ] = $ids;
+		}
+		$GLOBALS['_assistant_options']['convoca_assistant_settings'] = $previos;
+		return $out;
+	}
 }
