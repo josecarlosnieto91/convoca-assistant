@@ -54,11 +54,67 @@ class Searcher {
 		$settings       = Settings::get_all();
 		$priority_types = ! empty( $settings['priority_types'] ) ? (array) $settings['priority_types'] : array( 'convoca_faq', 'convoca_kb' );
 		$priority_boost = (float) ( $settings['priority_boost'] ?? 1.0 );
-		$weights        = self::get_weights();
+		$engine = (string) ( $settings['search_engine'] ?? 'composite' );
 
+		// Motor de fusión (Fase 1): compuesto + BM25 por posiciones. Apagado por defecto.
+		if ( 'fusion' === $engine ) {
+			return self::search_fusion( $index_data, $normalized, $tokens, $synonyms, $max_results, $settings );
+		}
+
+		$results = self::rank_composite( $index_data['entries'], $normalized, $tokens, $expanded, $priority_types, $priority_boost, $use_threshold );
+
+		return array_slice( $results, 0, $max_results );
+	}
+
+	/**
+	 * Motor de fusión: rankea con el compuesto de siempre y con BM25, y los fusiona por posición (RRF).
+	 *
+	 * No aplica `search_threshold`: la puntuación RRF no es una similitud y compararla con un umbral de
+	 * similitud no significa nada. Lo que decide qué entra es el propio ranking.
+	 *
+	 * @param array<string, mixed> $index_data  Índice completo.
+	 * @param string               $normalized  Consulta normalizada.
+	 * @param array<int, string>   $tokens      Términos de la consulta.
+	 * @param array<string, mixed> $synonyms    Sinónimos del índice.
+	 * @param int                  $max_results Tope de resultados.
+	 * @param array<string, mixed> $settings    Ajustes del plugin.
+	 * @return array<int, array<string, mixed>>
+	 */
+	private static function search_fusion( array $index_data, string $normalized, array $tokens, array $synonyms, int $max_results, array $settings ): array {
+		$k1 = (float) ( $settings['search_bm25_k1'] ?? 1.2 );
+		$b  = (float) ( $settings['search_bm25_b'] ?? 0.75 );
+		$k  = (int) ( $settings['search_rrf_k'] ?? Fusion::DEFAULT_K );
+
+		$priority_types = ! empty( $settings['priority_types'] ) ? (array) $settings['priority_types'] : array( 'convoca_faq', 'convoca_kb' );
+		$priority_boost = (float) ( $settings['priority_boost'] ?? 1.0 );
+		$expanded       = self::expand_synonyms( $tokens, $synonyms );
+
+		// El ranking compuesto entra SIN umbral: para fusionar por posiciones se quiere el orden completo.
+		$composite = self::rank_composite( $index_data['entries'], $normalized, $tokens, $expanded, $priority_types, $priority_boost, 0.0 );
+		$bm25      = Bm25::rank( $index_data, $tokens, $k1, $b );
+
+		$depth = (int) ( $settings['search_rrf_depth'] ?? Fusion::DEFAULT_DEPTH );
+
+		return Fusion::rrf( array( $composite, $bm25 ), $k, $max_results, $depth );
+	}
+
+	/**
+	 * Ranking compuesto: el motor de siempre, extraído para poder reutilizarlo y para medirlo.
+	 *
+	 * @param array<int, array<string, mixed>> $entries        Entradas del índice.
+	 * @param string                           $normalized     Consulta normalizada.
+	 * @param array<int, string>               $tokens         Términos de la consulta.
+	 * @param array<int, string>               $expanded       Términos expandidos con sinónimos.
+	 * @param array<int, string>               $priority_types Tipos con boost.
+	 * @param float                            $priority_boost Factor del boost.
+	 * @param float                            $threshold      Umbral mínimo de puntuación.
+	 * @return array<int, array<string, mixed>>
+	 */
+	private static function rank_composite( array $entries, string $normalized, array $tokens, array $expanded, array $priority_types, float $priority_boost, float $threshold ): array {
+		$weights = self::get_weights();
 		$results = array();
 
-		foreach ( $index_data['entries'] as $entry ) {
+		foreach ( $entries as $entry ) {
 			$score = self::calculate_score( $entry, $normalized, $tokens, $expanded, $weights );
 
 			// Fuentes prioritarias (FAQ/wiki) reciben boost: responden primero cuando hay match.
@@ -79,7 +135,7 @@ class Searcher {
 				}
 			}
 
-			if ( $score >= $use_threshold ) {
+			if ( $score >= $threshold ) {
 				$results[] = array(
 					'entry' => $entry,
 					'score' => round( $score, 4 ),
@@ -94,7 +150,17 @@ class Searcher {
 			}
 		);
 
-		return array_slice( $results, 0, $max_results );
+		return $results;
+	}
+
+	/**
+	 * Normalización de texto, expuesta para el ranking BM25.
+	 *
+	 * @param string $text Texto a normalizar.
+	 * @return string
+	 */
+	public static function normalize_text( string $text ): string {
+		return self::normalize( $text );
 	}
 
 	/* ── Composite Score ────────────────────────── */

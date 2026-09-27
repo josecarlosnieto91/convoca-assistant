@@ -68,6 +68,12 @@ class Installer {
 			'search_threshold'        => 0.10,
 			'search_fuse_threshold'   => 0.4,
 			'search_fuse_distance'    => 100,
+			// Motor del buscador de servidor: 'composite' (el de siempre) o 'fusion' (Fase 1).
+			'search_engine'           => 'composite',
+			// BM25 y RRF (motor 'fusion'). k1 y b son los valores estándar.
+			'search_bm25_k1'          => 1.2,
+			'search_bm25_b'           => 0.75,
+			'search_rrf_k'            => 60,
 			'session_window_minutes'  => 10,
 			'index_auto_regenerate'   => true,
 			'index_compress'          => false,
