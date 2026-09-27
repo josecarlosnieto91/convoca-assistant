@@ -81,7 +81,8 @@ class SearchQualityTest extends TestCase {
 	 *
 	 * @return array<string,array<int,string>>
 	 */
-	private function medir(): array {
+	private function medir( string $engine = 'composite' ): array {
+		$GLOBALS['_assistant_options']['convoca_assistant_settings']['search_engine'] = $engine;
 		$devueltos = array();
 		foreach ( $this->consultas as $c ) {
 			$salida = Searcher::search( (string) $c['query'], 10, 0.1 );
@@ -223,6 +224,177 @@ class SearchQualityTest extends TestCase {
 				),
 				JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES
 			) . "\n"
+		);
+	}
+
+	/**
+	 * Fase 1: mide compuesto, BM25 y fusión sobre el mismo set y comprueba que el compuesto no se movió.
+	 *
+	 * El motor por defecto tiene que seguir dando EXACTAMENTE la línea base de la Fase 0: si esto falla,
+	 * el refactor rompió el comportamiento actual y hay que arreglarlo antes de mirar la fusión.
+	 */
+	public function test_compara_los_motores_sin_romper_el_compuesto(): void {
+		// Línea base de la Fase 0, con la precisión que imprime el arnés. La tolerancia (0,001) es mucho más
+		// estrecha que el efecto de mover UNA consulta (~0,03 en recall@1), así que caza cualquier regresión.
+		$linea_base = array( 'recall1' => 0.8182, 'recall3' => 0.9091, 'mrr10' => 0.8780, 'ndcg5' => 0.8977 );
+
+		$motores = array();
+		foreach ( array( 'composite', 'fusion' ) as $engine ) {
+			$motores[ $engine ] = $this->medir( $engine );
+		}
+
+		// BM25 solo, como tercera columna: sirve para ver de dónde viene lo que hace la fusión.
+		$indice = json_decode( (string) file_get_contents( self::FICHERO_INDICE ), true );
+		$bm25   = array();
+		foreach ( $this->consultas as $c ) {
+			$tokens = array();
+			foreach ( explode( ' ', Searcher::normalize_text( (string) $c['query'] ) ) as $t ) {
+				if ( strlen( $t ) >= 3 && ! in_array( $t, (array) ( $indice['stop_words'] ?? array() ), true ) ) {
+					$tokens[] = $t;
+				}
+			}
+			$ids = array();
+			foreach ( \Convoca\Assistant\Bm25::rank( $indice, $tokens ) as $r ) {
+				$ids[] = (string) $r['entry']['id'];
+			}
+			$bm25[ $c['query'] ] = $ids;
+		}
+		$solo_bm25 = $this->metricas( $bm25 );
+
+		// 1) El compuesto no se ha movido: es la garantía de que el refactor no cambió nada.
+		$compuesto = $this->metricas( $motores['composite'] );
+		foreach ( $linea_base as $clave => $esperado ) {
+			$this->assertEqualsWithDelta(
+				$esperado,
+				$compuesto[ $clave ],
+				0.001,
+				"El motor compuesto se ha movido en {$clave}: {$compuesto[$clave]} frente a {$esperado}. El refactor rompió el comportamiento actual."
+			);
+		}
+
+		$fusion = $this->metricas( $motores['fusion'] );
+
+		// 2) Tabla de los dos motores, consulta a consulta.
+		$ancho = 0;
+		foreach ( $this->consultas as $c ) {
+			$ancho = max( $ancho, mb_strlen( $c['query'] ) );
+		}
+		$lineas = array( '', '=== FASE 1: compuesto frente a fusión (BM25 + RRF) ===' );
+		$mejoran = array();
+		$empeoran = array();
+		foreach ( $this->consultas as $c ) {
+			$q = (string) $c['query'];
+			$pc = self::posicion( $motores['composite'][ $q ], $c['esperados'] );
+			$pf = self::posicion( $motores['fusion'][ $q ], $c['esperados'] );
+			$pb = self::posicion( $bm25[ $q ] ?? array(), $c['esperados'] );
+			if ( ! empty( $c['esperados'] ) ) {
+				if ( $pf < $pc || ( 0 === $pc && $pf > 0 ) ) {
+					$mejoran[] = $q;
+				}
+				if ( ( $pf > $pc && 0 !== $pf ) || ( 0 === $pf && $pc > 0 ) ) {
+					$empeoran[] = $q;
+				}
+			}
+			$fmt = static function ( $p ) {
+				return null === $p ? '—' : ( 0 === $p ? 'FALLA' : 'p' . $p );
+			};
+			$lineas[] = sprintf(
+				'  %s  compuesto %-6s bm25 %-6s fusión %-6s %s',
+				str_pad( $q, $ancho ),
+				$fmt( $pc ),
+				$fmt( $pb ),
+				$fmt( $pf ),
+				( $pf < $pc || ( 0 === $pc && $pf > 0 ) ) ? '<-- MEJORA' : ( ( ( $pf > $pc && 0 !== $pf ) || ( 0 === $pf && $pc > 0 ) ) ? '<-- EMPEORA' : '' )
+			);
+		}
+		$lineas[] = sprintf(
+			'  BM25 SOLO recall@1 %.1f%% · recall@3 %.1f%% · mrr@10 %.3f · nDCG@5 %.3f',
+			$solo_bm25['recall1'] * 100,
+			$solo_bm25['recall3'] * 100,
+			$solo_bm25['mrr10'],
+			$solo_bm25['ndcg5']
+		);
+		$lineas[] = sprintf(
+			'  COMPUESTO recall@1 %.1f%% · recall@3 %.1f%% · mrr@10 %.3f · nDCG@5 %.3f',
+			$compuesto['recall1'] * 100,
+			$compuesto['recall3'] * 100,
+			$compuesto['mrr10'],
+			$compuesto['ndcg5']
+		);
+		$lineas[] = sprintf(
+			'  FUSIÓN    recall@1 %.1f%% · recall@3 %.1f%% · mrr@10 %.3f · nDCG@5 %.3f',
+			$fusion['recall1'] * 100,
+			$fusion['recall3'] * 100,
+			$fusion['mrr10'],
+			$fusion['ndcg5']
+		);
+		$lineas[] = '  Mejoran: ' . ( $mejoran ? implode( ', ', $mejoran ) : 'ninguna' );
+		$lineas[] = '  Empeoran: ' . ( $empeoran ? implode( ', ', $empeoran ) : 'ninguna' );
+
+		$relativo = $compuesto['recall1'] > 0 ? ( ( $fusion['recall1'] - $compuesto['recall1'] ) / $compuesto['recall1'] ) * 100 : 0.0;
+		$cumple   = ( $relativo >= 10.0 ) && empty( $empeoran );
+		$lineas[] = sprintf( '  Recall@1 relativo: %+.1f%% (el criterio pide ≥ +10%%) · consultas que empeoran: %d', $relativo, count( $empeoran ) );
+		$lineas[] = '  VEREDICTO DE LA FASE 1: ' . ( $cumple ? 'CUMPLE' : 'NO CUMPLE (se documenta y no se despliega)' );
+		fwrite( STDERR, implode( "\n", $lineas ) . "\n" );
+
+		file_put_contents(
+			self::FIXTURES . 'search-quality-engines.json',
+			json_encode(
+				array(
+					'corpus'    => 'index-ejemplo-20260927.json',
+					'provisional' => 'El set de 34 consultas NO tiene la revisión final de JC: estas métricas son provisionales.',
+					'bm25_solo' => $solo_bm25,
+					'compuesto' => $compuesto,
+					'fusion'    => $fusion,
+					'mejoran'   => $mejoran,
+					'empeoran'  => $empeoran,
+					'relativo_recall1' => $relativo,
+					'cumple_criterio'  => $cumple,
+				),
+				JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES
+			) . "\n"
+		);
+	}
+
+	/**
+	 * Métricas agregadas de un conjunto de resultados devueltos.
+	 *
+	 * @param array<string, array<int, string>> $devueltos Ids por consulta.
+	 * @return array<string, float|int>
+	 */
+	private function metricas( array $devueltos ): array {
+		$puntuables = 0;
+		$suma1      = 0;
+		$suma3      = 0;
+		$suma_mrr   = 0.0;
+		$suma_ndcg  = 0.0;
+
+		foreach ( $this->consultas as $c ) {
+			if ( empty( $c['esperados'] ) ) {
+				continue;
+			}
+			$puntuables++;
+			$ids = $devueltos[ $c['query'] ] ?? array();
+			$pos = self::posicion( $ids, $c['esperados'] );
+			if ( 1 === $pos ) {
+				$suma1++;
+			}
+			if ( $pos >= 1 && $pos <= 3 ) {
+				$suma3++;
+			}
+			if ( $pos >= 1 && $pos <= 10 ) {
+				$suma_mrr += 1 / $pos;
+			}
+			$suma_ndcg += self::ndcg5( $ids, $c['esperados'] );
+		}
+
+		$n = $puntuables > 0 ? $puntuables : 1;
+		return array(
+			'consultas' => $puntuables,
+			'recall1'   => $suma1 / $n,
+			'recall3'   => $suma3 / $n,
+			'mrr10'     => $suma_mrr / $n,
+			'ndcg5'     => $suma_ndcg / $n,
 		);
 	}
 }

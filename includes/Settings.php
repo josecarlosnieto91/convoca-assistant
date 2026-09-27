@@ -146,7 +146,15 @@ class Settings {
 				case 'weights_graph':
 				case 'weights_exact':
 				case 'weights_exact_title':
+				case 'search_bm25_k1':
+				case 'search_bm25_b':
 					$output[ $key ] = (float) $value;
+					break;
+
+				// Motor del buscador: solo dos valores válidos.
+				case 'search_engine':
+					$value                = is_string( $value ) ? sanitize_key( $value ) : '';
+					$output['search_engine'] = in_array( $value, array( 'composite', 'fusion' ), true ) ? $value : 'composite';
 					break;
 
 				// Arrays.
@@ -156,6 +164,7 @@ class Settings {
 
 				// Integers.
 				case 'search_fuse_distance':
+				case 'search_rrf_k':
 				case 'search_max_results':
 				case 'index_max_content':
 				case 'answer_max_length':

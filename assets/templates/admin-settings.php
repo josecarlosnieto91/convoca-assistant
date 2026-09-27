@@ -77,6 +77,25 @@ if ( ! defined( 'ABSPATH' ) ) {
 					<td><input type="number" name="convoca_assistant_settings[search_fuse_threshold]" value="<?php echo esc_attr( $settings['search_fuse_threshold'] ); ?>" step="0.05" min="0" max="1" /></td>
 				</tr>
 				<tr>
+					<th scope="row"><?php esc_html_e( 'Motor del buscador', 'convoca-assistant' ); ?></th>
+					<td>
+						<select name="convoca_assistant_settings[search_engine]">
+							<option value="composite" <?php selected( $settings['search_engine'] ?? 'composite', 'composite' ); ?>><?php esc_html_e( 'Compuesto (por defecto)', 'convoca-assistant' ); ?></option>
+							<option value="fusion" <?php selected( $settings['search_engine'] ?? 'composite', 'fusion' ); ?>><?php esc_html_e( 'Fusión BM25 + RRF', 'convoca-assistant' ); ?></option>
+						</select>
+						<p class="description"><?php esc_html_e( 'El compuesto es el comportamiento de siempre. La fusión está en pruebas: mide mejor, pero no se activa sola. Con la fusión, el umbral de similitud no se aplica.', 'convoca-assistant' ); ?></p>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row"><?php esc_html_e( 'BM25 y RRF', 'convoca-assistant' ); ?></th>
+					<td>
+						<label>k1 <input type="number" name="convoca_assistant_settings[search_bm25_k1]" value="<?php echo esc_attr( $settings['search_bm25_k1'] ?? 1.2 ); ?>" step="0.05" min="0.1" max="5" /></label>
+						<label>b <input type="number" name="convoca_assistant_settings[search_bm25_b]" value="<?php echo esc_attr( $settings['search_bm25_b'] ?? 0.75 ); ?>" step="0.05" min="0" max="1" /></label>
+						<label>k <input type="number" name="convoca_assistant_settings[search_rrf_k]" value="<?php echo esc_attr( $settings['search_rrf_k'] ?? 60 ); ?>" step="1" min="1" max="1000" /></label>
+						<p class="description"><?php esc_html_e( 'Solo se usan con el motor de fusión.', 'convoca-assistant' ); ?></p>
+					</td>
+				</tr>
+				<tr>
 					<th scope="row"><?php esc_html_e( 'Distancia Fuse.js', 'convoca-assistant' ); ?></th>
 					<td><input type="number" name="convoca_assistant_settings[search_fuse_distance]" value="<?php echo esc_attr( $settings['search_fuse_distance'] ); ?>" min="0" max="500" /></td>
 				</tr>
