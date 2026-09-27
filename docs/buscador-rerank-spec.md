@@ -58,9 +58,14 @@ nDCG@5 **+5 puntos** sobre la fase anterior (la línea base: 0,898 → ≥ 0,948
 del límite (≤ 300 ms en el camino sin proveedor).
 
 Sobre la latencia, precisión importante y no negociable: **la p95 de producción no se puede medir
-todavía** (haría falta tráfico real). Lo que se mide aquí es el **tiempo real de cómputo del reranker** en
-el arnés, que es una parte de esa p95 y se reporta como lo que es. La p95 de producción queda como
+todavía** (haría falta tráfico real). Lo que se mide aquí es el **tiempo real de cómputo del motor** en el
+arnés, que es una parte de esa p95 y se reporta como lo que es. La p95 de producción queda como
 **PENDIENTE: humana/real**, no se inventa.
+
+Y una advertencia aprendida a golpes: **el arnés no afirma nada sobre tiempos absolutos.** La primera
+versión llevaba una aserción de «p95 < 300 ms» y tumbó el CI: en el runner salieron 699 ms donde en esta
+máquina salen 59. Una aserción así mide el hardware, no el código. El límite se **reporta** como número y
+se comprueba en el entorno real; el test solo vigila que el motor no se cuelgue.
 
 ## 4. Lo que no se hace
 
