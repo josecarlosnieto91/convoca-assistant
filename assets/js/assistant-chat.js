@@ -339,17 +339,27 @@
 			searchQueries.push( normalized );
 
 			// 6. Run Fuse.js with each query, collect unique results
-			const seen = new Set();
-			const rawResults = [];
+			// La consulta se lanza con varias formulaciones (tokens, n-gramas, frase normalizada) y
+			// una entrada puede aparecer en varias. Se guardan TODAS las apariciones para puntuar
+			// cada una y quedarse con la mejor: antes se guardaba solo la primera y una entrada que
+			// Fuse encontraba con distancia 0.018 en un n-grama acababa puntuada con el resultado
+			// peor de otra formulación (issue #5, problema 2).
+			const candidatos = new Map();
 
 			for (const sq of searchQueries) {
 				const fuseResults = this.fuse.search(sq);
 				for (const fr of fuseResults) {
-					if (!seen.has(fr.item.id)) {
-						seen.add(fr.item.id);
-						rawResults.push(fr);
+					const previos = candidatos.get(fr.item.id);
+					if (previos === undefined) {
+						candidatos.set(fr.item.id, [fr]);
+					} else {
+						previos.push(fr);
 					}
 				}
+			}
+			const rawResults = [];
+			for (const lista of candidatos.values()) {
+				rawResults.push(...lista);
 			}
 
 			// 7. Score with composite
@@ -363,21 +373,41 @@
 				// (o uno contiene al otro), esta entrada ES la respuesta directa.
 				// Evita que la conectividad del grafo opaque un match exacto de título.
 				const titleNorm = this.normalize(r.item.title || '');
+				let exactTitle = false;
 				if (titleNorm && normalized) {
 					const contains = normalized.length >= 6 &&
 						(titleNorm.includes(normalized) || normalized.includes(titleNorm));
 					if (titleNorm === normalized || contains) {
 						boosted = Math.max(boosted, 0.90);
 					}
+					// Coincidencia EXACTA (no «contiene»): desempata y permite que una página o
+					// entrada sea respuesta directa (issue #5, problemas 3 y 4).
+					exactTitle = titleNorm === normalized;
 				}
 				return {
 					entry: r.item,
 					score: Math.min(boosted, 1.0),
+					exactTitle,
 				};
 			});
 
 			// 8. Filter & sort
-			const filtered = scored.filter(r => r.score >= SCORE_THRESHOLD);
+			// Una entrada, una fila: la de mejor puntuación final (y a igualdad, la de título exacto).
+			const porEntrada = new Map();
+			for (const sc of scored) {
+				const previo = porEntrada.get(sc.entry.id);
+				const mejor = previo === undefined
+					|| sc.score > previo.score
+					|| (sc.score === previo.score && sc.exactTitle && !previo.exactTitle);
+				if (mejor) {
+					porEntrada.set(sc.entry.id, sc);
+				}
+			}
+			const filtered = Array.from(porEntrada.values()).filter(r => r.score >= SCORE_THRESHOLD);
+			// OJO: aquí hubo un desempate a favor de FAQ/wiki para los empates a 0.90 (el
+			// problema 3 del issue #5). Se retiró MEDIDO: costaba 3 puntos de recall@1 en el
+			// cliente (78,8% -> 75,8%) porque mueve más empates de los que arregla. Queda en el
+			// issue como pendiente de una regla mejor; el desempate actual es el de siempre.
 			filtered.sort((a, b) => b.score - a.score);
 			const topResults = filtered.slice(0, maxResults);
 

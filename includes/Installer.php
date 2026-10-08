@@ -54,7 +54,7 @@ class Installer {
 			'priority_types'          => array( 'convoca_faq', 'convoca_kb' ),
 			'priority_boost'          => 1.35,
 			// Umbral de respuesta directa (fuente prioritaria con score >= umbral).
-			'direct_threshold'        => 0.55,
+			'direct_threshold'        => 0.40,
 			// Pesos del ranking del buscador (composite score, server y mirror cliente).
 			'weights_fuzzy'           => 0.45,
 			'weights_graph'           => 0.10,

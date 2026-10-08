@@ -289,9 +289,15 @@
 			// conversa: pregunta -> respuesta, en lugar de listar fuentes siempre.
 			const top = results[0];
 			const priorityTypes = this.chat?.config?.settings?.priorityTypes || ['convoca_faq', 'convoca_kb'];
-			const directThreshold = parseFloat(this.chat?.config?.settings?.directThreshold) || 0.55;
+			// 0.40 por defecto, no 0.55: con el scoring actual (todo pasa por 0.5 + peso/20) el
+			// máximo práctico ronda 0.47, así que 0.55 solo lo alcanzaba una coincidencia exacta
+			// de título y el chat contestaba con la lista de fuentes (issue #5, problema 1).
+			const directThreshold = parseFloat(this.chat?.config?.settings?.directThreshold) || 0.40;
 			const topIsPriority = top && priorityTypes.includes(top.entry.type);
-			if (topIsPriority && top.score >= directThreshold) {
+			// Una página o una entrada también responden cuando su título coincide exactamente
+			// con la consulta: antes solo podían serlo FAQ y wiki (issue #5, problema 4).
+			const topEsRespuesta = topIsPriority || (top && top.exactTitle);
+			if (topEsRespuesta && top.score >= directThreshold) {
 				this.showResultEntry(top, query);
 				return;
 			}

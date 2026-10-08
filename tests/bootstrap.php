@@ -242,9 +242,14 @@ namespace {
 			if ( ! preg_match( '/[\x80-\xff]/', (string) $string ) ) {
 				return $string;
 			}
-			if ( function_exists( 'transliterator_transliterate' ) ) {
-				return transliterator_transliterate( 'Any-Latin; Latin-ASCII;', $string );
-			}
+			/*
+			 * SIEMPRE con la tabla, sin `transliterator_transliterate` aunque la extensión `intl`
+			 * esté disponible. Aquí NO se imita a WordPress: se busca que el banco mida siempre lo
+			 * mismo. Con la extensión puesta (mi máquina) el arnés daba 78,8% de recall@1 y sin ella
+			 * (el CI) 81,8%: una consulta cambiaba de sitio según el entorno y la aserción de la línea
+			 * base se volvía un falso rojo. Que producción dependa de `intl` es otro asunto y va en su
+			 * issue.
+			 */
 			return strtr(
 				$string,
 				array(
