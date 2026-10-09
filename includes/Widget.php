@@ -134,7 +134,7 @@ class Widget {
 					'maxAnswerLength' => (int) ( $settings['answer_max_length'] ?? 600 ),
 					'priorityTypes'   => ! empty( $settings['priority_types'] ) ? (array) $settings['priority_types'] : array( 'convoca_faq', 'convoca_kb' ),
 					'priorityBoost'   => (float) ( $settings['priority_boost'] ?? 1.0 ),
-					'directThreshold' => (float) ( $settings['direct_threshold'] ?? 0.55 ),
+					'directThreshold' => (float) ( $settings['direct_threshold'] ?? 0.40 ),
 					'rankingWeights'  => array(
 						'fuzzy'      => (float) ( $settings['weights_fuzzy'] ?? 0.45 ),
 						'graph'      => (float) ( $settings['weights_graph'] ?? 0.10 ),

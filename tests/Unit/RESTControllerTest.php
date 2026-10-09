@@ -24,7 +24,6 @@ class RESTControllerTest extends TestCase {
 	 */
 	private function get_client_ip(): string {
 		$method = new \ReflectionMethod( REST_Controller::class, 'get_client_ip' );
-		$method->setAccessible( true );
 		return $method->invoke( null );
 	}
 

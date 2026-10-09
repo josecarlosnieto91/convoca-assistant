@@ -28,12 +28,12 @@ class SettingsTest extends TestCase {
 	}
 
 	/**
-	 * Defaults include direct_threshold (0.55) and the ranking weights.
+	 * Defaults include direct_threshold (0.40) and the ranking weights.
 	 */
 	public function test_defaults_include_direct_threshold_and_weights(): void {
 		$defaults = Installer::default_settings();
 
-		$this->assertSame( 0.55, $defaults['direct_threshold'] );
+		$this->assertSame( 0.40, $defaults['direct_threshold'] );
 		$this->assertSame( 0.45, $defaults['weights_fuzzy'] );
 		$this->assertSame( 0.10, $defaults['weights_graph'] );
 		$this->assertSame( 0.15, $defaults['weights_exact'] );
@@ -46,7 +46,7 @@ class SettingsTest extends TestCase {
 	public function test_get_all_merges_new_defaults(): void {
 		$all = Settings::get_all();
 
-		$this->assertSame( 0.55, $all['direct_threshold'] );
+		$this->assertSame( 0.40, $all['direct_threshold'] );
 		$this->assertSame( 0.45, $all['weights_fuzzy'] );
 	}
 
@@ -77,7 +77,7 @@ class SettingsTest extends TestCase {
 	public function test_sanitize_defaults_when_keys_absent(): void {
 		$sanitized = Settings::sanitize( array() );
 
-		$this->assertSame( 0.55, $sanitized['direct_threshold'] );
+		$this->assertSame( 0.40, $sanitized['direct_threshold'] );
 		$this->assertSame( 0.45, $sanitized['weights_fuzzy'] );
 		$this->assertSame( 0.15, $sanitized['weights_exact_title'] );
 	}
