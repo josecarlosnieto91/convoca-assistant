@@ -1,8 +1,8 @@
 {
   "_que_es": "Metadatos del corpus congelado. El JSON del índice NO se puede comentar (no es JSON5), así que la procedencia va aquí al lado, con el md5 del fichero tal cual.",
   "fichero": "index-ejemplo-20260927.json",
-  "md5": "a20b40d56a5c6a7212da85724233c114",
-  "bytes": 863241,
+  "md5": "051d46b86aa7c5709e6e33e5ebfc046f",
+  "bytes": 858059,
   "entradas": 336,
   "por_tipo": {
     "convoca_faq": 134,
@@ -15,10 +15,10 @@
   "generado_en_el_sitio": 1790490303,
   "version_del_indice": "0.2.7",
   "schema": 1,
-  "hash_interno": "bab65c750a93b880c0cc0f2020a310f1",
+  "hash_interno": "85ebf496af399ae9f7fdeafe5acc1f9e",
   "sitio": "Centro social los Ejemplo",
   "locale": "es_ES",
-  "nota": "El fichero es byte a byte el mismo que sirve el sitio. El md5 anotado en el goal (a20b40d56a5c6a7212da85724233c114) es el de ESTE fichero. No se toca: si Ejemplo regenera su índice, este fixture no cambia.",
+  "nota": "Fixture de una muestra de indice ANONIMIZADA: los datos que identificaban a personas u organizaciones reales (correos, telefonos, direcciones, dominios y nombres propios) se sustituyeron por valores neutros conservando los identificadores y el esquema. Por eso cambian el md5 y el hash interno; el resto del corpus de medicion (ids, titulos y vocabulario de temas) es identico, asi que las metricas no se mueven.",
   "trae_dentro": [
     "synonyms",
     "stop_words",

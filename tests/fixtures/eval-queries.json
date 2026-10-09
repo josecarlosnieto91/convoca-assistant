@@ -3,7 +3,7 @@
   "_estado": "BORRADOR PENDIENTE DE REVISIÓN DE JC. El goal exige su revisión antes de usar el set como referencia: un set mal etiquetado mide ruido. Las que escriba él se añaden con origen=\"manual_jc\".",
   "_corpus": {
     "fichero": "index-ejemplo-20260927.json",
-    "md5": "a20b40d56a5c6a7212da85724233c114",
+    "md5": "051d46b86aa7c5709e6e33e5ebfc046f",
     "entradas": 336
   },
   "_por_que_no_hay_consultas_reales": "Se rastrearon los registros de Ejemplo (7 filas) y de la demo (16). NO son de personas: 5 de Ejemplo comparten sesión y salen de la página de pago con ?convoca_gateway_pago=12226, y en la demo 11 de 16 llevan el mismo user-agent dentro de una tanda de 40 minutos en julio. Son tandas automáticas, con clicked=0 y (en Ejemplo) score=0.9 idéntico. Por eso frecuencia queda a null: no hay demanda real que medir todavía.",

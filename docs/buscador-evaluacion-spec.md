@@ -78,7 +78,7 @@ Reglas de aplicación:
 ## 4. Corpus congelado
 
 - Fichero: `tests/fixtures/index-ejemplo-20260927.json` — **336 entradas** (post 181 · page 21 ·
-  `convoca_faq` 134), 863.241 bytes, **md5 `a20b40d56a5c6a7212da85724233c114`**.
+  `convoca_faq` 134), 858.059 bytes, **md5 `051d46b86aa7c5709e6e33e5ebfc046f`**.
 - Origen: `https://ejemplo.org/wp-content/uploads/convoca-assistant/index.json`
   (`/datos/www/ejemplo.org/wp-content/uploads/convoca-assistant/index.json`), generado el
   27/09/2026 a las 06:25 UTC, esquema 1.
