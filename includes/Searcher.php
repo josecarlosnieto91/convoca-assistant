@@ -54,8 +54,8 @@ class Searcher {
 		$settings       = Settings::get_all();
 		$priority_types = ! empty( $settings['priority_types'] ) ? (array) $settings['priority_types'] : array( 'convoca_faq', 'convoca_kb' );
 		$priority_boost = (float) ( $settings['priority_boost'] ?? 1.0 );
-		$engine = (string) ( $settings['search_engine'] ?? 'composite' );
-		$rerank = ! empty( $settings['search_rerank'] );
+		$engine         = (string) ( $settings['search_engine'] ?? 'composite' );
+		$rerank         = ! empty( $settings['search_rerank'] );
 
 		// Motor de fusión (Fase 1): compuesto + BM25 por posiciones. Apagado por defecto.
 		if ( 'fusion' === $engine ) {

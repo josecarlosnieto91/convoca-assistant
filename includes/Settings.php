@@ -156,7 +156,7 @@ class Settings {
 
 				// Motor del buscador: solo dos valores válidos.
 				case 'search_engine':
-					$value                = is_string( $value ) ? sanitize_key( $value ) : '';
+					$value                   = is_string( $value ) ? sanitize_key( $value ) : '';
 					$output['search_engine'] = in_array( $value, array( 'composite', 'fusion' ), true ) ? $value : 'composite';
 					break;
 
@@ -190,7 +190,7 @@ class Settings {
 
 				// Sanitized strings.
 				case 'widget_primary_color':
-					$color             = sanitize_hex_color( $value );
+					$color          = sanitize_hex_color( $value );
 					$output[ $key ] = $color ? $color : $defaults[ $key ];
 					break;
 				case 'widget_title':

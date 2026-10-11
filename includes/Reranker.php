@@ -27,10 +27,10 @@ class Reranker {
 	 * Peso de cada componente dentro de la señal heurística. Suman 1.
 	 */
 	public const COMPONENT_WEIGHTS = array(
-		'titulo'     => 0.35,
-		'cobertura'  => 0.30,
-		'solape'     => 0.25,
-		'prioridad'  => 0.10,
+		'titulo'    => 0.35,
+		'cobertura' => 0.30,
+		'solape'    => 0.25,
+		'prioridad' => 0.10,
 	);
 
 	/**
@@ -72,9 +72,9 @@ class Reranker {
 			$base  = (float) ( $item['score'] ?? 0.0 );
 			$heur  = self::heuristic( $entry, $normalized, $tokens, $priority_types );
 
-			$cabeza[ $i ]['score']          = round( ( $base * ( 1 - $weight ) ) + ( $heur * $weight ), 4 );
-			$cabeza[ $i ]['score_base']     = $item['score'] ?? null;
-			$cabeza[ $i ]['score_rerank']   = round( $heur, 4 );
+			$cabeza[ $i ]['score']        = round( ( $base * ( 1 - $weight ) ) + ( $heur * $weight ), 4 );
+			$cabeza[ $i ]['score_base']   = $item['score'] ?? null;
+			$cabeza[ $i ]['score_rerank'] = round( $heur, 4 );
 		}
 
 		// usort es estable desde PHP 8.0: con puntuaciones iguales se conserva el orden del ranking base.
@@ -125,7 +125,7 @@ class Reranker {
 		$en_titulo = 0;
 		foreach ( $tokens as $token ) {
 			if ( '' !== $token && false !== mb_strpos( $titulo, (string) $token ) ) {
-				$en_titulo++;
+				++$en_titulo;
 			}
 		}
 		$cobertura = $en_titulo / max( 1, count( $tokens ) );
@@ -134,7 +134,7 @@ class Reranker {
 		$en_resto = 0;
 		foreach ( $tokens as $token ) {
 			if ( '' !== $token && ( false !== mb_strpos( $claves, (string) $token ) || false !== mb_strpos( $resto, (string) $token ) ) ) {
-				$en_resto++;
+				++$en_resto;
 			}
 		}
 		$solape = $en_resto / max( 1, count( $tokens ) );
