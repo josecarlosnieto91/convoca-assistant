@@ -251,7 +251,8 @@ class Installer {
 				Indexer::regenerate();
 			} catch ( \Throwable $e ) {
 				// Falla silenciosa — el índice se puede reconstruir desde admin.
-				error_log( 'Convoca Assistant: index regeneration failed: ' . $e->getMessage() ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
+				// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
+				error_log( 'Convoca Assistant: index regeneration failed: ' . $e->getMessage() );
 			}
 		}
 	}

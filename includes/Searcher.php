@@ -94,7 +94,15 @@ class Searcher {
 	 * @param bool                 $rerank      Si el reranker va a entrar después (entonces se fusiona más hondo).
 	 * @return array<int, array<string, mixed>>
 	 */
-	private static function search_fusion( array $index_data, string $normalized, array $tokens, array $synonyms, int $max_results, array $settings, bool $rerank = false ): array {
+	private static function search_fusion(
+		array $index_data,
+		string $normalized,
+		array $tokens,
+		array $synonyms,
+		int $max_results,
+		array $settings,
+		bool $rerank = false
+	): array {
 		$k1 = (float) ( $settings['search_bm25_k1'] ?? 1.2 );
 		$b  = (float) ( $settings['search_bm25_b'] ?? 0.75 );
 		$k  = (int) ( $settings['search_rrf_k'] ?? Fusion::DEFAULT_K );
@@ -127,7 +135,15 @@ class Searcher {
 	 * @param float                            $threshold      Umbral mínimo de puntuación.
 	 * @return array<int, array<string, mixed>>
 	 */
-	private static function rank_composite( array $entries, string $normalized, array $tokens, array $expanded, array $priority_types, float $priority_boost, float $threshold ): array {
+	private static function rank_composite(
+		array $entries,
+		string $normalized,
+		array $tokens,
+		array $expanded,
+		array $priority_types,
+		float $priority_boost,
+		float $threshold
+	): array {
 		$weights = self::get_weights();
 		$results = array();
 
@@ -367,7 +383,15 @@ class Searcher {
 	 * @param string $excerpt  Excerpt.
 	 * @return float
 	 */
-	private static function coverage_score( array $tokens, string $title, string $content, string $keywords, string $cats, string $tags, string $excerpt ): float {
+	private static function coverage_score(
+		array $tokens,
+		string $title,
+		string $content,
+		string $keywords,
+		string $cats,
+		string $tags,
+		string $excerpt
+	): float {
 		if ( empty( $tokens ) ) {
 			return 0.0;
 		}

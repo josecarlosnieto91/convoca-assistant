@@ -414,7 +414,8 @@ class REST_Controller {
 	public static function clear_logs( $request ) {
 		global $wpdb;
 		$table = $wpdb->prefix . 'convoca_assistant_log';
-		$wpdb->query( "TRUNCATE TABLE {$table}" ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$wpdb->query( "TRUNCATE TABLE {$table}" );
 		return new \WP_REST_Response(
 			array(
 				'success' => true,

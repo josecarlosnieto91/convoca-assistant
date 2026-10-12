@@ -41,7 +41,8 @@ class Graph_Builder {
 		// Fallback: add edges between same-type entries from the index.
 		$index_path = Indexer::get_index_path();
 		if ( file_exists( $index_path ) ) {
-			$index_data = json_decode( file_get_contents( $index_path ), true ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
+			// phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
+			$index_data = json_decode( file_get_contents( $index_path ), true );
 			$by_type    = array();
 			if ( ! empty( $index_data['entries'] ) ) {
 				foreach ( $index_data['entries'] as $entry ) {

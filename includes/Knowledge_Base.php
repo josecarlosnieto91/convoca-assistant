@@ -432,7 +432,12 @@ class Knowledge_Base {
 					name="convoca_assistant_weight"
 					value="<?php echo esc_attr( $weight ? $weight : '' ); ?>"
 					step="0.1" min="0" max="10" style="width:80px;" />
-			<span class="description"><?php /* translators: %s: default weight value. */ echo esc_html( sprintf( __( 'Defecto: %s', 'convoca-assistant' ), $default_weight ) ); ?></span>
+			<span class="description">
+				<?php
+				/* translators: %s: default weight value. */
+				echo esc_html( sprintf( __( 'Defecto: %s', 'convoca-assistant' ), $default_weight ) );
+				?>
+			</span>
 		</p>
 		<p>
 			<label>

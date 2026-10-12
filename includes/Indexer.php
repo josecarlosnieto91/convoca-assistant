@@ -193,11 +193,13 @@ class Indexer {
 
 		// Protect with .htaccess.
 		if ( ! file_exists( $dir . '.htaccess' ) ) {
-			file_put_contents( $dir . '.htaccess', "Deny from all\n" ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents
+			// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents
+			file_put_contents( $dir . '.htaccess', "Deny from all\n" );
 		}
 
 		// Write uncompressed JSON.
-		$written_json = file_put_contents( $dir . 'index.json', $json_final ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents
+		$written_json = file_put_contents( $dir . 'index.json', $json_final );
 		if ( false === $written_json ) {
 			return array(
 				'success' => false,
@@ -233,7 +235,11 @@ class Indexer {
 		do_action( 'convoca_assistant/after_index', $index );
 
 		Logger::info(
-			sprintf( 'Index regenerated: %d entries, %s.', count( $entries ), size_format( $written_json ) ? size_format( $written_json ) : $written_json . ' bytes' ),
+			sprintf(
+				'Index regenerated: %d entries, %s.',
+				count( $entries ),
+				size_format( $written_json ) ? size_format( $written_json ) : $written_json . ' bytes'
+			),
 			'convoca-assistant'
 		);
 
@@ -333,7 +339,7 @@ class Indexer {
 	 * @param mixed  $meta_value Meta value.
 	 * @return void
 	 */
-	public static function on_meta_change( int $meta_id, int $post_id, string $meta_key, $meta_value ): void { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.Found
+	public static function on_meta_change( int $meta_id, int $post_id, string $meta_key, $meta_value ): void {
 		$relevant = array(
 			'_convoca_assistant_keywords',
 			'_convoca_assistant_weight',

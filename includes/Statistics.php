@@ -127,14 +127,16 @@ class Statistics {
 
 		$avg_score = (float) $wpdb->get_var(
 			$wpdb->prepare(
-				"SELECT AVG(score) FROM {$table} WHERE created_at >= %s AND response_found = 1", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+				// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+				"SELECT AVG(score) FROM {$table} WHERE created_at >= %s AND response_found = 1",
 				$since
 			)
 		);
 
 		$avg_time = (float) $wpdb->get_var(
 			$wpdb->prepare(
-				"SELECT AVG(query_time_ms) FROM {$table} WHERE created_at >= %s AND query_time_ms IS NOT NULL", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+				// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+				"SELECT AVG(query_time_ms) FROM {$table} WHERE created_at >= %s AND query_time_ms IS NOT NULL",
 				$since
 			)
 		);
@@ -264,6 +266,7 @@ class Statistics {
 		if ( empty( $_SESSION['convoca_assistant_session'] ) ) {
 			$_SESSION['convoca_assistant_session'] = wp_generate_uuid4();
 		}
-		return $_SESSION['convoca_assistant_session']; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- UUID generada por el propio plugin (wp_generate_uuid4).
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- UUID generada por el propio plugin (wp_generate_uuid4).
+		return $_SESSION['convoca_assistant_session'];
 	}
 }

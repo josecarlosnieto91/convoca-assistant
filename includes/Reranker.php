@@ -54,7 +54,14 @@ class Reranker {
 	 * @param float                            $weight     Cuánto pesa la señal heurística (0-1).
 	 * @return array<int, array<string, mixed>>
 	 */
-	public static function rerank( array $results, string $normalized, array $tokens, array $settings, int $depth = self::DEFAULT_DEPTH, float $weight = self::DEFAULT_WEIGHT ): array {
+	public static function rerank(
+		array $results,
+		string $normalized,
+		array $tokens,
+		array $settings,
+		int $depth = self::DEFAULT_DEPTH,
+		float $weight = self::DEFAULT_WEIGHT
+	): array {
 		if ( count( $results ) < 2 || empty( $tokens ) ) {
 			return $results;
 		}
