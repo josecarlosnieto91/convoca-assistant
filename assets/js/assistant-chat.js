@@ -404,11 +404,28 @@
 				}
 			}
 			const filtered = Array.from(porEntrada.values()).filter(r => r.score >= SCORE_THRESHOLD);
-			// OJO: aquí hubo un desempate a favor de FAQ/wiki para los empates a 0.90 (el
-			// problema 3 del issue #5). Se retiró MEDIDO: costaba 3 puntos de recall@1 en el
-			// cliente (78,8% -> 75,8%) porque mueve más empates de los que arregla. Queda en el
-			// issue como pendiente de una regla mejor; el desempate actual es el de siempre.
-			filtered.sort((a, b) => b.score - a.score);
+			// Desempate (issue #5, problema 3): cuando dos entradas empatan en la puntuacion
+			// TOPE de coincidencia de titulo (0.90), la coincidencia EXACTA de titulo va primero
+			// y, a igualdad, una PAGINA cede ante una FAQ/wiki del mismo tema (la pagina es
+			// navegacion; la FAQ es la respuesta). Antes ganaba la que hubiera entrado primero en
+			// los resultados, que solia ser la pagina.
+			// Solo se mueve el empate pagina<->fuente prioritaria: medido con el arnes de calidad,
+			// un desempate general a favor de FAQ/wiki le quitaba el primer puesto a entradas
+			// legitimas (p. ej. «taller» respondido por una entrada de blog) y costaba 3 puntos
+			// de recall@1 en el cliente (78,8% -> 75,8%).
+			filtered.sort((a, b) => {
+				if (b.score !== a.score) return b.score - a.score;
+				if (a.score >= 0.9) {
+					if (a.exactTitle !== b.exactTitle) return a.exactTitle ? -1 : 1;
+					const pagA = a.entry.type === 'page';
+					const pagB = b.entry.type === 'page';
+					if (pagA !== pagB) {
+						const otra = pagA ? b : a;
+						if (priorityTypes.includes(otra.entry.type)) return pagA ? 1 : -1;
+					}
+				}
+				return 0;
+			});
 			const topResults = filtered.slice(0, maxResults);
 
 			// 9. Cluster
@@ -463,6 +480,21 @@
 			const excerpt  = this.normalize(entry.excerpt  || '');
 			const weight   = entry.weight || 1.0;
 
+			// El peso de una entrada solo refuerza coincidencias FUERTES: su titulo o sus
+			// palabras clave contienen la consulta entera. Antes era un multiplicador global
+			// que tocaba TODAS las coincidencias, de modo que subir el peso de una entrada
+			// para que ganase su propia pregunta le robaba consultas flojas a otras (issue #5,
+			// problema 5: con peso 8 se arreglaban 7 consultas y se rompian 11).
+			// En coincidencia floja se usa el peso NORMAL del tipo (el configurado para ese
+			// tipo de contenido), de modo que una entrada con el peso de fabrica no cambia y
+			// solo se neutraliza el exceso de peso artificial.
+			const matchFuerte =
+				normalized.length >= 3 &&
+				(title.includes(normalized) || keywords.includes(normalized));
+			const pesosTipo = this.config.settings?.weightDefaults || {};
+			const pesoNormal = parseFloat(pesosTipo[entry.type]) || weight;
+			const pesoEfectivo = matchFuerte ? weight : pesoNormal;
+
 			// Graph score (how connected)
 			const graphScore = this.calcGraphScore(entry.id);
 
@@ -481,9 +513,9 @@
 				(this.stemBonus(tokens, title, content, keywords)            * 0.05) +
 				(this.coverageScore(tokens, title, content, keywords, cats, tags, excerpt) * 0.05) +
 				(this.recencyBonus(entry.date || entry.modified || '')       * 0.05) +
-				((weight / 10.0) * 0.05);
+				((pesoEfectivo / 10.0) * 0.05);
 
-			return Math.min(score * (0.5 + (weight / 20.0)), 1.0);
+			return Math.min(score * (0.5 + (pesoEfectivo / 20.0)), 1.0);
 		}
 
 		/**

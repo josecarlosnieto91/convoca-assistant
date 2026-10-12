@@ -148,6 +148,15 @@ class Widget {
 						'content'    => 1,
 						'tags'       => 1,
 					),
+					// Pesos normales por tipo: el peso de una entrada solo refuerza coincidencias
+					// fuertes; en las flojas se usa este valor (issue #5, problema 5).
+					'weightDefaults'  => array(
+						'convoca_faq' => (float) ( $settings['weight_convoca_faq'] ?? 2.0 ),
+						'convoca_kb'  => (float) ( $settings['weight_convoca_kb'] ?? 1.5 ),
+						'post'        => (float) ( $settings['weight_post'] ?? 1.0 ),
+						'page'        => (float) ( $settings['weight_page'] ?? 1.0 ),
+						'product'     => (float) ( $settings['weight_product'] ?? 1.0 ),
+					),
 					'contact'         => array(
 						'email'    => $settings['contact_email'] ?? '',
 						'phone'    => $settings['contact_phone'] ?? '',

@@ -144,11 +144,12 @@ class Searcher {
 		float $priority_boost,
 		float $threshold
 	): array {
-		$weights = self::get_weights();
-		$results = array();
+		$weights         = self::get_weights();
+		$results         = array();
+		$weight_defaults = self::get_weight_defaults();
 
 		foreach ( $entries as $entry ) {
-			$score = self::calculate_score( $entry, $normalized, $tokens, $expanded, $weights );
+			$score = self::calculate_score( $entry, $normalized, $tokens, $expanded, $weights, $weight_defaults );
 
 			// Fuentes prioritarias (FAQ/wiki) reciben boost: responden primero cuando hay match.
 			if ( in_array( $entry['type'] ?? '', $priority_types, true ) && $priority_boost > 1.0 ) {
@@ -170,16 +171,41 @@ class Searcher {
 
 			if ( $score >= $threshold ) {
 				$results[] = array(
-					'entry' => $entry,
-					'score' => round( $score, 4 ),
+					'entry'       => $entry,
+					'score'       => round( $score, 4 ),
+					'exact_title' => ( '' !== $entry_title_norm && $entry_title_norm === $normalized ),
 				);
 			}
 		}
 
+		/*
+		 * Desempate (issue #5, problema 3): cuando dos entradas empatan en la puntuacion TOPE
+		 * de coincidencia de titulo (0.90), la coincidencia EXACTA de titulo va primero y, a
+		 * igualdad, una PAGINA cede ante una FAQ/wiki del mismo tema (la pagina es navegacion;
+		 * la FAQ es la respuesta). Solo se mueve el empate pagina<->fuente prioritaria: un
+		 * desempate general a favor de FAQ/wiki le quitaba el primer puesto a entradas legitimas
+		 * (p. ej. «taller» respondido por una entrada de blog).
+		 */
 		usort(
 			$results,
-			function ( $a, $b ) {
-				return $b['score'] <=> $a['score'];
+			static function ( $a, $b ) use ( $priority_types ) {
+				if ( $a['score'] !== $b['score'] ) {
+					return $b['score'] <=> $a['score'];
+				}
+				if ( $a['score'] >= 0.9 ) {
+					if ( $a['exact_title'] !== $b['exact_title'] ) {
+						return $a['exact_title'] ? -1 : 1;
+					}
+					$pag_a = 'page' === ( $a['entry']['type'] ?? '' );
+					$pag_b = 'page' === ( $b['entry']['type'] ?? '' );
+					if ( $pag_a !== $pag_b ) {
+						$otra = $pag_a ? $b : $a;
+						if ( in_array( (string) ( $otra['entry']['type'] ?? '' ), $priority_types, true ) ) {
+							return $pag_a ? 1 : -1;
+						}
+					}
+				}
+				return 0;
 			}
 		);
 
@@ -209,10 +235,19 @@ class Searcher {
 	 * @param array      $tokens    Tokenized query words.
 	 * @param array      $expanded  Query words expanded with synonyms.
 	 * @param array|null $weights   Ranking weights (defaults to get_weights()).
+	 * @param array|null $weight_defaults Pesos normales por tipo (defaults to get_weight_defaults()).
 	 * @return float Score 0-1.
 	 */
-	private static function calculate_score( array $entry, string $query, array $tokens, array $expanded, ?array $weights = null ): float {
-		$weights = $weights ?? self::get_weights();
+	private static function calculate_score(
+		array $entry,
+		string $query,
+		array $tokens,
+		array $expanded,
+		?array $weights = null,
+		?array $weight_defaults = null
+	): float {
+		$weights         = $weights ?? self::get_weights();
+		$weight_defaults = $weight_defaults ?? self::get_weight_defaults();
 
 		// Normalizar (quitar tildes/signos) igual que el query para que el
 		// exact bonus y el resto de comparaciones funcionen en español.
@@ -254,6 +289,20 @@ class Searcher {
 		// 8) Weight factor.
 		$weight = (float) ( $entry['weight'] ?? 1.0 );
 
+		/*
+		 * El peso de una entrada solo refuerza coincidencias FUERTES: su titulo o sus palabras
+		 * clave contienen la consulta entera. Antes era un multiplicador global que tocaba TODAS
+		 * las coincidencias, de modo que subir el peso de una entrada para que ganase su propia
+		 * pregunta le robaba consultas flojas a otras (issue #5, problema 5). En coincidencia
+		 * floja se usa el peso NORMAL del tipo (el configurado), asi que una entrada con el peso
+		 * de fabrica no cambia y solo se neutraliza el exceso de peso artificial.
+		 */
+		$match_fuerte = mb_strlen( $query ) >= 3
+			&& ( false !== mb_strpos( $title_lower, $query ) || false !== mb_strpos( $keywords_str, $query ) );
+		$peso_normal  = $match_fuerte
+			? $weight
+			: ( self::get_weight_defaults()[ (string) ( $entry['type'] ?? '' ) ] ?? $weight );
+
 		// Composite: la conectividad (graph) no debe dominar sobre el contenido.
 		$score = ( $fuzzy_score * $weights['fuzzy'] )
 				+ ( $graph_score * $weights['graph'] )
@@ -262,12 +311,33 @@ class Searcher {
 				+ ( $stem_bonus * 0.05 )
 				+ ( $coverage * 0.05 )
 				+ ( $recency * 0.05 )
-				+ ( ( $weight / 10.0 ) * 0.05 );
+				+ ( ( $peso_normal / 10.0 ) * 0.05 );
 
-		// Boost from weight multiplier.
-		$score = $score * ( 0.5 + ( $weight / 20.0 ) );
+		// Boost from weight multiplier (solo actua si la coincidencia es fuerte).
+		$score = $score * ( 0.5 + ( $peso_normal / 20.0 ) );
 
 		return min( $score, 1.0 );
+	}
+
+	/**
+	 * Pesos normales por tipo de contenido (los de fabrica).
+	 *
+	 * El peso de una entrada solo actua sobre coincidencias fuertes; en las flojas se usa
+	 * este valor, de modo que una entrada con el peso de fabrica nunca cambia y solo se
+	 * neutraliza el exceso de peso artificial (issue #5, problema 5).
+	 *
+	 * @return array<string, float>
+	 */
+	private static function get_weight_defaults(): array {
+		$settings = Settings::get_all();
+
+		return array(
+			'convoca_faq' => (float) ( $settings['weight_convoca_faq'] ?? 2.0 ),
+			'convoca_kb'  => (float) ( $settings['weight_convoca_kb'] ?? 1.5 ),
+			'post'        => (float) ( $settings['weight_post'] ?? 1.0 ),
+			'page'        => (float) ( $settings['weight_page'] ?? 1.0 ),
+			'product'     => (float) ( $settings['weight_product'] ?? 1.0 ),
+		);
 	}
 
 	/**

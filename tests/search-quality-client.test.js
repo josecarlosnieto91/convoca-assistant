@@ -31,6 +31,7 @@ const AJUSTES_DEL_SITIO = {
 	directThreshold: 0.55,
 	rankingWeights: { fuzzy: 0.45, graph: 0.1, exact: 0.15, exactTitle: 0.15 },
 	weights: { title: 4, keywords: 3, categories: 2, content: 1, tags: 1 },
+	weightDefaults: { convoca_faq: 2.0, convoca_kb: 1.5, post: 1.0, page: 1.0, product: 1.0 },
 };
 
 // ── Métricas (mismas fórmulas que el arnés del servidor, ver la spec §3) ──

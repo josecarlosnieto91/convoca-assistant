@@ -1,5 +1,31 @@
 # Changelog — Convoca Assistant
 
+## v0.2.12 (2026-10-12)
+
+### Arreglado
+- **El buscador vuelve a responder** (issue #5). Medido con el motor real
+  (`assets/js/assistant-chat.js`) y el `index.json` de produccion (347 entradas), sobre una
+  bateria de 46 consultas coloquiales y 268 naturales, con `priority_boost` 1,35:
+  | | antes (0,40) | despues (0,40) |
+  |---|---|---|
+  | coloquiales: directas / correctas / erroneas | 45 / 36 / 9 | 45 / 38 / 7 |
+  | naturales: directas / correctas / erroneas | 257 / 241 / 16 | 259 / 246 / 13 |
+  - **Umbral de respuesta directa a 0,40 por defecto.** Con 0,55 solo respondia una
+    coincidencia exacta de titulo, porque `compositeScore()` comprime el rango y el maximo
+    practico ronda 0,47: la misma bateria daba 29 directas con 0,55 y 45 con 0,40.
+  - **Dedupe por la mejor puntuacion.** Una entrada que Fuse encuentra en varias
+    formulaciones de la consulta se puntua con su mejor aparicion, no con la primera.
+  - **Desempate a 0,90 entre pagina y FAQ.** Cuando ambas empatan en la puntuacion tope de
+    coincidencia de titulo, gana la FAQ/wiki (la pagina es navegacion; la FAQ es la
+    respuesta). La coincidencia exacta de titulo manda y permite responder con una pagina.
+    Un desempate general a favor de FAQ/wiki se midio y se descarto: costaba 3 puntos de
+    recall@1 (78,8% -> 75,8%) porque tambien movia empates donde ganaba una entrada de blog.
+  - **El peso de una entrada solo refuerza coincidencias fuertes** (titulo o palabras clave
+    exactos); en las flojas se usa el peso normal del tipo. Antes era un multiplicador
+    global y subir el peso de una entrada le robaba consultas flojas a otras. _Nota para el
+    sitio que tenga pesos artificiales por entrada: los pesos nativos por encima del normal
+    del tipo dejan de dar ventaja salvo en coincidencia fuerte; conviene revisarlos._
+
 ## v0.2.11 (2026-10-12)
 
 ### Arreglado
