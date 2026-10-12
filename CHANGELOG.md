@@ -1,5 +1,15 @@
 # Changelog — Convoca Assistant
 
+## v0.2.11 (2026-10-12)
+
+### Arreglado
+- **Los comentarios del chat se servian en el HTML publico** de cada pagina: `<!-- Floating
+  button -->`, `<!-- Chat window -->`, `<!-- Header -->`, `<!-- Messages -->`,
+  `<!-- Suggestions -->` y `<!-- Input -->` viajaban al navegador de todos los visitantes,
+  en todas las paginas. No se ven en pantalla, pero pesan, desvelan la implementacion
+  interna y ensucian cualquier barrido del HTML. El nombre de cada clase ya dice que es
+  cada bloque, asi que los comentarios no aportaban nada en la salida.
+
 ## v0.2.10 (2026-10-12)
 
 ### Arreglado

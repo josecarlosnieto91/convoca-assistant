@@ -7,7 +7,6 @@ if ( ! defined( 'ABSPATH' ) ) {
      data-position="<?php echo esc_attr( $position ); ?>"
      style="--convoca-primary: <?php echo esc_attr( $color ); ?>;">
 
-	<!-- Floating button -->
 	<button id="convoca-assistant-toggle" class="convoca-assistant-toggle"
 	        aria-label="<?php esc_attr_e( 'Abrir asistente virtual', 'convoca-assistant' ); ?>"
 	        aria-expanded="false"
@@ -18,29 +17,24 @@ if ( ! defined( 'ABSPATH' ) ) {
 		</svg>
 	</button>
 
-	<!-- Chat window -->
 	<div id="convoca-chat-container" class="convoca-chat-container" role="dialog"
 	     aria-label="<?php echo esc_attr( $title ); ?>"
 	     aria-hidden="true"
 	     aria-modal="true">
 
-		<!-- Header -->
 		<div class="convoca-chat-header">
 			<span class="convoca-chat-title"><?php echo esc_html( $title ); ?></span>
 			<button class="convoca-chat-close" aria-label="<?php esc_attr_e( 'Cerrar', 'convoca-assistant' ); ?>">&times;</button>
 		</div>
 
-		<!-- Messages -->
 		<div class="convoca-chat-messages" role="log" aria-live="polite" aria-relevant="additions" aria-atomic="false">
 			<div class="convoca-message convoca-message-bot">
 				<?php echo esc_html( $settings['widget_greeting'] ?? __( '¡Hola! ¿En qué puedo ayudarte?', 'convoca-assistant' ) ); ?>
 			</div>
 		</div>
 
-		<!-- Suggestions -->
 		<div class="convoca-chat-suggestions"></div>
 
-		<!-- Input -->
 		<div class="convoca-chat-input-area">
 			<input type="text" id="convoca-chat-input"
 			       class="convoca-chat-input"
