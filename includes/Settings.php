@@ -50,12 +50,12 @@ class Settings {
 	 * Merges stored settings over defaults so new keys always exist.
 	 *
 	 * @param string $key     Setting key.
-	 * @param mixed  $default Fallback value.
+	 * @param mixed  $defecto Fallback value.
 	 * @return mixed
 	 */
-	public static function get( string $key, $default = null ) {
+	public static function get( string $key, $defecto = null ) {
 		$settings = self::get_all();
-		return $settings[ $key ] ?? $default;
+		return $settings[ $key ] ?? $defecto;
 	}
 
 	/**
