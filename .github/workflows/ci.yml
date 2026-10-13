@@ -44,7 +44,7 @@ jobs:
           dependency-versions: highest
 
       - name: PHPCS
-        run: vendor/bin/phpcs --standard=dev-tools/phpcs.xml.dist
+        run: vendor/bin/phpcs --standard=.phpcs.xml.dist
 
   phpstan:
     name: PHPStan

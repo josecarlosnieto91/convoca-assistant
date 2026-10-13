@@ -1,16 +1,21 @@
 <?xml version="1.0"?>
+<!--
+  Un solo estándar, en la RAÍZ y con rutas relativas a la raíz. Antes vivía en dev-tools/ con
+  <file>../</file>: `vendor/bin/phpcs` a secas no lo encontraba (no hay autodescubrimiento) y
+  respondía «You must supply at least one file» con salida 3 — el único de los diez repos (issue #7).
+-->
 <ruleset name="Convoca Assistant">
 	<description>PHPCS rules for Convoca Assistant</description>
 
-	<file>../</file>
-	<exclude-pattern>../vendor/*</exclude-pattern>
-	<exclude-pattern>../tests/*</exclude-pattern>
-	<exclude-pattern>../node_modules/*</exclude-pattern>
-	<exclude-pattern>../assets/*</exclude-pattern>
+	<file>.</file>
+	<exclude-pattern>./vendor/*</exclude-pattern>
+	<exclude-pattern>./tests/*</exclude-pattern>
+	<exclude-pattern>./node_modules/*</exclude-pattern>
+	<exclude-pattern>./assets/*</exclude-pattern>
 	<!-- Tooling de análisis estático: redefine constantes de runtime de WP
 	     (ABSPATH, DAY_IN_SECONDS, ...) que por diseño no llevan el prefijo
 	     del plugin. No es código distribuido, se excluye del lint PHPCS. -->
-	<exclude-pattern>../phpstan-bootstrap.php</exclude-pattern>
+	<exclude-pattern>./phpstan-bootstrap.php</exclude-pattern>
 
 	<arg name="extensions" value="php"/>
 	<arg value="sp"/>
