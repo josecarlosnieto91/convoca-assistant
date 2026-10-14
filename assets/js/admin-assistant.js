@@ -100,11 +100,11 @@
 				msg.textContent = `✅ ${data.count} entradas${size ? ' (' + size + ')' : ''}`;
 				msg.style.color = '#46b450';
 			} else if (msg) {
-				msg.textContent = '❌ ' + (data.error || 'Error desconocido');
+				msg.textContent = '❌ ' + (data.error || 'No se ha podido regenerar el índice. Vuelve a intentarlo; si el problema continúa, revisa los Ajustes del asistente.');
 				msg.style.color = '#dc3232';
 			}
 		} catch (err) {
-			if (msg) { msg.textContent = '❌ Error de conexión'; msg.style.color = '#dc3232'; }
+			if (msg) { msg.textContent = '❌ No se ha podido conectar con el servidor. Comprueba tu conexión y vuelve a intentarlo.'; msg.style.color = '#dc3232'; }
 		} finally {
 			btn.disabled = false;
 			btn.textContent = '🔄 Regenerar índice ahora';
@@ -134,7 +134,7 @@
 				msg.style.color = data.success ? '#46b450' : '#dc3232';
 			}
 		} catch (err) {
-			if (msg) { msg.textContent = '❌ Error de conexión'; msg.style.color = '#dc3232'; }
+			if (msg) { msg.textContent = '❌ No se ha podido conectar con el servidor. Comprueba tu conexión y vuelve a intentarlo.'; msg.style.color = '#dc3232'; }
 		} finally {
 			btn.disabled = false;
 			btn.textContent = '🧹 Limpiar logs antiguos';

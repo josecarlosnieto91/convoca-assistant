@@ -180,7 +180,8 @@ class Export_Import {
 			UPLOAD_ERR_CANT_WRITE => __( 'Error del servidor: no se pudo escribir.', 'convoca-assistant' ),
 		);
 
-		return $messages[ $code ] ?? __( 'Error desconocido al subir el archivo.', 'convoca-assistant' );
+		return $messages[ $code ]
+			?? __( 'No se ha podido subir el archivo. Comprueba que sea el fichero exportado por este plugin y vuelve a intentarlo.', 'convoca-assistant' );
 	}
 
 	/* ── Data exporters ─────────────────────────── */
