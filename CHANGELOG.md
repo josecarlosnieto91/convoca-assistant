@@ -1,5 +1,19 @@
 # Changelog — Convoca Assistant
 
+## v0.2.13 (2026-10-14)
+
+### Arreglado
+- **Los errores del asistente dicen qué hacer.** Criterio 5 del listón del gauntlet: cero
+  «Error desconocido» y cero mensajes en inglés en los flujos de usuario. Cuando la petición
+  fallaba sin mensaje del servidor —o devolvía el `0`/`-1` de WordPress— el panel mostraba:
+  - `admin-assistant.js`: «Error desconocido» al regenerar el índice y «Error de conexión» al
+    limpiar logs → ahora explican qué ha pasado y qué comprobar.
+  - `Export_Import.php`: el respaldo de un código de subida desconocido describía el fallo pero
+    no decía qué hacer → ahora nombra el fichero esperado.
+- **Prueba que lo sujeta:** `tests/Unit/MensajesDeErrorTest.php` prohíbe los cuatro textos que se
+  colaron (dos de ellos en inglés), con prueba en negativo: reponiendo «Error desconocido» la
+  suite falla y nombra el fichero.
+
 ## v0.2.12 (2026-10-12)
 
 ### Arreglado
