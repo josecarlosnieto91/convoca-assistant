@@ -22,8 +22,8 @@
         }
     },
     "scripts": {
-        "phpcs": "phpcs --standard=dev-tools/phpcs.xml.dist",
-        "phpcbf": "phpcbf --standard=dev-tools/phpcs.xml.dist",
+        "phpcs": "phpcs --standard=.phpcs.xml.dist",
+        "phpcbf": "phpcbf --standard=.phpcs.xml.dist",
         "phpstan": "phpstan analyse --configuration=dev-tools/phpstan.neon.dist --memory-limit=4G",
         "phpunit": "phpunit",
         "test": [
