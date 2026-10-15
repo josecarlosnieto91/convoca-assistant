@@ -165,6 +165,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Instalar gettext (msgfmt, del contrato de traducciones)
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq gettext
       - name: Cache Composer dependencies
         uses: actions/cache@v4
         with:
