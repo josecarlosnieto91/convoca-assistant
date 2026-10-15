@@ -1,3 +1,22 @@
+## [0.2.14] — 2026-10-15
+
+### Arreglado
+- **La suite ya no imprime veredictos que nadie lee (issue #9).** El banco de calidad de búsqueda escribía
+  `VEREDICTO DE LA FASE 2 (nDCG@5): NO CUMPLE` y la suite terminaba en **verde con exit 0**: un veredicto que solo
+  se imprime no lo lee nadie — el caso de manual de un verde que no valida nada.
+  - Las dos fases dicen ahora **lo que miden**: «FASE 2 (nDCG@5): no alcanza el objetivo de la fase (+0,05) · la
+    p95 de producción queda pendiente (necesita tráfico real)». El número y el objetivo siguen a la vista; lo que
+    desaparece es la palabra, que se leía como una puerta que no existe.
+  - Si el criterio pasa a ser de **aceptación**, es un `assertTrue` en esa línea y la suite cae mientras no se
+    cumpla. Eso es una decisión de producto, no un arreglo de texto: queda dicho en el issue.
+
+### Pruebas
+- `tests/Unit/SinVeredictoImpresoTest.php`, con las **dos mitades** del criterio del issue: que no se imprima el
+  veredicto **y que la medida siga estando** — borrar el número para «arreglar» el texto sería cambiar un problema
+  por otro peor. Mira el código **sin comentarios**: los comentarios que explican el arreglo nombran lo que se
+  quitó, y la primera versión de la prueba se tropezaba con ellos. **Negativo probado**: devolviendo el veredicto,
+  la prueba cae.
+
 # Changelog — Convoca Assistant
 
 ## v0.2.13 (2026-10-14)

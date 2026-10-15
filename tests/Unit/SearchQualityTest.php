@@ -347,7 +347,10 @@ class SearchQualityTest extends TestCase {
 		$relativo = $compuesto['recall1'] > 0 ? ( ( $fusion['recall1'] - $compuesto['recall1'] ) / $compuesto['recall1'] ) * 100 : 0.0;
 		$cumple   = ( $relativo >= 10.0 ) && empty( $empeoran );
 		$lineas[] = sprintf( '  Recall@1 relativo: %+.1f%% (el criterio pide ≥ +10%%) · consultas que empeoran: %d', $relativo, count( $empeoran ) );
-		$lineas[] = '  VEREDICTO DE LA FASE 1: ' . ( $cumple ? 'CUMPLE' : 'NO CUMPLE (se documenta y no se despliega)' );
+		// Medida, no veredicto (issue #9): un «NO CUMPLE» que se imprime y no detiene nada es un verde que no
+		// valida. El número y el objetivo siguen a la vista; lo que se quita es la palabra, que se leía como
+		// una puerta que no existe. Si este criterio pasa a ser de aceptación, aquí va un `assertTrue`.
+		$lineas[] = sprintf( '  FASE 1 (Recall@1 relativo): %s el criterio de la fase (>= +10%%) · se documenta y no se despliega', $cumple ? 'alcanza' : 'no alcanza' );
 		fwrite( STDERR, implode( "\n", $lineas ) . "\n" );
 
 		file_put_contents(
@@ -527,8 +530,11 @@ class SearchQualityTest extends TestCase {
 			count( $mejoran ),
 			count( $empeoran )
 		);
-		$lineas[] = '  VEREDICTO DE LA FASE 2 (nDCG@5): ' . ( $cumple ? 'CUMPLE' : 'NO CUMPLE' )
-			. ' · la p95 de producción queda PENDIENTE (necesita tráfico real)';
+		// Igual que la fase 1 (issue #9): el número y el objetivo, sin veredicto que nadie lee.
+		$lineas[] = sprintf(
+			'  FASE 2 (nDCG@5): %s el objetivo de la fase (+0,05) · la p95 de producción queda pendiente (necesita tráfico real)',
+			$cumple ? 'alcanza' : 'no alcanza'
+		);
 		fwrite( STDERR, implode( "\n", $lineas ) . "\n" );
 
 		// Invariantes del reranker: no puede perder cobertura ni empeorar una consulta, y el criterio de
