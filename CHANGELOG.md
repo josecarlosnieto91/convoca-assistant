@@ -1,3 +1,16 @@
+## [0.2.16] — 2026-10-15
+
+### Corregido
+- **Los assets se servían con un `?ver=` viejo: la constante de versión estaba clavada en 0.2.13 mientras el
+  plugin iba por la 0.2.15 (issue #10).** `CONVOCA_ASSISTANT_VERSION` es el cache-buster de los assets —y la
+  versión que se declara en el índice—, así que la CDN y los navegadores guardaban JS/CSS viejos bajo esa
+  misma URL: no había forma de saber que habían cambiado.
+  - Es el **mismo defecto que se cerró en la 0.2.9** (allí la constante estaba en 0.2.7) y volvió al subir la
+    versión a mano, porque **nada lo comprobaba**. Ahora la constante **se deriva de la cabecera** con
+    `get_file_data()`, como en el resto del ecosistema, así que no puede quedarse atrás.
+  - Contrato nuevo (`tests/Unit/VersionDeLosAssetsTest.php`), probado **en negativo** contra el fichero
+    anterior: la aserción que exige que la constante no sea un literal cae contra la 0.2.15.
+
 ## [0.2.15] — 2026-10-15
 
 ### Cambiado

@@ -3,7 +3,7 @@
  * Plugin Name:       Convoca Assistant
  * Plugin URI:        https://getconvoca.app
  * Description:       Asistente conversacional local sin IA para WordPress. Busqueda difusa con Fuse.js sobre tu base de conocimiento. Sin APIs externas, sin cloud, compatible GDPR.
- * Version:           0.2.15
+ * Version: 0.2.16
  * Requires at least: 6.4
  * Requires PHP:      8.1
  * Tested up to:      7.1
@@ -31,7 +31,12 @@ if ( file_exists( $convoca_assistant_autoload ) ) {
 
 /* ── Constants ────────────────────────────────── */
 if ( ! defined( 'CONVOCA_ASSISTANT_VERSION' ) ) {
-	define( 'CONVOCA_ASSISTANT_VERSION', '0.2.13' );
+	// Cache-buster de los assets. Debe seguir la version del plugin: si se queda fija, la CDN y los
+	// navegadores sirven JS/CSS viejos para esa misma URL. Estuvo clavada en 0.2.13 hasta la 0.2.15
+	// (doce releases sirviendo los assets con ?ver=0.2.13), asi que se deriva de la cabecera, como en el
+	// resto del ecosistema: asi no puede volver a quedarse atras al subir la version.
+	$convoca_assistant_header = get_file_data( __FILE__, array( 'Version' => 'Version' ), 'plugin' );
+	define( 'CONVOCA_ASSISTANT_VERSION', ! empty( $convoca_assistant_header['Version'] ) ? $convoca_assistant_header['Version'] : '0.2.16' );
 }
 if ( ! defined( 'CONVOCA_ASSISTANT_DB_VERSION' ) ) {
 	define( 'CONVOCA_ASSISTANT_DB_VERSION', '1.0.0' );
