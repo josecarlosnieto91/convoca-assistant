@@ -353,6 +353,17 @@ class SearchQualityTest extends TestCase {
 		$lineas[] = sprintf( '  FASE 1 (Recall@1 relativo): %s el criterio de la fase (>= +10%%) · se documenta y no se despliega', $cumple ? 'alcanza' : 'no alcanza' );
 		fwrite( STDERR, implode( "\n", $lineas ) . "\n" );
 
+		// Lo que la suite tiene que VALIDAR, no sólo imprimir (issue #9): mientras la fase no alcance su
+		// criterio, la mejora no puede viajar encendida. El motor de fusión entra por `search_engine`, así
+		// que se vigila que siga en el compuesto de siempre.
+		if ( ! $cumple ) {
+			$this->assertSame(
+				'composite',
+				(string) get_option( 'convoca_assistant_search_engine', 'composite' ),
+				'La fusión no alcanza el criterio de la fase 1 (>= +10%%): no puede ser el motor activo'
+			);
+		}
+
 		file_put_contents(
 			self::FIXTURES . 'search-quality-engines.json',
 			json_encode(
@@ -537,6 +548,14 @@ class SearchQualityTest extends TestCase {
 		);
 		fwrite( STDERR, implode( "\n", $lineas ) . "\n" );
 
+		// Igual que la fase 1 (issue #9): la medida no basta, hay que validar la decisión. Mientras el
+		// reranker no alcance su criterio no puede estar encendido en el sitio.
+		if ( ! $cumple ) {
+			$this->assertEmpty(
+				get_option( 'convoca_assistant_search_rerank' ),
+				'La fase 2 no alcanza su criterio (+0,05): el reranker no puede estar encendido'
+			);
+		}
 		// Invariantes del reranker: no puede perder cobertura ni empeorar una consulta, y el criterio de
 		// latencia del goal (≤ 300 ms sin proveedor) se comprueba aquí con el tiempo real de cómputo.
 		$this->assertEmpty( $empeoran, 'El reranker no debe empeorar ninguna consulta: ' . implode( ', ', $empeoran ) );

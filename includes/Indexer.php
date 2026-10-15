@@ -39,6 +39,15 @@ class Indexer {
 	private const REGENERATE_DELAY = 5;
 
 	/**
+	 * Suelo entre reconstrucciones automáticas, en segundos.
+	 *
+	 * Sin esto, cualquier gancho que marque el índice sucio (`wp_insert_post` y compañía) encadenaba una
+	 * reconstrucción completa detrás de otra: medido en la demo paseando por el panel, 14 en 30 minutos
+	 * (issue #11). El cron de respaldo sigue siendo cada 5 minutos; esto sólo pone un tope al ritmo.
+	 */
+	private const MIN_SECONDS_BETWEEN_REBUILDS = 60;
+
+	/**
 	 * Initialize hooks and custom cron schedule.
 	 *
 	 * @return void
@@ -101,7 +110,36 @@ class Indexer {
 				'message' => __( 'Index is up to date.', 'convoca-assistant' ),
 			);
 		}
-		return self::regenerate();
+
+		// Tope de ritmo (issue #11): reconstruir es caro y cualquier escritura de contenido vuelve a marcar
+		// el índice sucio, así que sin este suelo se encadenaban reconstrucciones completas. El trabajo no se
+		// pierde: la marca de sucio sigue puesta y entra en la siguiente pasada.
+		$ultima = (int) get_transient( 'convoca_assistant_index_last_rebuild' );
+		$suelo  = (int) apply_filters( 'convoca_assistant_min_seconds_between_rebuilds', self::MIN_SECONDS_BETWEEN_REBUILDS );
+
+		if ( $ultima > 0 && ( time() - $ultima ) < $suelo ) {
+			return array(
+				'success' => true,
+				'skipped' => true,
+				'message' => sprintf(
+					/* translators: 1: seconds left, 2: what marked the index dirty */
+					__( 'Reconstrucción aplazada %1$d s (la última fue hace poco). Motivo del ensuciado: %2$s', 'convoca-assistant' ),
+					$suelo - ( time() - $ultima ),
+					(string) get_transient( 'convoca_assistant_index_dirty_reason' )
+				),
+			);
+		}
+
+		set_transient( 'convoca_assistant_index_last_rebuild', time(), HOUR_IN_SECONDS );
+
+		$resultado = self::regenerate();
+
+		Logger::info(
+			sprintf( 'Índice reconstruido. Quién lo ensució: %s', (string) get_transient( 'convoca_assistant_index_dirty_reason' ) ),
+			'convoca-assistant'
+		);
+
+		return $resultado;
 	}
 
 	/**
@@ -284,13 +322,22 @@ class Indexer {
 	 * Debounce: if marked dirty within the last DEBOUNCE_WINDOW
 	 * seconds by a previous call, skip to avoid flooding.
 	 *
+	 * @param mixed $reason Primer argumento del gancho que llama (ID, objeto o nada). Sirve para dejar
+	 *                      escrito quién ensució el índice y poder explicarlo cuando se mida el ritmo.
 	 * @return void
 	 */
-	public static function mark_dirty(): void {
+	public static function mark_dirty( $reason = '' ): void {
 		$last = get_transient( 'convoca_assistant_index_debounce' );
 		if ( $last && ( time() - (int) $last ) < self::DEBOUNCE_WINDOW ) {
 			return;
 		}
+
+		// Se guarda QUIÉN ensució el índice: la medida «N reconstrucciones en 30 minutos» (issue #11) no dice
+		// por qué, y un guardado normal y un bucle de escritura se ven igual en el log. El gancho que llama
+		// pasa su primer argumento (un ID, un objeto o nada) y `current_filter()` dice de dónde viene.
+		$gancho = function_exists( 'current_filter' ) ? (string) current_filter() : 'sin gancho';
+		$quien  = is_object( $reason ) && isset( $reason->ID ) ? ' #' . $reason->ID : ( is_scalar( $reason ) && '' !== (string) $reason ? ' #' . $reason : '' );
+		set_transient( 'convoca_assistant_index_dirty_reason', $gancho . $quien, HOUR_IN_SECONDS );
 
 		set_transient( 'convoca_assistant_index_dirty', time(), HOUR_IN_SECONDS );
 		set_transient( 'convoca_assistant_index_debounce', time(), self::DEBOUNCE_WINDOW + 5 );
