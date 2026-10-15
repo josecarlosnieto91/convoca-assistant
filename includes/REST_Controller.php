@@ -143,6 +143,25 @@ class REST_Controller {
 	 * @return bool|\WP_Error
 	 */
 	public static function check_rate_limit() {
+		// Una sola vara para el ecosistema (issue convoca-core#16): esto contaba con un `transient` en
+		// lectura-modificacion-escritura, que NO es atomico — dos peticiones simultaneas leen el mismo valor y
+		// las dos escriben el mismo incremento, asi que el limite real es mas alto que el anunciado. Core ya
+		// resolvio eso con un contador atomico en base (INSERT ... ON DUPLICATE KEY UPDATE), asi que se usa el
+		// suyo. Se conservan los umbrales de este plugin (RATE_LIMIT_MAX/WINDOW) y se le pasa una accion
+		// propia para que su contador no se mezcle con el de otros subsistemas.
+		if ( class_exists( '\\Convoca\\Core\\Utils' ) ) {
+			if ( ! \Convoca\Core\Utils::check_rate_limit( 'assistant_rest', self::RATE_LIMIT_MAX, self::RATE_LIMIT_WINDOW ) ) {
+				return new \WP_Error(
+					'rate_limit_exceeded',
+					__( 'Demasiadas solicitudes. Inténtalo de nuevo en un minuto.', 'convoca-assistant' ),
+					array( 'status' => 429 )
+				);
+			}
+			return true;
+		}
+
+		// Respaldo si core no esta activo: el plugin debe seguir funcionando solo, aunque con el contador
+		// no atomico. Es el comportamiento anterior, tal cual.
 		$ip     = self::get_client_ip();
 		$key    = 'convoca_ratelimit_' . md5( $ip );
 		$window = get_transient( $key );

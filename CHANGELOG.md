@@ -1,3 +1,21 @@
+## [0.2.15] — 2026-10-15
+
+### Cambiado
+- **El límite de peticiones usa el contador de core (issue convoca-core#16).** Aquí había un contador con
+  `transient` en lectura-modificación-escritura: dos peticiones simultáneas leen el mismo valor y escriben el
+  mismo incremento, así que **el límite real era más alto que el anunciado**. Core ya lo resolvió con un
+  contador atómico en base de datos, así que se usa el suyo.
+  - Se conservan los umbrales de este plugin y se le pasa una acción propia (`assistant_rest`) para que su
+    contador no se mezcle con el de otros subsistemas.
+  - **Se conserva el respaldo** para cuando core no está activo: el plugin se puede activar solo y no debe
+    quedarse sin límite. Ese camino mantiene el comportamiento anterior, tal cual.
+  - La respuesta no cambia: `WP_Error` con `rate_limit_exceeded` y estado 429.
+
+### Pruebas
+- `tests/Unit/LimiteDePeticionesUnSoloContadorTest.php`: usa el contador de core, conserva su respuesta y
+  funciona sin core. **Negativo probado**: sin la llamada a core, cae.
+- Suite **29** en verde, PHPCS 0.
+
 ## [0.2.14] — 2026-10-15
 
 ### Arreglado
