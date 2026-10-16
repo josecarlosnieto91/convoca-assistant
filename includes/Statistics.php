@@ -210,11 +210,6 @@ class Statistics {
 	}
 
 	/**
-	 * Get unanswered queries.
-	 *
-	 * @param int $limit Max results.
-	 * @return array[]
-	 */
 	/**
 	 * Cuántas consultas distintas se quedaron sin respuesta en los últimos 7 días.
 	 *
@@ -222,18 +217,28 @@ class Statistics {
 	 * se arregla (assistant#12).
 	 */
 	public static function unanswered_this_week(): int {
-		global $wpdb;
-		$table = self::table();
+		return count( self::get_unanswered( 200, WEEK_IN_SECONDS ) );
+	}
 
-		$total = $wpdb->get_var(
-			$wpdb->prepare(
-				"SELECT COUNT(DISTINCT query) FROM {$table} " // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-					. 'WHERE response_found = 0 AND created_at >= %s',
-				gmdate( 'Y-m-d H:i:s', time() - WEEK_IN_SECONDS )
-			)
-		);
+	/**
+	 * ¿Esta consulta encuentra algo HOY?
+	 *
+	 * El registro es un registro: guarda lo que pasó, y lo que pasó sigue ahí aunque después se arregle. Sin
+	 * esta comprobación, la pantalla «Sin respuesta» mostraba como pendientes consultas que ya se contestan
+	 * —y el aviso del panel daba un número que no era un problema—, que es justo lo que pasaba con las cinco
+	 * del informe (assistant#12): todas tienen respuesta desde que está el paquete de arranque.
+	 *
+	 * @param string $query Consulta tal como la escribió la persona.
+	 */
+	private static function tiene_respuesta( string $query ): bool {
+		if ( '' === trim( $query ) || ! class_exists( __NAMESPACE__ . '\\Searcher' ) ) {
+			return false;
+		}
 
-		return (int) $total;
+		$resultado = Searcher::search( $query );
+		$lista     = is_array( $resultado ) ? ( $resultado['results'] ?? $resultado ) : array();
+
+		return is_array( $lista ) && count( $lista ) > 0;
 	}
 
 	/**
@@ -242,21 +247,36 @@ class Statistics {
 	 * @param int $limit Cuántas devolver.
 	 * @return array<int, array<string, mixed>>
 	 */
-	public static function get_unanswered( int $limit = 50 ): array {
+	public static function get_unanswered( int $limit = 50, int $segundos = 0 ): array {
 		global $wpdb;
 		$table = self::table();
 
-		return $wpdb->get_results(
+		$desde = '';
+		if ( $segundos > 0 ) {
+			$desde = $wpdb->prepare( 'AND created_at >= %s', gmdate( 'Y-m-d H:i:s', time() - $segundos ) );
+		}
+
+		$filas = $wpdb->get_results(
 			$wpdb->prepare(
 				"SELECT query, COUNT(*) as count, MAX(created_at) as last_seen
-			FROM {$table}
-			WHERE response_found = 0
-			GROUP BY query
-			ORDER BY count DESC
-			LIMIT %d", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+				FROM {$table}"
+					. " WHERE response_found = 0 {$desde} " // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+					. 'GROUP BY query
+				ORDER BY count DESC
+				LIMIT %d',
 				$limit
 			),
 			ARRAY_A
+		);
+
+		// Y de lo registrado, solo lo que SIGUE sin respuesta: lo que ya se contesta no es un pendiente.
+		return array_values(
+			array_filter(
+				(array) $filas,
+				static function ( $fila ) {
+					return ! self::tiene_respuesta( (string) ( $fila['query'] ?? '' ) );
+				}
+			)
 		);
 	}
 

@@ -1,25 +1,15 @@
-## [0.2.18] — 2026-10-16
-
-### Añadido
-- **Paquete de arranque del asistente (assistant#12).** El asistente es una búsqueda local sobre el contenido
-  del sitio: no se inventa nada, pero tampoco sabe nada que no se le haya escrito, así que recién instalado
-  arranca **vacío** y las preguntas de siempre —la cuota, dónde está el centro— se quedaban sin respuesta
-  (medido: 5 consultas sin resolver en su propio registro).
-  Ahora trae seis preguntas frecuentes de partida (cuota y formas de pago, dónde está el centro y horarios,
-  cómo hacerse socio, cómo ser voluntario, cómo apuntarse a una actividad, cómo contactar) con sus palabras
-  clave, y **sinónimos de arranque** (cuota = precio = mensualidad; socio = socia = membresía…). Se instala al
-  activar el plugin y, donde ya estaba instalado, con un botón en el propio aviso del panel. Es idempotente.
-- **Aviso en el panel**: «hay N consultas sin respuesta esta semana», con enlace a la pantalla donde se
-  resuelven. Sin esto, esa pantalla se queda olvidada —que es exactamente lo que pasaba.
+## [0.2.19] — 2026-10-16
 
 ### Arreglado
-- **El menú del asistente ya no mezcla idiomas.** «Dashboard» y «Analytics» convivían con «Conocimiento»,
-  «Sinónimos» y «Sin respuesta». Ahora son **Resumen** y **Estadísticas**.
+- **La pantalla «Sin respuesta» ya no lista lo que sí tiene respuesta (assistant#12).** El registro es un
+  registro: guarda lo que pasó, y lo que pasó sigue ahí aunque después se arregle. Con el paquete de arranque
+  puesto, las cinco consultas del informe encuentran respuesta, pero seguían apareciendo como pendientes —y el
+  aviso del panel daba un número que ya no era un problema—. Ahora lo registrado se comprueba contra la
+  búsqueda actual y solo se enseña lo que **sigue** sin respuesta. Un solo criterio para la pantalla y para el
+  contador de la semana.
 
 ### Notas
-- Este paquete **no inventa cifras ni direcciones**: la respuesta de la cuota remite al importe vigente y a la
-  página de alta, y la del centro, a la de contacto. Lo que lleva números lo escribe la junta. Hay una prueba
-  que lo vigila (`test_no_inventa_importes_ni_direcciones`).
-- Pruebas nuevas en `tests/test-starter-pack.php`: las seis preguntas, sus claves, que no se inventen
-  importes, que instalar dos veces no duplique nada y que no se pisen los sinónimos ya puestos.
+- Medido en la demo antes del cambio: 5 consultas sin resolver, y **las 5** encuentran respuesta hoy.
+- Pruebas nuevas: una consulta que ya se contesta no aparece como pendiente, y el contador de la semana sale
+  de la misma lista.
 

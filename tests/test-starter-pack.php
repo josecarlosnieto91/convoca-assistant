@@ -85,4 +85,33 @@ class Test_Starter_Pack extends WP_UnitTestCase {
 		$this->assertSame( array( 'lo-que-sea' ), $guardados['cuota'], 'Lo que ya estaba puesto se respeta' );
 		$this->assertArrayHasKey( 'voluntario', $guardados, 'Y lo que faltaba se añade' );
 	}
+
+	/**
+	 * La pantalla «Sin respuesta» no puede listar lo que ya se contesta (assistant#12).
+	 *
+	 * El registro guarda lo que pasó, y lo que pasó sigue ahí aunque después se arregle: con el paquete de
+	 * arranque puesto, las cinco consultas del informe encuentran respuesta, así que no son un pendiente. Si
+	 * se listaran, la asociación trabajaría sobre problemas que ya no existen.
+	 */
+	public function test_lo_que_ya_se_contesta_no_es_un_pendiente(): void {
+		global $wpdb;
+		Starter_Pack::instalar();
+
+		$tabla = \Convoca\Assistant\Installer::log_table();
+		$wpdb->insert( $tabla, array( 'query' => 'cuota', 'response_found' => 0 ) );
+		$wpdb->insert( $tabla, array( 'query' => 'qqzzxx-no-existe-esto', 'response_found' => 0 ) );
+
+		$pendientes = array_column( \Convoca\Assistant\Statistics::get_unanswered( 50 ), 'query' );
+
+		$this->assertNotContains( 'cuota', $pendientes, '«cuota» ya se contesta: no debe aparecer como pendiente' );
+		$this->assertGreaterThanOrEqual( 1, \Convoca\Assistant\Statistics::unanswered_this_week(), 'La semana cuenta desde el mismo criterio' );
+	}
+
+	/**
+	 * Y el contador de la semana sale de lo pendiente, no del registro crudo.
+	 */
+	public function test_el_contador_de_la_semana_lo_calcula_la_lista(): void {
+		$fuente = (string) file_get_contents( dirname( __DIR__ ) . '/includes/Statistics.php' );
+		$this->assertStringContainsString( 'return count( self::get_unanswered( 200, WEEK_IN_SECONDS ) );', $fuente, 'Un solo criterio para las dos cosas' );
+	}
 }
