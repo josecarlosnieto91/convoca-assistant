@@ -2,22 +2,23 @@
 # This file is distributed under the GPL-2.0-or-later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Convoca Assistant 0.2.17\n"
+"Project-Id-Version: Convoca Assistant 0.2.18\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/convoca-assistant\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-15T20:47:02+00:00\n"
+"POT-Creation-Date: 2026-10-16T02:14:36+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: convoca-assistant\n"
 
 #. Plugin Name of the plugin
 #: convoca-assistant.php
-#: includes/Admin.php:33
-#: includes/Admin.php:34
+#: includes/Admin.php:35
+#: includes/Admin.php:36
+#: includes/Admin.php:182
 #: includes/Knowledge_Base.php:395
 msgid "Convoca Assistant"
 msgstr ""
@@ -39,8 +40,6 @@ msgid "Jose Carlos Nieto Ramos"
 msgstr ""
 
 #: assets/templates/admin-analytics.php:7
-#: includes/Admin.php:75
-#: includes/Admin.php:76
 msgid "Analytics"
 msgstr ""
 
@@ -49,6 +48,8 @@ msgid "Estadísticas de uso del asistente virtual."
 msgstr ""
 
 #: assets/templates/admin-analytics.php:11
+#: includes/Admin.php:47
+#: includes/Admin.php:48
 msgid "Resumen"
 msgstr ""
 
@@ -161,8 +162,8 @@ msgid "Regenerar índice ahora"
 msgstr ""
 
 #: assets/templates/admin-knowledge.php:7
-#: includes/Admin.php:55
-#: includes/Admin.php:56
+#: includes/Admin.php:57
+#: includes/Admin.php:58
 msgid "Conocimiento"
 msgstr ""
 
@@ -232,8 +233,8 @@ msgid "Guardar cambios"
 msgstr ""
 
 #: assets/templates/admin-settings.php:7
-#: includes/Admin.php:95
-#: includes/Admin.php:96
+#: includes/Admin.php:97
+#: includes/Admin.php:98
 msgid "Ajustes"
 msgstr ""
 
@@ -507,8 +508,8 @@ msgstr ""
 #: assets/templates/admin-synonyms.php:7
 #: assets/templates/admin-synonyms.php:29
 #: assets/templates/admin-synonyms.php:53
-#: includes/Admin.php:65
-#: includes/Admin.php:66
+#: includes/Admin.php:67
+#: includes/Admin.php:68
 msgid "Sinónimos"
 msgstr ""
 
@@ -564,8 +565,8 @@ msgid "Guardar stop words"
 msgstr ""
 
 #: assets/templates/admin-tools.php:7
-#: includes/Admin.php:105
-#: includes/Admin.php:106
+#: includes/Admin.php:107
+#: includes/Admin.php:108
 msgid "Herramientas"
 msgstr ""
 
@@ -674,14 +675,42 @@ msgstr ""
 msgid "Enviar"
 msgstr ""
 
-#: includes/Admin.php:45
-#: includes/Admin.php:46
-msgid "Dashboard"
+#: includes/Admin.php:77
+#: includes/Admin.php:78
+msgid "Estadísticas"
 msgstr ""
 
-#: includes/Admin.php:85
-#: includes/Admin.php:86
+#: includes/Admin.php:87
+#: includes/Admin.php:88
 msgid "Sin respuesta"
+msgstr ""
+
+#. translators: %d: número de consultas sin respuesta esta semana.
+#: includes/Admin.php:188
+#, php-format
+msgid "hay %d consulta sin respuesta esta semana."
+msgid_plural "hay %d consultas sin respuesta esta semana."
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/Admin.php:198
+msgid "Verlas y responderlas"
+msgstr ""
+
+#: includes/Admin.php:200
+msgid "no hay consultas sin respuesta esta semana."
+msgstr ""
+
+#: includes/Admin.php:204
+msgid "Todavía no tiene preguntas de arranque:"
+msgstr ""
+
+#: includes/Admin.php:208
+msgid "Instalar el paquete de arranque"
+msgstr ""
+
+#: includes/Admin.php:220
+msgid "No tienes permiso para hacer esto."
 msgstr ""
 
 #: includes/Export_Import.php:39
@@ -788,7 +817,7 @@ msgid "Hace %s"
 msgstr ""
 
 #: includes/Installer.php:34
-#: includes/Installer.php:280
+#: includes/Installer.php:291
 msgid "¡Hola! Soy el asistente virtual. ¿En qué puedo ayudarte?"
 msgstr ""
 
