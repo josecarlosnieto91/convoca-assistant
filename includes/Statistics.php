@@ -215,6 +215,33 @@ class Statistics {
 	 * @param int $limit Max results.
 	 * @return array[]
 	 */
+	/**
+	 * Cuántas consultas distintas se quedaron sin respuesta en los últimos 7 días.
+	 *
+	 * Es lo que enseña el aviso del panel: un número que se puede arreglar, con enlace a la pantalla donde
+	 * se arregla (assistant#12).
+	 */
+	public static function unanswered_this_week(): int {
+		global $wpdb;
+		$table = self::table();
+
+		$total = $wpdb->get_var(
+			$wpdb->prepare(
+				"SELECT COUNT(DISTINCT query) FROM {$table} " // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+					. 'WHERE response_found = 0 AND created_at >= %s',
+				gmdate( 'Y-m-d H:i:s', time() - WEEK_IN_SECONDS )
+			)
+		);
+
+		return (int) $total;
+	}
+
+	/**
+	 * Consultas que se quedaron sin respuesta, agrupadas.
+	 *
+	 * @param int $limit Cuántas devolver.
+	 * @return array<int, array<string, mixed>>
+	 */
 	public static function get_unanswered( int $limit = 50 ): array {
 		global $wpdb;
 		$table = self::table();

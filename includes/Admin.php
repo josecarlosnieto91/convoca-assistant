@@ -20,6 +20,8 @@ class Admin {
 	public static function init(): void {
 		add_action( 'admin_menu', array( __CLASS__, 'register_menu' ) );
 		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'enqueue_admin_assets' ) );
+		add_action( 'admin_notices', array( __CLASS__, 'aviso_sin_respuesta' ) );
+		add_action( 'admin_post_convoca_assistant_instalar_arranque', array( __CLASS__, 'handle_instalar_arranque' ) );
 	}
 
 	/**
@@ -42,8 +44,8 @@ class Admin {
 		// Submenu: Dashboard.
 		add_submenu_page(
 			'convoca-assistant',
-			__( 'Dashboard', 'convoca-assistant' ),
-			__( 'Dashboard', 'convoca-assistant' ),
+			__( 'Resumen', 'convoca-assistant' ),
+			__( 'Resumen', 'convoca-assistant' ),
 			'manage_options',
 			'convoca-assistant',
 			array( __CLASS__, 'render_dashboard' )
@@ -72,8 +74,8 @@ class Admin {
 		// Submenu: Analytics.
 		add_submenu_page(
 			'convoca-assistant',
-			__( 'Analytics', 'convoca-assistant' ),
-			__( 'Analytics', 'convoca-assistant' ),
+			__( 'Estadísticas', 'convoca-assistant' ),
+			__( 'Estadísticas', 'convoca-assistant' ),
 			'manage_options',
 			'convoca-assistant-analytics',
 			array( __CLASS__, 'render_analytics' )
@@ -152,6 +154,89 @@ class Admin {
 	 * Render the Dashboard page.
 	 *
 	 * @return void
+	 */
+	/**
+	 * El aviso del panel: lo que el asistente no supo contestar, con su enlace.
+	 *
+	 * Sin esto, la pantalla «Sin respuesta» se queda olvidada —y era exactamente lo que pasaba: cinco
+	 * consultas esperando desde hacía semanas (assistant#12). Solo sale en las pantallas del asistente, con
+	 * el número de la semana y un botón para instalar el paquete de arranque mientras no esté puesto.
+	 */
+	public static function aviso_sin_respuesta(): void {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			return;
+		}
+
+		$pantalla = get_current_screen();
+		if ( ! $pantalla || false === strpos( (string) $pantalla->id, 'convoca-assistant' ) ) {
+			return;
+		}
+
+		$sin_respuesta = Statistics::unanswered_this_week();
+		$instalado     = Starter_Pack::esta_instalado();
+
+		if ( $sin_respuesta < 1 && $instalado ) {
+			return;
+		}
+
+		echo '<div class="notice notice-warning"><p><strong>' . esc_html__( 'Convoca Assistant', 'convoca-assistant' ) . '</strong> — ';
+
+		if ( $sin_respuesta > 0 ) {
+			echo esc_html(
+				sprintf(
+					/* translators: %d: número de consultas sin respuesta esta semana. */
+					_n(
+						'hay %d consulta sin respuesta esta semana.',
+						'hay %d consultas sin respuesta esta semana.',
+						$sin_respuesta,
+						'convoca-assistant'
+					),
+					(int) $sin_respuesta
+				)
+			);
+			echo ' <a href="' . esc_url( admin_url( 'admin.php?page=convoca-assistant-unanswered' ) ) . '">'
+				. esc_html__( 'Verlas y responderlas', 'convoca-assistant' ) . '</a>';
+		} else {
+			esc_html_e( 'no hay consultas sin respuesta esta semana.', 'convoca-assistant' );
+		}
+
+		if ( ! $instalado ) {
+			echo ' · ' . esc_html__( 'Todavía no tiene preguntas de arranque:', 'convoca-assistant' ) . ' ';
+			printf(
+				'<a class="button button-secondary" href="%s">%s</a>',
+				esc_url( wp_nonce_url( admin_url( 'admin-post.php?action=convoca_assistant_instalar_arranque' ), 'convoca_assistant_arranque' ) ),
+				esc_html__( 'Instalar el paquete de arranque', 'convoca-assistant' )
+			);
+		}
+
+		echo '</p></div>';
+	}
+
+	/**
+	 * Instala el paquete de arranque desde el aviso del panel.
+	 */
+	public static function handle_instalar_arranque(): void {
+		if ( ! current_user_can( 'manage_options' ) || ! check_admin_referer( 'convoca_assistant_arranque' ) ) {
+			wp_die( esc_html__( 'No tienes permiso para hacer esto.', 'convoca-assistant' ) );
+		}
+
+		$resultado = Starter_Pack::instalar();
+
+		wp_safe_redirect(
+			add_query_arg(
+				array(
+					'page'      => 'convoca-assistant-knowledge',
+					'arranque'  => (int) $resultado['fichas'],
+					'sinonimos' => (int) $resultado['sinonimos'],
+				),
+				admin_url( 'admin.php' )
+			)
+		);
+		exit;
+	}
+
+	/**
+	 * Render the Dashboard page.
 	 */
 	public static function render_dashboard(): void {
 		include CONVOCA_ASSISTANT_DIR . 'assets/templates/admin-dashboard.php';

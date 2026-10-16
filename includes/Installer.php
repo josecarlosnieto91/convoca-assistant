@@ -245,6 +245,17 @@ class Installer {
 		self::maybe_upgrade();
 		flush_rewrite_rules();
 
+		// El paquete de arranque: sin él, el asistente nace vacío y las preguntas de siempre (la cuota,
+		// dónde está el centro) se quedan sin respuesta hasta que alguien se siente a escribir (assistant#12).
+		if ( class_exists( 'Convoca\\Assistant\\Starter_Pack' ) ) {
+			try {
+				Starter_Pack::instalar();
+			} catch ( \Throwable $e ) {
+				// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
+				error_log( 'Convoca Assistant: no se pudo instalar el paquete de arranque: ' . $e->getMessage() );
+			}
+		}
+
 		// Regenerate index on activation so the assistant has content immediately.
 		if ( class_exists( 'Convoca\\Assistant\\Indexer' ) ) {
 			try {
