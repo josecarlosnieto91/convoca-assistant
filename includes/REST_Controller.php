@@ -329,9 +329,10 @@ class REST_Controller {
 		$start       = microtime( true );
 		$settings    = Settings::get_all();
 		$max_results = (int) ( $settings['search_max_results'] ?? 10 );
-		$threshold   = (float) ( $settings['search_threshold'] ?? 0.10 );
-		$results     = Searcher::search( $query, $max_results, $threshold );
-		$elapsed     = ( microtime( true ) - $start ) * 1000;
+		// El umbral, por la misma puerta que la pantalla de «Sin respuesta» y el widget: uno solo.
+		$threshold = Searcher::umbral_configurado();
+		$results   = Searcher::search( $query, $max_results, $threshold );
+		$elapsed   = ( microtime( true ) - $start ) * 1000;
 
 		return new \WP_REST_Response(
 			array(

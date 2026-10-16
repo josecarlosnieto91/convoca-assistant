@@ -1,15 +1,14 @@
-## [0.2.19] — 2026-10-16
+## [0.2.20] — 2026-10-16
 
 ### Arreglado
-- **La pantalla «Sin respuesta» ya no lista lo que sí tiene respuesta (assistant#12).** El registro es un
-  registro: guarda lo que pasó, y lo que pasó sigue ahí aunque después se arregle. Con el paquete de arranque
-  puesto, las cinco consultas del informe encuentran respuesta, pero seguían apareciendo como pendientes —y el
-  aviso del panel daba un número que ya no era un problema—. Ahora lo registrado se comprueba contra la
-  búsqueda actual y solo se enseña lo que **sigue** sin respuesta. Un solo criterio para la pantalla y para el
-  contador de la semana.
+- **«Sin respuesta» daba por contestada cualquier consulta** (convoca-assistant#13), así que la pantalla se
+  quedaba vacía y no podía volver a llenarse: el criterio llamaba a la búsqueda **sin umbral**, mientras la
+  búsqueda del sitio —y el widget— descartan por debajo del suyo. En la demo, una consulta que puntuaba 0,1033
+  con el umbral del sitio en 0,15 aparecía como resuelta cuando estaba registrada como `response_found = 0`.
+  Ahora el umbral vive en `Searcher::umbral_configurado()` —**una sola fuente**— y lo usan la pantalla y la
+  búsqueda por REST: es exactamente el umbral con el que la búsqueda decidió que no había respuesta, así que la
+  pantalla no puede contradecir a su propio registro.
 
 ### Notas
-- Medido en la demo antes del cambio: 5 consultas sin resolver, y **las 5** encuentran respuesta hoy.
-- Pruebas nuevas: una consulta que ya se contesta no aparece como pendiente, y el contador de la semana sale
-  de la misma lista.
+- Dos pruebas nuevas del umbral (el del sitio, y el de fábrica cuando no hay ninguno configurado). Total: 36.
 

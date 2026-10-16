@@ -235,7 +235,9 @@ class Statistics {
 			return false;
 		}
 
-		$resultado = Searcher::search( $query );
+		// Con el umbral del sitio, el mismo que el widget: sin él, cualquier coincidencia floja valía como
+		// respuesta y la pantalla daba por resuelto lo que nadie había contestado (convoca-assistant#13).
+		$resultado = Searcher::search( $query, 10, Searcher::umbral_configurado() );
 		$lista     = $resultado['results'] ?? $resultado;
 
 		return count( $lista ) > 0;

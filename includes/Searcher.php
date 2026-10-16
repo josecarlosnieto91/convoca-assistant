@@ -20,6 +20,20 @@ class Searcher {
 	private const SCORE_THRESHOLD = 0.10;
 
 	/**
+	 * El umbral de puntuación que tiene configurado el sitio, en un solo sitio.
+	 *
+	 * El widget, la búsqueda por REST y la pantalla de «Sin respuesta» tienen que usar **el mismo**: si la
+	 * pantalla usa el valor por defecto mientras el widget usa el del sitio, una consulta que el widget
+	 * descarta por floja (0,10 con umbral 0,15) la da por contestada la pantalla, y el pendiente desaparece de
+	 * la lista sin resolverse (convoca-assistant#13).
+	 *
+	 * @return float
+	 */
+	public static function umbral_configurado(): float {
+		return (float) Settings::get( 'search_threshold', 0.10 );
+	}
+
+	/**
 	 * Perform a search query against the knowledge index.
 	 *
 	 * @param string $query       The user's search query.
