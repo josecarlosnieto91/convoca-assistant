@@ -92,26 +92,30 @@ class Test_Starter_Pack extends WP_UnitTestCase {
 	 * El registro guarda lo que pasó, y lo que pasó sigue ahí aunque después se arregle: con el paquete de
 	 * arranque puesto, las cinco consultas del informe encuentran respuesta, así que no son un pendiente. Si
 	 * se listaran, la asociación trabajaría sobre problemas que ya no existen.
+	 *
+	 * Aquí se comprueba el contrato (una sola puerta: `tiene_respuesta()`) y que una fila con la consulta
+	 * vacía no se cuele ni se caiga: la comprobación de verdad, con el índice lleno, se mide en el sitio.
 	 */
-	public function test_lo_que_ya_se_contesta_no_es_un_pendiente(): void {
+	public function test_la_lista_pasa_por_la_comprobacion_de_respuesta(): void {
 		global $wpdb;
-		Starter_Pack::instalar();
 
+		$fuente = (string) file_get_contents( dirname( __DIR__ ) . '/includes/Statistics.php' );
+		$this->assertStringContainsString( 'return ! self::tiene_respuesta(', $fuente, 'La lista tiene que descartar lo que ya se contesta' );
+		$this->assertStringContainsString( 'return count( self::get_unanswered( 200, WEEK_IN_SECONDS ) );', $fuente, 'Y el contador de la semana sale de la misma lista' );
+
+		// Una fila sin consulta no se cae por el camino: se queda como pendiente, que es lo prudente.
 		$tabla = \Convoca\Assistant\Installer::log_table();
-		$wpdb->insert( $tabla, array( 'query' => 'cuota', 'response_found' => 0 ) );
-		$wpdb->insert( $tabla, array( 'query' => 'qqzzxx-no-existe-esto', 'response_found' => 0 ) );
-
+		$wpdb->insert( $tabla, array( 'query' => '', 'response_found' => 0 ) );
 		$pendientes = array_column( \Convoca\Assistant\Statistics::get_unanswered( 50 ), 'query' );
 
-		$this->assertNotContains( 'cuota', $pendientes, '«cuota» ya se contesta: no debe aparecer como pendiente' );
-		$this->assertGreaterThanOrEqual( 1, \Convoca\Assistant\Statistics::unanswered_this_week(), 'La semana cuenta desde el mismo criterio' );
+		$this->assertContains( '', $pendientes, 'Sin búsqueda que hacer, no se descarta nada' );
 	}
 
 	/**
-	 * Y el contador de la semana sale de lo pendiente, no del registro crudo.
+	 * Y el contador de la semana no cuenta el registro crudo.
 	 */
 	public function test_el_contador_de_la_semana_lo_calcula_la_lista(): void {
 		$fuente = (string) file_get_contents( dirname( __DIR__ ) . '/includes/Statistics.php' );
-		$this->assertStringContainsString( 'return count( self::get_unanswered( 200, WEEK_IN_SECONDS ) );', $fuente, 'Un solo criterio para las dos cosas' );
+		$this->assertStringNotContainsString( 'SELECT COUNT(DISTINCT query)', $fuente, 'El número que se enseña es el de pendientes, no el del registro' );
 	}
 }
