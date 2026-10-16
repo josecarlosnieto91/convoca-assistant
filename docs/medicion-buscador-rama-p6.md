@@ -105,3 +105,12 @@ Lecturas que importan:
 etiquetado contra las entradas del corpus de ejemplo y esas etiquetas **no existen** en el corpus real.
 Para eso hace falta que el set se revise y se etiquete contra Lugg (la tabla consulta a consulta está
 preparada para eso); hasta entonces, esas métricas sobre el corpus real serían ruido.
+
+### Las 3 consultas que se quedan calladas: no es ranking, es contenido
+
+Con umbral 0,4 se callan tres, y las tres son del **huerto** (`huerto` 0,3897; «¿Pueden participar los niños
+y niñas en el huerto?» 0,3986; «¿Cómo se organiza el trabajo en el huerto?» 0,3124). Comprobado sobre el
+corpus real: **ninguna de las 349 entradas menciona el huerto** —ni en el título ni en el contenido—, así que
+no hay nada que responder. No es un defecto del buscador: es que la batería viene del **sitio de ejemplo** y
+sus consultas no tienen por qué existir en Lugg. Es exactamente lo que hace falta decidir al etiquetar el set:
+qué consultas son de Lugg y cuáles se sustituyen por las suyas.
