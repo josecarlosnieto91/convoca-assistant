@@ -236,15 +236,16 @@ class Statistics {
 		}
 
 		$resultado = Searcher::search( $query );
-		$lista     = is_array( $resultado ) ? ( $resultado['results'] ?? $resultado ) : array();
+		$lista     = $resultado['results'] ?? $resultado;
 
-		return is_array( $lista ) && count( $lista ) > 0;
+		return count( $lista ) > 0;
 	}
 
 	/**
 	 * Consultas que se quedaron sin respuesta, agrupadas.
 	 *
-	 * @param int $limit Cuántas devolver.
+	 * @param int $limit     Cuántas devolver.
+	 * @param int $segundos  Ventana de tiempo en segundos (0 = todo el registro).
 	 * @return array<int, array<string, mixed>>
 	 */
 	public static function get_unanswered( int $limit = 50, int $segundos = 0 ): array {
