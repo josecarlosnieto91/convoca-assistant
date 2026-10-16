@@ -67,3 +67,41 @@ no dónde queda cada resultado, y ningún arnés del repo lo mide. El CHANGELOG 
 cifras (45/38/7 frente a 45/36/9) medidas con el índice de producción, que **no está en el repo** y
 por tanto **no son reproducibles** desde aquí: quedan como declaración del commit, no como medida
 propia. El umbral tampoco está en juego para decidir la fusión: `main` ya trae el mismo valor.
+
+## 6. Medición sobre el CORPUS REAL de Lugg (16/10/2026)
+
+El arnés del repo mide sobre un corpus de ejemplo. Con el corpus **real** de Lugg (exportado en lectura del
+sitio, sin tocarlo) y sus **ajustes reales**, las cosas que el arnés no puede ver sí se miden.
+
+- Corpus: `index.json` de Lugg — **349 entradas** (191 `post`, 24 `page`, 134 `convoca_faq`).
+  md5 `a33f0476f4b8461930b521b40857370d`. **No se guarda en el repo** (es contenido real y este repo es público): se
+  reexporta en lectura desde Lugg cuando haga falta.
+- Ajustes del sitio: `direct_threshold` **0,4** · `search_fuse_threshold` 0,4 · `priority_boost` 1,35 ·
+  pesos (fuzzy 0,45 / graph 0,10 / exact 0,15 / exact-title 0,15), los mismos que el corpus de ejemplo.
+  **Consecuencia inmediata: el cambio de umbral por defecto de la rama no afecta a Lugg, que ya lo tiene a 0,4.**
+- Batería: las **34** consultas de referencia del repo, corridas con el motor del cliente sobre ese corpus.
+
+| medida | base `92833fd` | rama `c53aeea` / `main` |
+|---|---|---|
+| consultas con resultados | 34 / 34 | 34 / 34 |
+| **respuesta directa** (top ≥ 0,4) | **31 / 34 (91,2%)** | **31 / 34 (91,2%)** |
+| puntuación del top-1: mín / p25 / mediana / máx | 0,3124 / 0,4569 / **0,9000** / **0,9000** | igual |
+| **empates ≥0,90 página/FAQ** | 3 — gana la **página** (3) | 3 — gana la **FAQ** (3) |
+
+Lecturas que importan:
+
+- **El desempate se ejerce en el corpus real**: los mismos 3 empates a 0,9000, y con el arreglo gana la FAQ.
+  El caso visible es la consulta **«voluntariado»**, que con el código de la base respondía con una **página**
+  y ahora responde con la **FAQ**.
+- **El umbral sí cambia el resultado**: con 0,4 responden **31 de 34**; con **0,55** responderían solo
+  **24 de 34** — 10 consultas (29 %) se quedarían **calladas** teniendo respuesta. Es la magnitud que
+  justifica bajar el umbral, y en Lugg ya está a 0,4.
+- **El techo práctico de puntuación no es 0,47** como decía el CHANGELOG de la rama: en el corpus real la
+  mediana y el máximo del top-1 son **0,9000** (coincidencia exacta de título). Aquella cifra salió de un
+  corpus sin coincidencias exactas; con este corpus, un umbral de 0,55 deja fuera un 29 % de consultas
+  que hoy sí tienen respuesta.
+
+**Lo que sigue sin poder medirse aquí:** recall@1/@3 y nDCG sobre Lugg, porque el set de consultas está
+etiquetado contra las entradas del corpus de ejemplo y esas etiquetas **no existen** en el corpus real.
+Para eso hace falta que el set se revise y se etiquete contra Lugg (la tabla consulta a consulta está
+preparada para eso); hasta entonces, esas métricas sobre el corpus real serían ruido.
