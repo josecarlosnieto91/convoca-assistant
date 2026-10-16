@@ -1,0 +1,157 @@
+{
+ "_que_es": "Set de pruebas del buscador SOBRE LA DEMO. Corpus QA creado en demo.getconvoca.app (entradas marcadas con el meta _qa_bateria) mas el contenido que ya tenia el sitio. Cada consulta declara la entrada (o entradas) que debe responder.",
+ "_corpus": {
+  "origen": "index.json de demo.getconvoca.app",
+  "exportado": "2026-10-16",
+  "entradas": 69,
+  "md5": "a6f756783d7857f1228fc44bfe33364a",
+  "qa_ids": "3009-3023 (15 entradas, meta _qa_bateria)"
+ },
+ "_como_se_mide": "CONVOCA_BATERIA_INDICE=<ruta index.json> CONVOCA_BATERIA_GRAFO=<ruta graph.json> cd tests && npx jest bateria-demo",
+ "_nota": "El corpus NO se versiona (contiene contenido real del sitio). Se reexporta con: scp andromeda:/var/www/demo.getconvoca.app/public/wp-content/uploads/convoca-assistant/index.json .",
+ "consultas": [
+  {
+   "query": "¿Cómo reservo la sala de ensayo?",
+   "caso": "faq_exacta",
+   "esperados": [
+    "3009"
+   ],
+   "nota": "titulo exacto de la FAQ"
+  },
+  {
+   "query": "Sala de ensayo",
+   "caso": "empate_pagina_faq",
+   "esperados": [
+    "3011"
+   ],
+   "nota": "EMPATE A 0,90: hay una pagina y una FAQ con el MISMO titulo (3010 y 3011). La respuesta debe ser la FAQ"
+  },
+  {
+   "query": "Horarios del local",
+   "caso": "pagina_titulo_exacto",
+   "esperados": [
+    "3012"
+   ],
+   "nota": "titulo exacto de una PAGINA: la pagina debe ganar"
+  },
+  {
+   "query": "acompañantes",
+   "caso": "keywords",
+   "esperados": [
+    "3013"
+   ],
+   "nota": "palabra que solo vive en las palabras clave"
+  },
+  {
+   "query": "¿puedo llevar a mi hermana a un taller?",
+   "caso": "coloquial",
+   "esperados": [
+    "3013"
+   ],
+   "nota": "misma respuesta, dicha de otra manera"
+  },
+  {
+   "query": "taller de cerámica",
+   "caso": "kb",
+   "esperados": [
+    "3014"
+   ],
+   "nota": "entrada de la base de conocimiento"
+  },
+  {
+   "query": "horno",
+   "caso": "keywords",
+   "esperados": [
+    "3014"
+   ],
+   "nota": "palabra clave del taller"
+  },
+  {
+   "query": "biblioteca",
+   "caso": "peso",
+   "esperados": [
+    "3015"
+   ],
+   "nota": "entrada con peso 3: el peso solo debe reforzar coincidencias fuertes"
+  },
+  {
+   "query": "sala de reuniones",
+   "caso": "distractor",
+   "esperados": [
+    "3016"
+   ],
+   "nota": "no debe confundirse con la sala de ensayo"
+  },
+  {
+   "query": "¿Se puede pedir prestado el equipo de sonido?",
+   "caso": "faq_exacta",
+   "esperados": [
+    "3017"
+   ],
+   "nota": "titulo exacto"
+  },
+  {
+   "query": "altavoces",
+   "caso": "keywords",
+   "esperados": [
+    "3017"
+   ],
+   "nota": "palabra clave; hay tambien un proyector (3021) que NO es la respuesta"
+  },
+  {
+   "query": "¿Cuándo se puede usar la cocina?",
+   "caso": "faq_exacta",
+   "esperados": [
+    "3018"
+   ],
+   "nota": "no confundir con la cocina de los talleres (3023)"
+  },
+  {
+   "query": "cocina en los talleres",
+   "caso": "distractor",
+   "esperados": [
+    "3023"
+   ],
+   "nota": "la otra entrada de cocina"
+  },
+  {
+   "query": "¿dónde dejo la bici?",
+   "caso": "coloquial",
+   "esperados": [
+    "3019"
+   ],
+   "nota": "coloquial con palabra clave"
+  },
+  {
+   "query": "¿Cómo consigo el carnet de socia?",
+   "caso": "faq_exacta",
+   "esperados": [
+    "3020"
+   ],
+   "nota": "no confundir con el carnet del voluntariado (3022)"
+  },
+  {
+   "query": "carnet",
+   "caso": "ambiguo",
+   "esperados": [
+    "3020",
+    "3022"
+   ],
+   "nota": "ambiguo a proposito: cualquiera de los dos vale"
+  },
+  {
+   "query": "¿Prestáis el proyector?",
+   "caso": "distractor",
+   "esperados": [
+    "3021"
+   ],
+   "nota": "distractor cercano al equipo de sonido"
+  },
+  {
+   "query": "¿Cuánto cuesta el alquiler de la furgoneta?",
+   "caso": "sin_respuesta",
+   "esperados": [],
+   "nota": "NO existe en el corpus: el buscador no debe responder"
+  }
+ ]
+}
