@@ -95,8 +95,10 @@ suite('Batería del buscador sobre la demo', () => {
           } else { ganaFaq++; }
         }
       }
+      const segundo = res[1] ? Number(res[1].score.toFixed(4)) : null;
       filas.push({ query: c.query, caso: c.caso, esperados: c.esperados, devueltos: ids.slice(0, 3),
-                   top: Number(top.toFixed(4)), posicion: pos, directa: res[0] ? top >= (ajustes.directThreshold ?? 0.4) : false });
+                   top: Number(top.toFixed(4)), segundo, margen: null === segundo ? null : Number((top - segundo).toFixed(4)),
+                   posicion: pos, directa: res[0] ? top >= (ajustes.directThreshold ?? 0.4) : false });
     }
 
     const n = puntuables || 1;
@@ -107,6 +109,7 @@ suite('Batería del buscador sobre la demo', () => {
         ? (f.directa ? 'SIN RESPUESTA ESPERADA y responde' : 'sin respuesta (correcto)')
         : (f.posicion === 0 ? 'FALLA' : 'pos ' + f.posicion);
       console.log('  ' + (f.caso || '').padEnd(18) + ' ' + f.query.padEnd(ancho) + '  ' + f.top.toFixed(4) +
+        ' gap ' + String(null === f.margen ? '—' : f.margen.toFixed(4)).padStart(6) +
         '  ' + estado + '   esperado [' + f.esperados.join(',') + ']  devuelto [' + f.devueltos.join(',') + ']');
     }
     console.log('\n  RESUMEN            Recall@1   Recall@3    MRR@10   nDCG@5');
