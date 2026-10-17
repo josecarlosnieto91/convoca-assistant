@@ -101,6 +101,37 @@ suite('Batería del buscador sobre la demo', () => {
                    posicion: pos, directa: res[0] ? top >= (ajustes.directThreshold ?? 0.4) : false });
     }
 
+    // ── Diagnóstico para assistant#15: ¿la entrada que responde comparte TEMA con la consulta? ──
+    // Se mide, no se aplica: cuántos aciertos callaría el criterio de exigir coincidencia en título o
+    // palabras clave, y cuántos ruidos callaría. Sin estos números, decidir era opinar.
+    const stop = new Set((chat.index && chat.index.stop_words) || []);
+    const significativos = (q) => chat.normalize(q).split(' ').filter((w) => w.length >= 4 && !stop.has(w));
+    const evidencia = (q, f) => {
+      const ts = significativos(q);
+      const idx = (chat.index && chat.index.entries) || [];
+      const entrada = idx.find((e) => String(e.id) === String(f.devueltos[0]));
+      if (!ts.length || !entrada) return null;
+      const heno = chat.normalize([entrada.title || '', (entrada.keywords || []).join(' ')].join(' '));
+      return ts.some((tk) => heno.includes(tk));
+    };
+    let posSinEvidencia = [], negConEvidencia = [], negSinEvidencia = [], negResponden = [];
+    for (const f of filas) {
+      f.evidencia = evidencia(f.query, f);
+      if (f.esperados.length) { if (false === f.evidencia) posSinEvidencia.push(f.query); }
+      else {
+        if (f.directa) negResponden.push(f.query);
+        if (true === f.evidencia) negConEvidencia.push(f.query); else negSinEvidencia.push(f.query);
+      }
+    }
+    console.log('\n  === assistant#15: el criterio de titulo/claves, MEDIDO (no aplicado) ===');
+    console.log('  negativas que responden hoy: ' + negResponden.length + '/' + (filas.length - puntuables));
+    console.log('  el criterio callaria ' + negSinEvidencia.length + ' de esas negativas, y seguirian respondiendo ' + negConEvidencia.length);
+    console.log('  coste: callaria ' + posSinEvidencia.length + ' de ' + puntuables + ' aciertos' + (posSinEvidencia.length ? ' → ' + posSinEvidencia.join(' | ') : ''));
+    for (const f of filas.filter((x) => !x.esperados.length)) {
+      console.log('     negativa: ' + (f.directa ? 'RESPONDE ' : 'calla    ') + ' evidencia=' + String(f.evidencia) +
+        '  ' + f.query.slice(0, 42) + '  → [' + f.devueltos.slice(0, 2).join(',') + ']');
+    }
+
     const n = puntuables || 1;
     const ancho = Math.max(...filas.map((f) => f.query.length));
     console.log('\n=== BATERÍA DEMO (motor del cliente) ===');

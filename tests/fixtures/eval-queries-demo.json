@@ -152,6 +152,67 @@
    "caso": "sin_respuesta",
    "esperados": [],
    "nota": "NO existe en el corpus: el buscador no debe responder"
+  },
+  {
+   "query": "¿Alquiláis una furgoneta?",
+   "caso": "sin_respuesta",
+   "esperados": [],
+   "nota": "tema AUSENTE del corpus (comprobado: df=0 de su palabra distintiva)"
+  },
+  {
+   "query": "¿Tenéis impresora 3D?",
+   "caso": "sin_respuesta",
+   "esperados": [],
+   "nota": "tema AUSENTE del corpus (comprobado: df=0 de su palabra distintiva)"
+  },
+  {
+   "query": "¿Hay clases de guitarra?",
+   "caso": "sin_respuesta",
+   "esperados": [],
+   "nota": "tema AUSENTE del corpus (comprobado: df=0 de su palabra distintiva)"
+  },
+  {
+   "query": "¿Se puede aparcar una autocaravana?",
+   "caso": "sin_respuesta",
+   "esperados": [],
+   "nota": "tema AUSENTE del corpus (comprobado: df=0 de su palabra distintiva)"
+  },
+  {
+   "query": "¿Alquiláis sillas para una boda?",
+   "caso": "sin_respuesta",
+   "esperados": [],
+   "nota": "tema AUSENTE del corpus (comprobado: df=0 de su palabra distintiva)"
+  },
+  {
+   "query": "¿Pedís subvenciones al ayuntamiento?",
+   "caso": "sin_respuesta",
+   "esperados": [],
+   "nota": "tema AUSENTE del corpus (comprobado: df=0 de su palabra distintiva)"
+  },
+  {
+   "query": "¿Hay gimnasio en el centro?",
+   "caso": "sin_respuesta",
+   "esperados": [],
+   "nota": "tema AUSENTE del corpus (comprobado: df=0 de su palabra distintiva)"
+  },
+  {
+   "query": "¿Tenéis guardería?",
+   "caso": "sin_respuesta",
+   "esperados": [],
+   "nota": "tema AUSENTE del corpus (comprobado: df=0 de su palabra distintiva)"
+  },
+  {
+   "query": "¿Dónde están las taquillas?",
+   "caso": "sin_respuesta",
+   "esperados": [],
+   "nota": "tema AUSENTE del corpus (comprobado: df=0 de su palabra distintiva)"
+  },
+  {
+   "query": "¿Se puede pagar con criptomonedas?",
+   "caso": "sin_respuesta",
+   "esperados": [],
+   "nota": "tema AUSENTE del corpus (comprobado: df=0 de su palabra distintiva)"
   }
- ]
+ ],
+ "_negativas": "Once casos sin respuesta esperada: el original de la furgoneta y diez temas comprobados como ausentes del corpus (impresora 3D, guitarra, autocaravana, sillas/boda, subvenciones, gimnasio, guardería, taquillas, criptomonedas)."
 }
