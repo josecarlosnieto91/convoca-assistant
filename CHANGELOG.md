@@ -1,3 +1,20 @@
+## [0.2.21] — 2026-10-16
+
+### Arreglado
+- **La FAQ del aparcabicis no se recuperaba con una consulta coloquial (issue #14).** Las consultas que
+  se lanzan al motor son los tokens juntos, los bigramas y los trigramas: con «¿dónde dejo la bici?» se
+  buscaba «donde dejo bici» y sus trozos, pero **nunca «bici»**, que es justo la palabra que la FAQ tiene
+  en sus palabras clave. Fuse no casa un patrón de 19 caracteres con una palabra de 4. Ahora, además de
+  las consultas de siempre, se **rescatan las entradas cuya palabra clave contiene el token tal cual**.
+  Es quirúrgico y no un segundo barrido: lanzar los tokens sueltos al motor arreglaba el caso pero metía
+  tanto candidato que la recall@3 del arnés de calidad caía 3 puntos; con el rescate por palabra clave,
+  el arnés queda **idéntico** (78,8 / 90,9 / 0,858 / 0,883 servidor · 78,8 / 87,9 / 0,849 / 0,879
+  cliente, medido con y sin el cambio).
+
+### Pruebas
+- La batería de la demo lleva ahora la aserción del caso: «¿dónde dejo la bici?» tiene que devolver
+  **3019** en primer lugar.
+
 ## [0.2.20] — 2026-10-16
 
 ### Arreglado

@@ -357,6 +357,27 @@
 					}
 				}
 			}
+			/*
+			 * Rescate por palabra clave (issue #14). Las consultas que se lanzan son los tokens juntos, los
+			 * bigramas y los trigramas: con «¿dónde dejo la bici?» se buscaba «donde dejo bici» y sus
+			 * trozos, pero **nunca** «bici», que es justo la palabra de la FAQ del aparcabicis. Lanzar los
+			 * tokens sueltos a Fuse lo arreglaba, pero metía tanto candidato que la recall@3 del arnés caía
+			 * 3 puntos (90,9 % → 87,9 %): se cambiaba un caso por ensuciar el ranking. Aquí el rescate es
+			 * quirúrgico: sólo entran las entradas cuya **palabra clave** contiene el token tal cual.
+			 */
+			if ( this.index && Array.isArray( this.index.entries ) ) {
+				const claves = tokens.filter( tk => tk.length >= 4 );
+				for ( const entrada of this.index.entries ) {
+					const kw = this.normalize( ( entrada.keywords || [] ).join( ' ' ) );
+					if ( '' === kw ) continue;
+					if ( ! claves.some( tk => kw.includes( tk ) ) ) continue;
+					if ( candidatos.has( entrada.id ) ) continue;
+					// Se puntúa con la misma escala que las apariciones de Fuse pero con la mejor
+					// coincidencia posible (distancia 0): es una coincidencia literal de palabra clave.
+					candidatos.set( entrada.id, [ { item: entrada, score: 0 } ] );
+				}
+			}
+
 			const rawResults = [];
 			for (const lista of candidatos.values()) {
 				rawResults.push(...lista);

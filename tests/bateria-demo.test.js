@@ -120,6 +120,13 @@ suite('Batería del buscador sobre la demo', () => {
       fs.writeFileSync(process.env.CONVOCA_BATERIA_SALIDA, JSON.stringify(
         { resumen: { puntuables, recall1: r1 / n, recall3: r3 / n, mrr10: mrr / n, ndcg5: ndcg / n, directas, empates, ganaFaq }, filas }, null, 1));
     }
+    // assistant#14: la FAQ del aparcabicis tiene que salir con la consulta coloquial. Antes respondía
+    // la del centro social porque «bici» no se buscaba nunca como token suelto (sólo la frase entera,
+    // los bigramas y los trigramas), y el Fuse no casa un patrón de 19 caracteres con una palabra de 4.
+    const bici = filas.find((f) => f.query.includes('bici'));
+    expect(bici).toBeDefined();
+    expect(String(bici.devueltos[0])).toBe('3019');
+
     expect(filas.length).toBe(consultas.length);
     if (fallosEmpate.length) { console.log('  AVISO: empate a 0,90 resuelto a favor de la PAGINA en: ' + fallosEmpate.join(', ')); }
     expect(fallosEmpate.length).toBe(0);
