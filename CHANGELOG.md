@@ -28,4 +28,3 @@
 
 ### Notas
 - Dos pruebas nuevas del umbral (el del sitio, y el de fábrica cuando no hay ninguno configurado). Total: 36.
-
