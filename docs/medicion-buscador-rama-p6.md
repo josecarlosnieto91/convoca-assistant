@@ -68,17 +68,17 @@ cifras (45/38/7 frente a 45/36/9) medidas con el índice de producción, que **n
 por tanto **no son reproducibles** desde aquí: quedan como declaración del commit, no como medida
 propia. El umbral tampoco está en juego para decidir la fusión: `main` ya trae el mismo valor.
 
-## 6. Medición sobre el CORPUS REAL de Lugg (16/10/2026)
+## 6. Medición sobre el CORPUS REAL de producción (16/10/2026)
 
-El arnés del repo mide sobre un corpus de ejemplo. Con el corpus **real** de Lugg (exportado en lectura del
+El arnés del repo mide sobre un corpus de ejemplo. Con el corpus **real** de producción (exportado en lectura del
 sitio, sin tocarlo) y sus **ajustes reales**, las cosas que el arnés no puede ver sí se miden.
 
-- Corpus: `index.json` de Lugg — **349 entradas** (191 `post`, 24 `page`, 134 `convoca_faq`).
+- Corpus: `index.json` de producción — **349 entradas** (191 `post`, 24 `page`, 134 `convoca_faq`).
   md5 `a33f0476f4b8461930b521b40857370d`. **No se guarda en el repo** (es contenido real y este repo es público): se
-  reexporta en lectura desde Lugg cuando haga falta.
+  reexporta en lectura desde producción cuando haga falta.
 - Ajustes del sitio: `direct_threshold` **0,4** · `search_fuse_threshold` 0,4 · `priority_boost` 1,35 ·
   pesos (fuzzy 0,45 / graph 0,10 / exact 0,15 / exact-title 0,15), los mismos que el corpus de ejemplo.
-  **Consecuencia inmediata: el cambio de umbral por defecto de la rama no afecta a Lugg, que ya lo tiene a 0,4.**
+  **Consecuencia inmediata: el cambio de umbral por defecto de la rama no afecta a producción, que ya lo tiene a 0,4.**
 - Batería: las **34** consultas de referencia del repo, corridas con el motor del cliente sobre ese corpus.
 
 | medida | base `92833fd` | rama `c53aeea` / `main` |
@@ -95,15 +95,15 @@ Lecturas que importan:
   y ahora responde con la **FAQ**.
 - **El umbral sí cambia el resultado**: con 0,4 responden **31 de 34**; con **0,55** responderían solo
   **24 de 34** — 10 consultas (29 %) se quedarían **calladas** teniendo respuesta. Es la magnitud que
-  justifica bajar el umbral, y en Lugg ya está a 0,4.
+  justifica bajar el umbral, y en producción ya está a 0,4.
 - **El techo práctico de puntuación no es 0,47** como decía el CHANGELOG de la rama: en el corpus real la
   mediana y el máximo del top-1 son **0,9000** (coincidencia exacta de título). Aquella cifra salió de un
   corpus sin coincidencias exactas; con este corpus, un umbral de 0,55 deja fuera un 29 % de consultas
   que hoy sí tienen respuesta.
 
-**Lo que sigue sin poder medirse aquí:** recall@1/@3 y nDCG sobre Lugg, porque el set de consultas está
+**Lo que sigue sin poder medirse aquí:** recall@1/@3 y nDCG sobre producción, porque el set de consultas está
 etiquetado contra las entradas del corpus de ejemplo y esas etiquetas **no existen** en el corpus real.
-Para eso hace falta que el set se revise y se etiquete contra Lugg (la tabla consulta a consulta está
+Para eso hace falta que el set se revise y se etiquete contra producción (la tabla consulta a consulta está
 preparada para eso); hasta entonces, esas métricas sobre el corpus real serían ruido.
 
 ### Las 3 consultas que se quedan calladas: no es ranking, es contenido
@@ -112,5 +112,5 @@ Con umbral 0,4 se callan tres, y las tres son del **huerto** (`huerto` 0,3897; �
 y niñas en el huerto?» 0,3986; «¿Cómo se organiza el trabajo en el huerto?» 0,3124). Comprobado sobre el
 corpus real: **ninguna de las 349 entradas menciona el huerto** —ni en el título ni en el contenido—, así que
 no hay nada que responder. No es un defecto del buscador: es que la batería viene del **sitio de ejemplo** y
-sus consultas no tienen por qué existir en Lugg. Es exactamente lo que hace falta decidir al etiquetar el set:
-qué consultas son de Lugg y cuáles se sustituyen por las suyas.
+sus consultas no tienen por qué existir en producción. Es exactamente lo que hace falta decidir al etiquetar el set:
+qué consultas son de producción y cuáles se sustituyen por las suyas.
