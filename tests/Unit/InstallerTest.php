@@ -8,12 +8,12 @@
 namespace Convoca\Assistant\Tests;
 
 use Convoca\Assistant\Installer;
-use WP_UnitTestCase;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @coversDefaultClass \Convoca\Assistant\Installer
  */
-class Test_Installer extends WP_UnitTestCase {
+class InstallerTest extends TestCase {
 
 	/**
 	 * Test default settings structure.

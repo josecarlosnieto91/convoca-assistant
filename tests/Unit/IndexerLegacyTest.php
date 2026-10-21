@@ -8,12 +8,12 @@
 namespace Convoca\Assistant\Tests;
 
 use Convoca\Assistant\Indexer;
-use WP_UnitTestCase;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @coversDefaultClass \Convoca\Assistant\Indexer
  */
-class Test_Indexer extends WP_UnitTestCase {
+class IndexerLegacyTest extends TestCase {
 
 	/**
 	 * Test dirty flag lifecycle.

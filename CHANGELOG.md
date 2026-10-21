@@ -1,3 +1,17 @@
+## [0.2.22] — 2026-10-21
+
+### Cambiado
+
+- **Cinco ficheros de prueba que no ejecutaba nadie pasan a la suite real.** Vivían en `tests/` como
+  `test-*.php` con la clase base de WordPress y **no los invocaba ni el CI ni `composer`**: eran cobertura de
+  mentira. Cuatro se han portado a `tests/Unit` (Indexer, Installer, Searcher) con `PHPUnit\Framework\TestCase`
+  y lo que usaban de WordPress ya lo daban los dobles del bootstrap; sus comprobaciones pasan y suman 37 tests.
+- **Ocho comprobaciones quedan retiradas y documentadas** (issue #18): no pasaban al ejecutarlas por primera
+  vez, y no se sabe si el código cambió de comportamiento o la prueba se quedó atrás. Se sacan a la luz en el
+  issue en vez de dejarlas ahí en verde falso: el Starter Pack (5 errores + 1 fallo), la estructura del grafo
+  y el cálculo de la puntuación del buscador.
+- **Fuera `wp-phpunit/wp-phpunit` y `yoast/phpunit-polyfills`**: solo existían para esas pruebas.
+
 ## [0.2.21] — 2026-10-16
 
 ### Arreglado
