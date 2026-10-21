@@ -24,3 +24,6 @@ tests/.phpunit.result.cache
 
 # Resultados medidos por el arnés de calidad (se regeneran en cada corrida)
 tests/fixtures/search-quality-*.json
+
+# Artefactos de la puerta de cobertura (clover, junit): no se versionan.
+/build/
