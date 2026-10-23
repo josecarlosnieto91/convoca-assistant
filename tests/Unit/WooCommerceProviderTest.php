@@ -145,7 +145,7 @@ class WooCommerceProviderTest extends TestCase
     {
         $post = $this->post([
             'ID' => 20,
-            'post_title' => 'Camiseta de Biodevas',
+            'post_title' => 'Camiseta de la entidad',
             'post_content' => '<!-- wp:paragraph --><p>Camiseta con el logo</p><!-- /wp:paragraph -->',
             'post_excerpt' => 'Con el logo',
             'post_date' => '2026-01-01 10:00:00',
@@ -158,7 +158,7 @@ class WooCommerceProviderTest extends TestCase
 
         $this->assertSame(20, $entrada['id']);
         $this->assertSame('product', $entrada['type']);
-        $this->assertSame('Camiseta de Biodevas', $entrada['title']);
+        $this->assertSame('Camiseta de la entidad', $entrada['title']);
         $this->assertSame('Camiseta con el logo', $entrada['content']);
         $this->assertSame('https://example.test/camiseta.jpg', $entrada['thumbnail']);
         $this->assertSame(['Ropa'], $entrada['categories']);
