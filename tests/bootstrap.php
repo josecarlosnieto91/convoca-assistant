@@ -390,5 +390,48 @@ namespace {
 		}
 	}
 
-}
 
+	if ( ! function_exists( 'register_post_type' ) ) {
+		function register_post_type( $tipo, $args = array() ) {
+			$GLOBALS['convoca_as_tipos'][ $tipo ] = $args;
+			return (object) array( 'name' => $tipo );
+		}
+	}
+	if ( ! function_exists( 'register_taxonomy' ) ) {
+		function register_taxonomy( $taxonomia, $object_type, $args = array() ) {
+			$GLOBALS['convoca_as_taxonomias'][ $taxonomia ] = array(
+				'object_type' => $object_type,
+				'args'        => $args,
+			);
+			return true;
+		}
+	}
+	if ( ! function_exists( 'register_post_meta' ) ) {
+		function register_post_meta( $tipo, $clave, $args = array() ) {
+			$GLOBALS['convoca_as_meta_registrada'][ $tipo ][ $clave ] = $args;
+			return true;
+		}
+	}
+	if ( ! function_exists( 'add_meta_box' ) ) {
+		function add_meta_box( $id, $titulo, $callback, $pantalla = null, $contexto = 'advanced', $prioridad = 'default' ) {
+			$GLOBALS['convoca_as_metaboxes'][ $id ] = compact( 'titulo', 'pantalla', 'contexto' );
+			return true;
+		}
+	}
+	if ( ! function_exists( 'wp_trim_words' ) ) {
+		function wp_trim_words( $texto, $num = 55, $mas = '…' ) {
+			$palabras = preg_split( '/\s+/', trim( (string) $texto ) );
+			if ( count( $palabras ) <= $num ) {
+				return (string) $texto;
+			}
+			return implode( ' ', array_slice( $palabras, 0, $num ) ) . $mas;
+		}
+	}
+	if ( ! function_exists( 'get_post_type' ) ) {
+		function get_post_type( $post = null ) {
+			$id = is_object( $post ) ? (int) $post->ID : (int) $post;
+			return $GLOBALS['convoca_as_tipos_post'][ $id ] ?? 'convoca_faq';
+		}
+	}
+
+}
