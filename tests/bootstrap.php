@@ -634,4 +634,10 @@ namespace {
 		}
 	}
 
+
+	// Dobles de REST y del núcleo: en su propio fichero, porque declaran clases y funciones.
+	require_once __DIR__ . '/StubRest.php';
+	require_once __DIR__ . '/StubCoreUtils.php';
+
 }
+
