@@ -639,5 +639,55 @@ namespace {
 	require_once __DIR__ . '/StubRest.php';
 	require_once __DIR__ . '/StubCoreUtils.php';
 
+	require_once __DIR__ . '/StubLogger.php';
+
+	if ( ! function_exists( 'current_filter' ) ) {
+		/**
+		 * Gancho en curso (doble).
+		 *
+		 * @return string
+		 */
+		function current_filter() {
+			return $GLOBALS['convoca_as_gancho_actual'] ?? '';
+		}
+	}
+	if ( ! function_exists( 'wp_schedule_single_event' ) ) {
+		/**
+		 * Apunta un evento único programado.
+		 *
+		 * @param int    $cuando Marca de tiempo.
+		 * @param string $gancho Nombre.
+		 * @return bool
+		 */
+		function wp_schedule_single_event( $cuando, $gancho ) {
+			$GLOBALS['convoca_as_eventos_unicos'][] = array( $cuando, $gancho );
+			return true;
+		}
+	}
+
+	if ( ! function_exists( 'wp_upload_dir' ) ) {
+		/**
+		 * Directorio de subidas (doble).
+		 *
+		 * @return array<string, string>
+		 */
+		function wp_upload_dir() {
+			$base = $GLOBALS['convoca_as_upload_base'] ?? sys_get_temp_dir();
+			return array( 'basedir' => $base, 'baseurl' => 'https://example.test/uploads' );
+		}
+	}
+	if ( ! function_exists( 'human_time_diff' ) ) {
+		/**
+		 * Diferencia legible entre dos marcas (doble).
+		 *
+		 * @param int $desde Marca inicial.
+		 * @param int $hasta Marca final.
+		 * @return string
+		 */
+		function human_time_diff( $desde = 0, $hasta = 0 ) {
+			return '5 minutos';
+		}
+	}
+
 }
 
