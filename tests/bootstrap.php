@@ -434,4 +434,122 @@ namespace {
 		}
 	}
 
+
+	// ── Base de datos: doble de $wpdb con cola de respuestas ──────────────────────
+	if ( ! defined( 'ARRAY_A' ) ) {
+		define( 'ARRAY_A', 'ARRAY_A' );
+	}
+	if ( ! defined( 'WEEK_IN_SECONDS' ) ) {
+		define( 'WEEK_IN_SECONDS', 604800 );
+	}
+	if ( ! isset( $GLOBALS['wpdb'] ) ) {
+		$GLOBALS['wpdb'] = new class {
+			public $prefix = 'wp_';
+			public $posts  = 'wp_posts';
+			public $postmeta = 'wp_postmeta';
+			public $options = 'wp_options';
+
+			/**
+			 * Respuestas preparadas por la prueba para get_var().
+			 *
+			 * @var array<int, mixed>
+			 */
+			public $vars = array();
+
+			/**
+			 * Respuestas preparadas para get_results().
+			 *
+			 * @var array<int, mixed>
+			 */
+			public $resultados = array();
+
+			/** Inserciones realizadas. */
+			public $inserts = array();
+
+			/** Consultas ejecutadas con query(). */
+			public $consultas = array();
+
+			/**
+			 * Devuelve la siguiente respuesta preparada.
+			 *
+			 * @param string $sql Consulta.
+			 * @return mixed
+			 */
+			public function get_var( $sql = '' ) {
+				return array_shift( $this->vars );
+			}
+
+			/**
+			 * Devuelve el siguiente juego de filas preparado.
+			 *
+			 * @param string $sql    Consulta.
+			 * @param string $salida Formato de salida.
+			 * @return mixed
+			 */
+			public function get_results( $sql = '', $salida = null ) {
+				return array_shift( $this->resultados );
+			}
+
+			/**
+			 * Anota una inserción.
+			 *
+			 * @param string $tabla  Tabla.
+			 * @param array  $datos  Datos.
+			 * @param array  $formato Formatos.
+			 * @return int
+			 */
+			public function insert( $tabla, $datos, $formato = null ) {
+				$this->inserts[] = array( $tabla, $datos );
+				return count( $this->inserts );
+			}
+
+			/**
+			 * Anota una consulta de escritura.
+			 *
+			 * @param string $sql Consulta.
+			 * @return bool
+			 */
+			public function query( $sql ) {
+				$this->consultas[] = $sql;
+				return true;
+			}
+
+			/**
+			 * Doble de prepare(): devuelve la consulta con los valores sustituidos.
+			 *
+			 * @param string $sql Consulta.
+			 * @param mixed  ...$args Valores.
+			 * @return string
+			 */
+			public function prepare( $sql, ...$args ) {
+				$args = ( 1 === count( $args ) && is_array( $args[0] ) ) ? $args[0] : $args;
+				foreach ( $args as $valor ) {
+					$sql = preg_replace( '/%[sdf]/', is_string( $valor ) ? "'" . $valor . "'" : (string) $valor, $sql, 1 );
+				}
+				return $sql;
+			}
+		};
+	}
+	if ( ! function_exists( 'get_the_title' ) ) {
+		function get_the_title( $post = null ) {
+			$id = is_object( $post ) ? (int) $post->ID : (int) $post;
+			return $GLOBALS['convoca_as_titulos'][ $id ] ?? 'Pregunta ' . $id;
+		}
+	}
+	if ( ! function_exists( 'wp_generate_uuid4' ) ) {
+		function wp_generate_uuid4() {
+			return 'uuid-de-pruebas';
+		}
+	}
+	if ( ! function_exists( 'esc_url_raw' ) ) {
+		function esc_url_raw( $url ) {
+			return (string) $url;
+		}
+	}
+	if ( ! function_exists( 'is_admin' ) ) {
+		function is_admin() {
+			return false;
+		}
+	}
+
 }
