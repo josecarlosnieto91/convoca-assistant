@@ -552,4 +552,86 @@ namespace {
 		}
 	}
 
+
+	// ── Pantallas de administración ───────────────────────────────────────────────
+	if ( ! function_exists( 'add_menu_page' ) ) {
+		function add_menu_page( $titulo, $menu, $cap, $slug, $cb = '', $icono = '', $pos = null ) {
+			$GLOBALS['convoca_as_menus'][ $slug ] = compact( 'titulo', 'cap', 'cb' );
+			return 'hook-' . $slug;
+		}
+	}
+	if ( ! function_exists( 'add_submenu_page' ) ) {
+		function add_submenu_page( $padre, $titulo, $menu, $cap, $slug, $cb = '' ) {
+			$GLOBALS['convoca_as_submenus'][ $slug ] = compact( 'padre', 'titulo', 'cap', 'cb' );
+			return 'hook-' . $slug;
+		}
+	}
+	if ( ! function_exists( 'wp_enqueue_style' ) ) {
+		function wp_enqueue_style( $handle, $src = '', $deps = array(), $ver = '', $media = 'all' ) {
+			$GLOBALS['convoca_as_estilos'][ $handle ] = compact( 'src', 'deps', 'ver' );
+		}
+	}
+	if ( ! function_exists( 'wp_enqueue_script' ) ) {
+		function wp_enqueue_script( $handle, $src = '', $deps = array(), $ver = '', $footer = false ) {
+			$GLOBALS['convoca_as_scripts'][ $handle ] = compact( 'src', 'deps', 'ver', 'footer' );
+		}
+	}
+	if ( ! function_exists( 'wp_localize_script' ) ) {
+		function wp_localize_script( $handle, $objeto, $datos ) {
+			$GLOBALS['convoca_as_localizados'][ $objeto ] = $datos;
+			return true;
+		}
+	}
+	if ( ! function_exists( 'rest_url' ) ) {
+		function rest_url( $ruta = '' ) {
+			return 'https://example.test/wp-json/' . ltrim( (string) $ruta, '/' );
+		}
+	}
+	if ( ! function_exists( 'wp_create_nonce' ) ) {
+		function wp_create_nonce( $accion = -1 ) {
+			return 'nonce-de-pruebas';
+		}
+	}
+	if ( ! function_exists( 'get_current_screen' ) ) {
+		function get_current_screen() {
+			$id = $GLOBALS['convoca_as_pantalla'] ?? null;
+			return null === $id ? null : (object) array( 'id' => $id );
+		}
+	}
+	if ( ! function_exists( '_n' ) ) {
+		function _n( $singular, $plural, $numero, $dominio = null ) {
+			return 1 === (int) $numero ? $singular : $plural;
+		}
+	}
+	if ( ! function_exists( 'esc_url' ) ) {
+		function esc_url( $url ) {
+			return (string) $url;
+		}
+	}
+	if ( ! function_exists( 'esc_html_e' ) ) {
+		function esc_html_e( $texto, $dominio = null ) {
+			echo (string) $texto;
+		}
+	}
+	if ( ! function_exists( 'wp_nonce_url' ) ) {
+		function wp_nonce_url( $url, $accion = -1, $nombre = '_wpnonce' ) {
+			return $url . ( str_contains( (string) $url, '?' ) ? '&' : '?' ) . $nombre . '=nonce';
+		}
+	}
+	if ( ! defined( 'CONVOCA_ASSISTANT_ASSETS_URL' ) ) {
+		define( 'CONVOCA_ASSISTANT_ASSETS_URL', 'https://example.test/wp-content/plugins/convoca-assistant/assets/' );
+	}
+	if ( ! defined( 'CONVOCA_ASSISTANT_DIR' ) ) {
+		define( 'CONVOCA_ASSISTANT_DIR', dirname( __DIR__ ) . '/' );
+	}
+
+
+	if ( ! function_exists( 'get_posts' ) ) {
+		function get_posts( $args = array() ) {
+			// Lo que prepare la prueba para ese tipo de contenido; vacío por defecto.
+			$GLOBALS['convoca_as_posts_consultados'][ $args['post_type'] ?? '' ] = $args;
+			return $GLOBALS['convoca_as_posts'][ $args['post_type'] ?? '' ] ?? array();
+		}
+	}
+
 }

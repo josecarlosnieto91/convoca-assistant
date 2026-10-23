@@ -28,7 +28,8 @@ class StatisticsTest extends TestCase
 
     protected function tearDown(): void
     {
-        unset($GLOBALS['_assistant_options'], $_SESSION);
+        $GLOBALS['_assistant_options'] = [];
+        unset($_SESSION);
         $GLOBALS['wpdb']->vars = [];
         $GLOBALS['wpdb']->resultados = [];
     }

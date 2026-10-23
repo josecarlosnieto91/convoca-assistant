@@ -45,7 +45,6 @@ class ExportImportTest extends TestCase
             $GLOBALS['convoca_as_posts'],
             $GLOBALS['convoca_as_insertados'],
             $GLOBALS['_assistant_meta'],
-            $GLOBALS['_assistant_options'],
             $GLOBALS['convoca_as_redirect']
         );
         unset($_GET, $_FILES);
