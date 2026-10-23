@@ -121,6 +121,16 @@ namespace {
 			return array_key_exists( $option, $store ) ? $store[ $option ] : $default;
 		}
 	}
+	if ( ! function_exists( 'get_post_meta' ) ) {
+		/**
+		 * Meta desde un mapa que fija la prueba: el peso individual de una entrada vive ahí.
+		 */
+		function get_post_meta( $post_id, $key = '', $single = false ) {
+			unset( $single );
+			$map = $GLOBALS['_assistant_meta'] ?? array();
+			return $map[ (int) $post_id ][ $key ] ?? '';
+		}
+	}
 	if ( ! function_exists( 'update_option' ) ) {
 		function update_option( $option, $value, $autoload = null ) {
 			$GLOBALS['_assistant_options'][ $option ] = $value;
