@@ -745,4 +745,104 @@ namespace {
 		}
 	}
 
+	if ( ! function_exists( 'strip_shortcodes' ) ) {
+		/**
+		 * Quita shortcodes (doble).
+		 *
+		 * @param string $texto Texto.
+		 * @return string
+		 */
+		function strip_shortcodes( $texto ) {
+			return preg_replace( '/\[[^\]]+\]/', '', (string) $texto );
+		}
+	}
+	if ( ! function_exists( 'get_the_terms' ) ) {
+		/**
+		 * Términos de un post (doble que lee de convoca_as_terminos).
+		 *
+		 * @param int    $post_id  Post.
+		 * @param string $taxonomy Taxonomía.
+		 * @return array|false
+		 */
+		function get_the_terms( $post_id, $taxonomy ) {
+			return $GLOBALS['convoca_as_terminos'][ (int) $post_id ][ $taxonomy ] ?? false;
+		}
+	}
+	if ( ! function_exists( 'wp_list_pluck' ) ) {
+		/**
+		 * Extrae un campo de una lista (doble).
+		 *
+		 * @param array  $lista Lista.
+		 * @param string $campo Campo.
+		 * @return array
+		 */
+		function wp_list_pluck( $lista, $campo ) {
+			return array_map( static fn( $fila ) => is_object( $fila ) ? ( $fila->$campo ?? '' ) : ( $fila[ $campo ] ?? '' ), (array) $lista );
+		}
+	}
+	if ( ! function_exists( 'get_the_content' ) ) {
+		/**
+		 * Contenido de un post (doble).
+		 *
+		 * @param mixed $a    Ignorado.
+		 * @param bool  $b    Ignorado.
+		 * @param mixed $post Post.
+		 * @return string
+		 */
+		function get_the_content( $a = null, $b = false, $post = null ) {
+			return (string) ( is_object( $post ) ? ( $post->post_content ?? '' ) : '' );
+		}
+	}
+	if ( ! function_exists( 'get_the_excerpt' ) ) {
+		/**
+		 * Extracto de un post (doble).
+		 *
+		 * @param mixed $post Post.
+		 * @return string
+		 */
+		function get_the_excerpt( $post = null ) {
+			return (string) ( is_object( $post ) ? ( $post->post_excerpt ?? '' ) : '' );
+		}
+	}
+	if ( ! function_exists( 'get_the_post_thumbnail_url' ) ) {
+		/**
+		 * Miniatura de un post (doble).
+		 *
+		 * @param mixed  $post Post.
+		 * @param string $tam  Tamaño.
+		 * @return string|false
+		 */
+		function get_the_post_thumbnail_url( $post = null, $tam = '' ) {
+			return $GLOBALS['convoca_as_miniatura'] ?? false;
+		}
+	}
+
+	if ( ! function_exists( 'wp_strip_all_tags' ) ) {
+		/**
+		 * Quita etiquetas y normaliza (doble de WordPress).
+		 *
+		 * @param string $texto Texto.
+		 * @return string
+		 */
+		function wp_strip_all_tags( $texto ) {
+			return trim( strip_tags( (string) $texto ) );
+		}
+	}
+	if ( ! function_exists( 'html_entity_decode' ) ) {
+		// html_entity_decode es nativa; este bloque existe para dejar claro que NO se dobla.
+	}
+
+	if ( ! function_exists( 'get_permalink' ) ) {
+		/**
+		 * Enlace de una entrada (doble).
+		 *
+		 * @param mixed $post Entrada o id.
+		 * @return string
+		 */
+		function get_permalink( $post = 0 ) {
+			$id = is_object( $post ) ? (int) ( $post->ID ?? 0 ) : (int) $post;
+			return 'https://example.test/?p=' . $id;
+		}
+	}
+
 }

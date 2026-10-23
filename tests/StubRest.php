@@ -193,4 +193,30 @@ namespace {
 			}
 		}
 	}
+	if ( ! class_exists( 'WP_Post' ) ) {
+		/**
+		 * Entrada de WordPress (doble mínimo): los campos que leen los proveedores.
+		 */
+		class WP_Post {
+			/** @var int */
+			public $ID = 0;
+			/** @var string */
+			public $post_title = '';
+			/** @var string */
+			public $post_content = '';
+			/** @var string */
+			public $post_excerpt = '';
+			/** @var string */
+			public $post_status = 'publish';
+			/** @var string */
+			public $post_type = 'post';
+			/** @var string */
+			public $post_date = '';
+			/** @var string */
+			public $post_modified = '';
+			/** @var string */
+			public $post_name = '';
+		}
+	}
+
 }
