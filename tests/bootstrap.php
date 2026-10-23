@@ -81,7 +81,12 @@ namespace {
 				// El post «actual» de la petición: lo fija la prueba (null por defecto, como antes).
 				return $GLOBALS['convoca_as_post'] ?? null;
 			}
-			$post           = new stdClass();
+			// Si la prueba ha preparado ese id, se usa tal cual; si no, un WP_Post mínimo (los
+			// proveedores tipan contra WP_Post y un stdClass los revienta).
+			if ( isset( $GLOBALS['convoca_as_posts'][ (int) $id ] ) && is_object( $GLOBALS['convoca_as_posts'][ (int) $id ] ) ) {
+				return $GLOBALS['convoca_as_posts'][ (int) $id ];
+			}
+			$post           = new \WP_Post();
 			$post->ID       = (int) $id;
 			$post->post_title = "Post $id";
 			$post->post_type = 'post';
@@ -842,6 +847,20 @@ namespace {
 		function get_permalink( $post = 0 ) {
 			$id = is_object( $post ) ? (int) ( $post->ID ?? 0 ) : (int) $post;
 			return 'https://example.test/?p=' . $id;
+		}
+	}
+
+	if ( ! function_exists( 'wp_get_post_terms' ) ) {
+		/**
+		 * Términos de un post por taxonomía (doble que lee de convoca_as_terminos).
+		 *
+		 * @param int    $post_id  Post.
+		 * @param string $taxonomy Taxonomía.
+		 * @param array  $args     Argumentos.
+		 * @return array
+		 */
+		function wp_get_post_terms( $post_id, $taxonomy, $args = array() ) {
+			return $GLOBALS['convoca_as_terminos'][ (int) $post_id ][ $taxonomy ] ?? array();
 		}
 	}
 
