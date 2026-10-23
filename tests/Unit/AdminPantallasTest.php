@@ -67,6 +67,11 @@ class AdminPantallasTest extends TestCase
         Admin::register_menu();
 
         $this->assertArrayHasKey('convoca-assistant', $GLOBALS['convoca_as_menus'], 'sin menú no se llega al asistente');
+        $this->assertSame(
+            'manage_options',
+            $GLOBALS['convoca_as_menus']['convoca-assistant']['cap'],
+            'el menú de primer nivel también es de administración: con «read» lo vería cualquiera con sesión'
+        );
 
         $submenus = $GLOBALS['convoca_as_submenus'];
         foreach ([
