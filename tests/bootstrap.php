@@ -78,7 +78,8 @@ namespace {
 	if ( ! function_exists( 'get_post' ) ) {
 		function get_post( $id = null ) {
 			if ( null === $id ) {
-				return null;
+				// El post «actual» de la petición: lo fija la prueba (null por defecto, como antes).
+				return $GLOBALS['convoca_as_post'] ?? null;
 			}
 			$post           = new stdClass();
 			$post->ID       = (int) $id;
@@ -689,5 +690,59 @@ namespace {
 		}
 	}
 
-}
+	if ( ! function_exists( 'wp_register_script' ) ) {
+		/**
+		 * Registra un script (doble que apunta el alta).
+		 *
+		 * @param string $handle Handle.
+		 * @param string $src    URL.
+		 * @param array  $deps   Dependencias.
+		 * @param string $ver    Versión.
+		 * @param bool   $footer En el pie.
+		 * @return bool
+		 */
+		function wp_register_script( $handle, $src = '', $deps = array(), $ver = '', $footer = false ) {
+			$GLOBALS['convoca_as_registrados'][ $handle ] = compact( 'src', 'deps', 'ver', 'footer' );
+			return true;
+		}
+	}
+	if ( ! function_exists( 'wp_register_style' ) ) {
+		/**
+		 * Registra una hoja (doble que apunta el alta).
+		 *
+		 * @param string $handle Handle.
+		 * @param string $src    URL.
+		 * @param array  $deps   Dependencias.
+		 * @param string $ver    Versión.
+		 * @return bool
+		 */
+		function wp_register_style( $handle, $src = '', $deps = array(), $ver = '' ) {
+			$GLOBALS['convoca_as_registrados'][ $handle ] = compact( 'src', 'deps', 'ver' );
+			return true;
+		}
+	}
+	if ( ! function_exists( 'has_shortcode' ) ) {
+		/**
+		 * ¿El contenido lleva ese shortcode?
+		 *
+		 * @param string $contenido Contenido.
+		 * @param string $tag       Shortcode.
+		 * @return bool
+		 */
+		function has_shortcode( $contenido, $tag ) {
+			return str_contains( (string) $contenido, '[' . $tag );
+		}
+	}
+	if ( ! function_exists( 'esc_attr' ) ) {
+		/**
+		 * Escapa para atributo (doble).
+		 *
+		 * @param string $t Texto.
+		 * @return string
+		 */
+		function esc_attr( $t ) {
+			return htmlspecialchars( (string) $t, ENT_QUOTES, 'UTF-8' );
+		}
+	}
 
+}
