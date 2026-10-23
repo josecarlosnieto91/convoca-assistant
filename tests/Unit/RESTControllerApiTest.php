@@ -111,9 +111,13 @@ class RESTControllerApiTest extends TestCase
             $this->assertTrue((bool) $permiso(), $ruta . ': con permiso de administración deja pasar');
         }
 
+        // Sin permiso, NINGUNA de las cinco deja pasar: comprobar solo una dejaba las otras
+        // cuatro sin cubrir (lo destapó la verificación en negativo).
         $GLOBALS['convoca_as_caps'] = ['manage_options' => false];
-        $permiso = $GLOBALS['convoca_as_rutas']['convoca/v1/assistant/clear-logs']['permission_callback'];
-        $this->assertFalse((bool) $permiso(), 'borrar el registro no es para cualquiera con sesión');
+        foreach (['/assistant/stats', '/assistant/unanswered', '/assistant/recent', '/assistant/rebuild-index', '/assistant/clear-logs'] as $ruta) {
+            $permiso = $GLOBALS['convoca_as_rutas']['convoca/v1' . $ruta]['permission_callback'];
+            $this->assertFalse((bool) $permiso(), $ruta . ': sin manage_options no puede pasar');
+        }
     }
 
     // ── el limitador ────────────────────────────────────────────────────────────────
