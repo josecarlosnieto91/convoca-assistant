@@ -8,6 +8,14 @@
   <source>
     <include>
       <directory suffix=".php">./includes</directory>
+      <directory suffix=".php">./assets/templates</directory>
+      <file>./convoca-assistant.php</file>
+      <file>./uninstall.php</file>
     </include>
+    <exclude>
+      <directory>./vendor</directory>
+      <directory>./tests</directory>
+      <directory>./build</directory>
+    </exclude>
   </source>
 </phpunit>
