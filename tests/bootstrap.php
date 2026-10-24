@@ -361,6 +361,13 @@ namespace {
 			return $destino . ( str_contains( $destino, '?' ) ? '&' : '?' ) . http_build_query( $pares );
 		}
 	}
+	if ( ! function_exists( 'sanitize_textarea_field' ) ) {
+		function sanitize_textarea_field( $valor ) {
+			$valor = is_string( $valor ) ? $valor : (string) $valor;
+			$limpio = trim( preg_replace( '/<[^>]*>/', '', $valor ) );
+			return $limpio;
+		}
+	}
 	if ( ! function_exists( 'wp_json_encode' ) ) {
 		function wp_json_encode( $dato, $opciones = 0, $profundidad = 512 ) {
 			return json_encode( $dato, $opciones, $profundidad );
