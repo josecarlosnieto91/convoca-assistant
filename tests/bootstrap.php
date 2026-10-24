@@ -370,6 +370,16 @@ namespace {
 		function wp_insert_post( $datos, $error = false ) {
 			$id = 5000 + count( $GLOBALS['convoca_as_insertados'] ?? array() );
 			$GLOBALS['convoca_as_insertados'][ $id ] = $datos;
+
+			// Lo que se inserta tiene que aparecer después en `get_posts()`: si no, «ya existe» nunca ve lo que
+			// acaba de crear esta misma petición y el paquete de arranque duplicaba en la segunda pasada.
+			$tipo = (string) ( $datos['post_type'] ?? 'post' );
+			$post = new \stdClass();
+			$post->ID         = $id;
+			$post->post_type  = $tipo;
+			$post->post_title = (string) ( $datos['post_title'] ?? '' );
+			$GLOBALS['convoca_as_posts'][ $tipo ][] = $post;
+
 			return $id;
 		}
 	}
@@ -635,8 +645,50 @@ namespace {
 	if ( ! function_exists( 'get_posts' ) ) {
 		function get_posts( $args = array() ) {
 			// Lo que prepare la prueba para ese tipo de contenido; vacío por defecto.
-			$GLOBALS['convoca_as_posts_consultados'][ $args['post_type'] ?? '' ] = $args;
-			return $GLOBALS['convoca_as_posts'][ $args['post_type'] ?? '' ] ?? array();
+			$tipo = $args['post_type'] ?? '';
+			$GLOBALS['convoca_as_posts_consultados'][ $tipo ] = $args;
+			$posts = $GLOBALS['convoca_as_posts'][ $tipo ] ?? array();
+
+			// Filtro por metadato, como WordPress: quien pide `meta_key`/`meta_value` no recibe los que no lo tienen.
+			// Sin esto, «cuántas del paquete hay» contaba todas y la deduplicación del arranque era decorativa.
+			if ( ! empty( $args['meta_key'] ) ) {
+				$clave   = (string) $args['meta_key'];
+				$buscado = (string) ( $args['meta_value'] ?? '' );
+				$posts   = array_values(
+					array_filter(
+						$posts,
+						static function ( $post ) use ( $clave, $buscado ) {
+							$id    = is_object( $post ) ? (int) $post->ID : (int) $post;
+							$valor = $GLOBALS['_assistant_meta'][ $id ][ $clave ] ?? null;
+							return null !== $valor && (string) $valor === $buscado;
+						}
+					)
+				);
+			}
+
+			// Filtro por título exacto: es como el paquete de arranque sabe que una pregunta ya está puesta.
+			if ( ! empty( $args['title'] ) ) {
+				$titulo = (string) $args['title'];
+				$posts  = array_values(
+					array_filter(
+						$posts,
+						static function ( $post ) use ( $titulo ) {
+							if ( is_object( $post ) ) {
+								return (string) ( $post->post_title ?? '' ) === $titulo;
+							}
+							$datos = $GLOBALS['convoca_as_insertados'][ (int) $post ] ?? array();
+							return (string) ( $datos['post_title'] ?? '' ) === $titulo;
+						}
+					)
+				);
+			}
+
+			$limite = (int) ( $args['numberposts'] ?? 0 );
+			if ( $limite > 0 ) {
+				$posts = array_slice( $posts, 0, $limite );
+			}
+
+			return $posts;
 		}
 	}
 
