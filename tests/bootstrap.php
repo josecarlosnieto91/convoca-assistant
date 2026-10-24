@@ -368,6 +368,18 @@ namespace {
 			return $limpio;
 		}
 	}
+	// ─── WooCommerce (SDK externo: se dobla; la clase del producto NO) ───
+	if ( ! function_exists( 'wc_get_product' ) ) {
+		function wc_get_product( $id ) {
+			return $GLOBALS['convoca_as_productos'][ (int) $id ] ?? null;
+		}
+	}
+	if ( ! function_exists( 'wc_price' ) ) {
+		function wc_price( $importe ) {
+			return number_format( (float) $importe, 2, ',', '.' ) . ' €';
+		}
+	}
+
 	if ( ! function_exists( 'wp_json_encode' ) ) {
 		function wp_json_encode( $dato, $opciones = 0, $profundidad = 512 ) {
 			return json_encode( $dato, $opciones, $profundidad );
