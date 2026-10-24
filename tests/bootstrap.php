@@ -312,6 +312,16 @@ namespace {
 			throw new RuntimeException( 'wp_die: ' . ( is_scalar( $mensaje ) ? $mensaje : '?' ) );
 		}
 	}
+	if ( ! function_exists( 'wp_verify_nonce' ) ) {
+		function wp_verify_nonce( $nonce, $accion = -1 ) {
+			unset( $accion );
+			$validos = $GLOBALS['_wp_stores']['nonces_validos'] ?? null;
+			if ( null === $validos ) {
+				return 1;
+			}
+			return in_array( (string) $nonce, array_map( 'strval', (array) $validos ), true ) ? 1 : false;
+		}
+	}
 	if ( ! function_exists( 'check_admin_referer' ) ) {
 		function check_admin_referer( $accion = -1, $campo = '_wpnonce' ) {
 			return $GLOBALS['convoca_as_nonce'] ?? true;
@@ -405,6 +415,12 @@ namespace {
 	if ( ! function_exists( 'is_wp_error' ) ) {
 		function is_wp_error( $cosa ) {
 			return false;
+		}
+	}
+	if ( ! function_exists( 'delete_post_meta' ) ) {
+		function delete_post_meta( $id, $clave ) {
+			unset( $GLOBALS['_assistant_meta'][ (int) $id ][ $clave ] );
+			return true;
 		}
 	}
 	if ( ! function_exists( 'update_post_meta' ) ) {
