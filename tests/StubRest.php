@@ -106,6 +106,17 @@ namespace {
 			}
 
 			/**
+			 * Datos del error (WordPress los expone así: `get_error_data()`).
+			 *
+			 * @param string|int $code Código concreto; vacío para el primero.
+			 * @return mixed
+			 */
+			public function get_error_data( $code = '' ) {
+				unset( $code );
+				return $this->data;
+			}
+
+			/**
 			 * Mensaje del error.
 			 *
 			 * @return string
