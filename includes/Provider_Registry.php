@@ -130,6 +130,15 @@ class Provider_Registry {
 			foreach ( $entries as $entry ) {
 				$relations = $provider->get_relations( $entry['id'] );
 				foreach ( $relations as $rel ) {
+					// **Una relación mal formada no es una relación.** `get_relations()` promete
+					// `['to' => int, 'type' => string, 'weight' => float]`, pero lo implementa cada proveedor —
+					// también los de fuera del plugin—, y leer las claves a pelo convertía un proveedor flojo en
+					// un `Undefined array key "weight"` por cada relación, en cada construcción del grafo
+					// (assistant#18, medido desde `GrafoDelConocimientoTest`).
+					if ( ! isset( $rel['to'], $rel['type'] ) ) {
+						continue;
+					}
+
 					$key = "{$entry['id']}-{$rel['to']}-{$rel['type']}";
 					if ( isset( $seen[ $key ] ) ) {
 						continue;
@@ -139,7 +148,9 @@ class Provider_Registry {
 						'from'   => $entry['id'],
 						'to'     => $rel['to'],
 						'type'   => $rel['type'],
-						'weight' => $rel['weight'],
+						// 0,3 es el peso del ejemplo del contrato: un enlace declarado sin peso no es ni fuerte
+						// ni desdeñable.
+						'weight' => (float) ( $rel['weight'] ?? 0.3 ),
 					);
 				}
 			}
