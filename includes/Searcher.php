@@ -285,6 +285,30 @@ class Searcher {
 			$exact_bonus = 0.05;
 		}
 
+		/*
+		 * **Una pregunta natural nunca es un match exacto.** Quien escribe «¿cuánto cuesta la cuota?» no escribe
+		 * «cuota», así que `mb_strpos()` de la consulta entera contra el título falla siempre y la entrada se queda
+		 * sin el bonus que sí cobra con la consulta corta: medido, la misma entrada daba 0,5569 con «cuota» y
+		 * 0,3939 con la pregunta, justo por debajo del umbral de 0,40, y el buscador callaba teniendo la respuesta
+		 * (assistant#16). Cuando la consulta es una frase, se busca también el **token de contenido** —cuatro
+		 * letras o más— como palabra del título, y se aplica el mismo bonus.
+		 *
+		 * Se hace aquí y **no** en `$match_fuerte`: ese interruptor decide qué peso se aplica a la entrada, y
+		 * tocarlo hizo que el peso volviera a desempatar en coincidencias flojas —el defecto que cerró el issue
+		 * #5, medido con `BusquedaRankingTest::test_el_peso_no_desempata_en_coincidencia_floja`. El bonus suma y
+		 * no toca el peso. El umbral tampoco se toca.
+		 */
+		if ( 0.0 === $exact_bonus && ! empty( $tokens ) ) {
+			$palabras_titulo = explode( ' ', $title_lower );
+			foreach ( $tokens as $token ) {
+				$token = (string) $token;
+				if ( mb_strlen( $token ) >= 4 && in_array( $token, $palabras_titulo, true ) ) {
+					$exact_bonus = $weights['exact_title'];
+					break;
+				}
+			}
+		}
+
 		// 3) Synonym bonus.
 		$synonym_bonus = self::synonym_bonus( $content_lower . ' ' . $title_lower, $tokens, $expanded );
 
