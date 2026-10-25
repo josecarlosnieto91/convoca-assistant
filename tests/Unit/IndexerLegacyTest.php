@@ -16,6 +16,21 @@ use PHPUnit\Framework\TestCase;
 class IndexerLegacyTest extends TestCase {
 
 	/**
+	 * Parte de un índice limpio.
+	 *
+	 * `is_dirty()` es un TRANSIENT: sobrevive a la prueba que lo puso. `test_dirty_flag` empezaba con
+	 * `assertFalse( Indexer::is_dirty() )` **dando por hecho** que nadie había marcado el índice, así que fallaba
+	 * si antes corrió cualquier caso que llame a `mark_dirty()` — que son varios (assistant#22).
+	 * El escenario se monta aquí, no se hereda.
+	 *
+	 * @return void
+	 */
+	protected function setUp(): void {
+		delete_transient( 'convoca_assistant_index_dirty' );
+		delete_transient( 'convoca_assistant_index_debounce' );
+	}
+
+	/**
 	 * Test dirty flag lifecycle.
 	 */
 	public function test_dirty_flag(): void {
