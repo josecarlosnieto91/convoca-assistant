@@ -148,7 +148,8 @@ class KnowledgeBaseTest extends TestCase
     {
         $columnas = Knowledge_Base::add_admin_columns(['cb' => 'Casilla', 'title' => 'Título']);
 
-        $this->assertSame('', $columnas['date'], 'se conserva la clave vacía en vez de colocarla al final con texto');
+        $this->assertArrayNotHasKey('date', $columnas, 'un listado que no tenía fecha no acaba con una columna vacía');
+        $this->assertSame(['cb', 'title', 'assistant_weight', 'assistant_keywords', 'assistant_exclude'], array_keys($columnas));
     }
 
     public function test_la_columna_de_peso_muestra_el_valor(): void

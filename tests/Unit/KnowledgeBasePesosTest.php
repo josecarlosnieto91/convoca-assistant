@@ -217,23 +217,6 @@ final class KnowledgeBasePesosTest extends TestCase {
 	}
 
 	/**
-	 * Un listado sin columna de fecha no se rompe… pero se le añade una fecha vacía.
-	 *
-	 * Afirma el comportamiento actual, que no es el deseado: `$columns['date'] = $date` se ejecuta
-	 * siempre, así que un listado que no tenía fecha acaba con una columna «date» en blanco. Está
-	 * reportado como incidencia; el día que se arregle, esta prueba caerá y habrá que darle la vuelta.
-	 *
-	 * @return void
-	 */
-	public function test_un_listado_sin_fecha_acaba_con_una_fecha_vacia(): void {
-		$columnas = Knowledge_Base::add_admin_columns( array( 'title' => 'Título' ) );
-
-		$this->assertArrayHasKey( 'assistant_weight', $columnas, 'las tres del asistente entran' );
-		$this->assertArrayHasKey( 'date', $columnas, 'hoy se inventa la columna de fecha, vacía' );
-		$this->assertSame( '', $columnas['date'] );
-	}
-
-	/**
 	 * El peso es ordenable.
 	 *
 	 * @return void

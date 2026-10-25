@@ -277,13 +277,20 @@ class Knowledge_Base {
 	 * @return array
 	 */
 	public static function add_admin_columns( array $columns ): array {
-		$date = $columns['date'] ?? '';
+		// **Solo se repone la fecha si ya estaba.** Antes se guardaba, se quitaba y se volvía a poner *siempre*: en
+		// un listado sin columna `date` —un tipo de contenido que no la declara— aparecía una columna de fecha
+		// vacía con su cabecera, y el `screen` se quedaba con una columna que nadie pidió (assistant#19).
+		$tenia_fecha = isset( $columns['date'] );
+		$date        = $columns['date'] ?? '';
 		unset( $columns['date'] );
 
 		$columns['assistant_weight']   = __( 'Peso', 'convoca-assistant' );
 		$columns['assistant_keywords'] = __( 'Keywords', 'convoca-assistant' );
 		$columns['assistant_exclude']  = __( 'Excluido', 'convoca-assistant' );
-		$columns['date']               = $date;
+
+		if ( $tenia_fecha ) {
+			$columns['date'] = $date;
+		}
 
 		return $columns;
 	}
