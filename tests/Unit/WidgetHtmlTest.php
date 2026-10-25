@@ -82,7 +82,24 @@ class WidgetHtmlTest extends TestCase
 
 		$this->assertStringNotContainsString('<b>tú</b>', $html, 'el saludo es texto, no HTML: si se cuela, el sitio del cliente pinta lo que le manden');
 		$this->assertStringContainsString('Hola &lt;b&gt;tú&lt;/b&gt;', $html);
-		$this->assertStringContainsString('Ayu&lt;da&gt; &quot;ya&quot;', $html, 'el título va en un aria-label: sin escapar, rompe el atributo');
+
+		// El título se escapa en DOS sitios (el atributo del diálogo y la cabecera visible): se fijan
+		// los dos, porque asegurar solo uno deja el otro libre para que alguien lo «simplifique».
+		$this->assertMatchesRegularExpression('/class="convoca-chat-title">([^<]*)</', $html);
+		preg_match('/class="convoca-chat-title">([^<]*)</', $html, $cabecera);
+		$this->assertSame('Ayu&lt;da&gt; &quot;ya&quot;', $cabecera[1], 'la cabecera visible también va escapada');
+		// Se mira el ATRIBUTO, no el texto de la página: el título se escapa en dos sitios y un
+		// assert sobre «contiene la cadena escapada» pasaba aunque el aria-label quedara sin escapar.
+		// Hay dos aria-label (el botón flotante y el diálogo): se mira el DEL DIÁLOGO, que es el que
+		// lleva el título. Con un assert genérico sobre «contiene la cadena escapada», el span de la
+		// cabecera satisfacía la prueba aunque el atributo del diálogo quedara sin escapar.
+		$this->assertMatchesRegularExpression('/id="convoca-chat-container"[^>]*aria-label="([^"]*)"/s', $html);
+		preg_match('/id="convoca-chat-container"[^>]*aria-label="([^"]*)"/s', $html, $etiqueta);
+		$this->assertSame(
+			'Ayu&lt;da&gt; &quot;ya&quot;',
+			$etiqueta[1],
+			'el título va en un aria-label: sin escapar, rompe el atributo'
+		);
 	}
 
 	public function test_sin_saludo_guardado_se_usa_el_de_fabrica(): void
