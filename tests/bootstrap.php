@@ -71,6 +71,12 @@ namespace {
 
 	if ( ! function_exists( 'post_type_exists' ) ) {
 		function post_type_exists( $type ) {
+			// La prueba puede registrar tipos (los CPT del plugin los registra Knowledge_Base::init
+			// en WordPress; aquí no hay `init` que los dé de alta). Sin nada preparado, los de serie.
+			$registrados = $GLOBALS['convoca_as_tipos_registrados'] ?? null;
+			if ( is_array( $registrados ) ) {
+				return in_array( $type, $registrados, true );
+			}
 			return in_array( $type, array( 'post', 'page' ), true );
 		}
 	}
@@ -147,6 +153,8 @@ namespace {
 	}
 	if ( ! function_exists( 'delete_option' ) ) {
 		function delete_option( $option ) {
+			// Se apunta el borrado: la desinstalación se juzga por lo que deja de existir.
+			$GLOBALS['convoca_as_borrados'][] = (string) $option;
 			unset( $GLOBALS['_assistant_options'][ $option ] );
 			return true;
 		}
@@ -233,22 +241,41 @@ namespace {
 	}
 	if ( ! function_exists( 'wp_clear_scheduled_hook' ) ) {
 		function wp_clear_scheduled_hook( $hook, $args = array() ) {
+			// Se apunta el gancho limpiado: la desinstalación tiene que dejar el cron vacío.
+			$GLOBALS['convoca_as_cron_limpiados'][] = (string) $hook;
 			unset( $GLOBALS['_assistant_cron'][ $hook ] );
 			return true;
 		}
 	}
 
 	// ─── Hooks (no-op) ───
+	// Ojo: `convoca_as_acciones[$tag]` guarda SOLO el último callback, que es cómodo para
+	// disparar un gancho a mano pero NO es el contrato de WordPress (allí cada gancho tiene
+	// una lista). Por eso se apunta también la lista completa en `convoca_as_acciones_lista`:
+	// sin ella no se puede comprobar que dos clases distintas se enganchen al mismo gancho.
 
 	if ( ! function_exists( 'add_action' ) ) {
 		function add_action( $tag, $callback, $priority = 10, $accepted_args = 1 ) {
-			$GLOBALS['convoca_as_acciones'][ $tag ] = $callback;
+			$GLOBALS['convoca_as_acciones'][ $tag ]                = $callback;
+			$GLOBALS['convoca_as_acciones_lista'][ $tag ][]        = $callback;
 			return true;
 		}
 	}
 	if ( ! function_exists( 'do_action' ) ) {
 		function do_action( $tag, ...$args ) {
 			return true;
+		}
+	}
+	if ( ! function_exists( 'add_shortcode' ) ) {
+		/**
+		 * Registra un shortcode (doble que apunta el alta).
+		 *
+		 * @param string   $tag      Shortcode.
+		 * @param callable $callback Callback.
+		 * @return void
+		 */
+		function add_shortcode( $tag, $callback ) {
+			$GLOBALS['convoca_as_shortcodes'][ $tag ] = $callback;
 		}
 	}
 
@@ -599,7 +626,8 @@ namespace {
 	}
 	if ( ! function_exists( 'is_admin' ) ) {
 		function is_admin() {
-			return false;
+			// La prueba decide si la petición es del panel; por defecto, no (como antes).
+			return (bool) ( $GLOBALS['convoca_as_es_admin'] ?? false );
 		}
 	}
 
@@ -948,6 +976,315 @@ namespace {
 		 */
 		function wp_get_post_terms( $post_id, $taxonomy, $args = array() ) {
 			return $GLOBALS['convoca_as_terminos'][ (int) $post_id ][ $taxonomy ] ?? array();
+		}
+	}
+
+	// ── Formularios del panel: escapes y helpers de plantilla ────────────────────
+	// Estos helpers del núcleo NO son no-ops y el arnés los tenía a cero: sin ellos las
+	// plantillas de `assets/templates` no se podían ni incluir. Se copia el contrato, no una
+	// versión cómoda:
+	//   · checked()/selected()/disabled() comparan como CADENA —(1 == '1', pero también
+	//     '' == false— y emiten el atributo con comillas simples, como el núcleo;
+	//   · esc_textarea() NO vuelve a codificar entidades (double_encode = false), así que
+	//     un `&amp;` guardado se pinta tal cual y una prueba que lo doble se daría cuenta;
+	//   · submit_button() imprime un <input type="submit"> con el texto escapado y envuelve
+	//     en <p class="submit">, que es lo que hace el panel de verdad.
+
+	if ( ! function_exists( '__checked_selected_helper' ) ) {
+		/**
+		 * Emite el atributo de estado cuando el valor coincide (contrato del núcleo).
+		 *
+		 * @param mixed  $helper  Valor actual.
+		 * @param mixed  $current Valor de referencia.
+		 * @param bool   $echo    Si imprime.
+		 * @param string $type    Nombre del atributo.
+		 * @return string
+		 */
+		function __checked_selected_helper( $helper, $current, $echo, $type ) {
+			$result = ( (string) $helper === (string) $current ) ? " $type='$type'" : '';
+			if ( $echo ) {
+				echo $result; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- doble del núcleo.
+			}
+			return $result;
+		}
+	}
+	if ( ! function_exists( 'checked' ) ) {
+		/**
+		 * Atributo `checked` (doble fiel del núcleo).
+		 *
+		 * @param mixed $checked Valor.
+		 * @param mixed $current Referencia.
+		 * @param bool  $echo    Si imprime.
+		 * @return string
+		 */
+		function checked( $checked, $current = true, $echo = true ) {
+			return __checked_selected_helper( $checked, $current, $echo, 'checked' );
+		}
+	}
+	if ( ! function_exists( 'selected' ) ) {
+		/**
+		 * Atributo `selected` (doble fiel del núcleo).
+		 *
+		 * @param mixed $selected Valor.
+		 * @param mixed $current  Referencia.
+		 * @param bool  $echo     Si imprime.
+		 * @return string
+		 */
+		function selected( $selected, $current = true, $echo = true ) {
+			return __checked_selected_helper( $selected, $current, $echo, 'selected' );
+		}
+	}
+	if ( ! function_exists( 'disabled' ) ) {
+		/**
+		 * Atributo `disabled` (doble fiel del núcleo).
+		 *
+		 * @param mixed $disabled Valor.
+		 * @param mixed $current  Referencia.
+		 * @param bool  $echo     Si imprime.
+		 * @return string
+		 */
+		function disabled( $disabled, $current = true, $echo = true ) {
+			return __checked_selected_helper( $disabled, $current, $echo, 'disabled' );
+		}
+	}
+	if ( ! function_exists( 'esc_textarea' ) ) {
+		/**
+		 * Escapa para textarea sin recodificar entidades (como el núcleo).
+		 *
+		 * @param string $text Texto.
+		 * @return string
+		 */
+		function esc_textarea( $text ) {
+			$charset = get_option( 'blog_charset' );
+			$charset = is_string( $charset ) && '' !== $charset ? $charset : 'UTF-8';
+			return htmlspecialchars( (string) $text, ENT_QUOTES, $charset, false );
+		}
+	}
+	if ( ! function_exists( 'esc_attr__' ) ) {
+		/**
+		 * Traduce y escapa para atributo (doble).
+		 *
+		 * @param string      $text    Texto.
+		 * @param string|null $dominio Dominio.
+		 * @return string
+		 */
+		function esc_attr__( $text, $dominio = null ) {
+			unset( $dominio );
+			return esc_attr( $text );
+		}
+	}
+	if ( ! function_exists( 'esc_attr_e' ) ) {
+		/**
+		 * Traduce, escapa e imprime para atributo (doble).
+		 *
+		 * @param string      $text    Texto.
+		 * @param string|null $dominio Dominio.
+		 * @return void
+		 */
+		function esc_attr_e( $text, $dominio = null ) {
+			echo esc_attr__( $text, $dominio ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- ya escapado.
+		}
+	}
+	if ( ! function_exists( 'wp_referer_field' ) ) {
+		/**
+		 * Campo oculto con la referencia (doble del núcleo).
+		 *
+		 * @param bool $display Si imprime.
+		 * @return string
+		 */
+		function wp_referer_field( $display = true ) {
+			$field = '<input type="hidden" name="_wp_http_referer" value="' . esc_attr( (string) ( $_SERVER['REQUEST_URI'] ?? '' ) ) . '" />';
+			if ( $display ) {
+				echo $field; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- ya escapado.
+			}
+			return $field;
+		}
+	}
+	if ( ! function_exists( 'wp_nonce_field' ) ) {
+		/**
+		 * Campo oculto de nonce (doble del núcleo: id y name iguales, nonce de la acción).
+		 *
+		 * @param string|int $accion   Acción.
+		 * @param string     $nombre   Nombre del campo.
+		 * @param bool       $referer  Si añade el campo de referencia.
+		 * @param bool       $display  Si imprime.
+		 * @return string
+		 */
+		function wp_nonce_field( $accion = -1, $nombre = '_wpnonce', $referer = true, $display = true ) {
+			$nombre      = esc_attr( $nombre );
+			$nonce_field = '<input type="hidden" id="' . $nombre . '" name="' . $nombre . '" value="' . wp_create_nonce( $accion ) . '" />';
+			if ( $referer ) {
+				$nonce_field .= wp_referer_field( false );
+			}
+			if ( $display ) {
+				echo $nonce_field; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- ya escapado.
+			}
+			return $nonce_field;
+		}
+	}
+	if ( ! function_exists( 'settings_fields' ) ) {
+		/**
+		 * Campos ocultos del grupo de ajustes (doble del núcleo).
+		 *
+		 * @param string $grupo Grupo.
+		 * @return void
+		 */
+		function settings_fields( $grupo ) {
+			echo "<input type='hidden' name='option_page' value='" . esc_attr( $grupo ) . "' />";
+			echo '<input type="hidden" name="action" value="update" />';
+			wp_nonce_field( $grupo . '-options' );
+		}
+	}
+	if ( ! function_exists( 'get_submit_button' ) ) {
+		/**
+		 * HTML del botón de envío (doble del núcleo).
+		 *
+		 * @param string|null $texto     Texto.
+		 * @param string      $tipo      Tipo (primary/secondary/…).
+		 * @param string      $nombre    Nombre del campo.
+		 * @param bool        $envolver  Si envuelve en <p class="submit">.
+		 * @return string
+		 */
+		function get_submit_button( $texto = null, $tipo = 'primary', $nombre = 'submit', $envolver = true ) {
+			$clases = array( 'button' );
+			foreach ( explode( ' ', (string) $tipo ) as $trozo ) {
+				$trozo = trim( $trozo );
+				if ( '' === $trozo || 'secondary' === $trozo || 'button-secondary' === $trozo ) {
+					continue;
+				}
+				$clases[] = in_array( $trozo, array( 'primary', 'small', 'large' ), true ) ? 'button-' . $trozo : $trozo;
+			}
+			if ( null === $texto ) {
+				$texto = __( 'Save Changes' );
+			}
+			$boton = '<input type="submit" name="' . esc_attr( $nombre ) . '" id="' . esc_attr( $nombre ) . '" class="' . esc_attr( implode( ' ', array_unique( $clases ) ) ) . '" value="' . esc_attr( $texto ) . '" />';
+			if ( $envolver ) {
+				$boton = '<p class="submit">' . $boton . '</p>';
+			}
+			return $boton;
+		}
+	}
+	if ( ! function_exists( 'submit_button' ) ) {
+		/**
+		 * Imprime el botón de envío (doble del núcleo).
+		 *
+		 * @param string|null $texto    Texto.
+		 * @param string      $tipo     Tipo.
+		 * @param string      $nombre   Nombre.
+		 * @param bool        $envolver Si envuelve.
+		 * @return void
+		 */
+		function submit_button( $texto = null, $tipo = 'primary', $nombre = 'submit', $envolver = true ) {
+			echo get_submit_button( $texto, $tipo, $nombre, $envolver ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- ya escapado.
+		}
+	}
+
+	// ── Arranque del plugin: cabecera, rutas y ganchos de activación ─────────────
+	if ( ! function_exists( '_cleanup_header_comment' ) ) {
+		/**
+		 * Limpia el comentario de una cabecera (doble del núcleo).
+		 *
+		 * @param string $str Valor.
+		 * @return string
+		 */
+		function _cleanup_header_comment( $str ) {
+			return trim( preg_replace( '/\s*(?:\*\/|\?>).*/', '', (string) $str ) );
+		}
+	}
+	if ( ! function_exists( 'get_file_data' ) ) {
+		/**
+		 * Cabeceras de un fichero (doble fiel: lee los primeros 8 KiB y aplica el mismo
+		 * regex que el núcleo, así una cabecera mal puesta devuelve '' y no una invención).
+		 *
+		 * @param string $fichero  Ruta.
+		 * @param array  $cabeceras Mapa campo => regex.
+		 * @param string $contexto Contexto.
+		 * @return array<string, string>
+		 */
+		function get_file_data( $fichero, $cabeceras = array(), $contexto = '' ) {
+			unset( $contexto );
+			$datos = array();
+			if ( ! is_readable( $fichero ) ) {
+				return array_fill_keys( array_keys( (array) $cabeceras ), '' );
+			}
+			// phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- doble de pruebas.
+			$contenido = (string) file_get_contents( $fichero, false, null, 0, 8192 );
+			foreach ( (array) $cabeceras as $campo => $regex ) {
+				$patron = '/^(?:[ 	]*<\?php)?[ 	\/*#@]*' . preg_quote( (string) $regex, '/' ) . ':(.*)$/mi';
+				$datos[ $campo ] = ( preg_match( $patron, $contenido, $m ) && '' !== trim( $m[1] ) ) ? _cleanup_header_comment( $m[1] ) : '';
+			}
+			return $datos;
+		}
+	}
+	if ( ! function_exists( 'plugin_dir_path' ) ) {
+		/**
+		 * Directorio del plugin con barra final (doble).
+		 *
+		 * @param string $fichero Fichero.
+		 * @return string
+		 */
+		function plugin_dir_path( $fichero ) {
+			return rtrim( dirname( $fichero ), '/\\' ) . '/';
+		}
+	}
+	if ( ! function_exists( 'plugin_dir_url' ) ) {
+		/**
+		 * URL del plugin con barra final (doble).
+		 *
+		 * @param string $fichero Fichero.
+		 * @return string
+		 */
+		function plugin_dir_url( $fichero ) {
+			return 'https://example.test/wp-content/plugins/' . basename( dirname( $fichero ) ) . '/';
+		}
+	}
+	if ( ! function_exists( 'plugin_basename' ) ) {
+		/**
+		 * Ruta relativa dentro de plugins (doble).
+		 *
+		 * @param string $fichero Fichero.
+		 * @return string
+		 */
+		function plugin_basename( $fichero ) {
+			return basename( dirname( $fichero ) ) . '/' . basename( $fichero );
+		}
+	}
+	if ( ! function_exists( 'register_activation_hook' ) ) {
+		/**
+		 * Apunta el gancho de activación (doble que guarda el callback).
+		 *
+		 * @param string   $fichero Fichero.
+		 * @param callable $cb      Callback.
+		 * @return void
+		 */
+		function register_activation_hook( $fichero, $cb ) {
+			$GLOBALS['convoca_as_activacion'][ $fichero ] = $cb;
+		}
+	}
+	if ( ! function_exists( 'register_deactivation_hook' ) ) {
+		/**
+		 * Apunta el gancho de desactivación (doble que guarda el callback).
+		 *
+		 * @param string   $fichero Fichero.
+		 * @param callable $cb      Callback.
+		 * @return void
+		 */
+		function register_deactivation_hook( $fichero, $cb ) {
+			$GLOBALS['convoca_as_desactivacion'][ $fichero ] = $cb;
+		}
+	}
+	if ( ! function_exists( 'load_plugin_textdomain' ) ) {
+		/**
+		 * Carga el dominio de traducciones (doble que apunta la llamada).
+		 *
+		 * @param string       $dominio    Dominio.
+		 * @param string|false $obsoleto   Obsoleto.
+		 * @param string|false $ruta       Ruta.
+		 * @return bool
+		 */
+		function load_plugin_textdomain( $dominio, $obsoleto = false, $ruta = false ) {
+			$GLOBALS['convoca_as_textdomain'][] = array( $dominio, $obsoleto, $ruta );
+			return true;
 		}
 	}
 
