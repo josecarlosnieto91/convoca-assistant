@@ -1,42 +1,6 @@
 parameters:
 	ignoreErrors:
 		-
-			message: '#^Argument of an invalid type array\<int\|WP_Post\>\|null supplied for foreach, only iterables are supported\.$#'
-			identifier: foreach.nonIterable
-			count: 2
-			path: ../includes/Export_Import.php
-
-		-
-			message: '#^Cannot access property \$ID on int\|WP_Post\.$#'
-			identifier: property.nonObject
-			count: 6
-			path: ../includes/Export_Import.php
-
-		-
-			message: '#^Cannot access property \$post_content on int\|WP_Post\.$#'
-			identifier: property.nonObject
-			count: 2
-			path: ../includes/Export_Import.php
-
-		-
-			message: '#^Cannot access property \$post_excerpt on int\|WP_Post\.$#'
-			identifier: property.nonObject
-			count: 1
-			path: ../includes/Export_Import.php
-
-		-
-			message: '#^Cannot access property \$post_status on int\|WP_Post\.$#'
-			identifier: property.nonObject
-			count: 2
-			path: ../includes/Export_Import.php
-
-		-
-			message: '#^Cannot access property \$post_title on int\|WP_Post\.$#'
-			identifier: property.nonObject
-			count: 2
-			path: ../includes/Export_Import.php
-
-		-
 			message: '#^Method Convoca\\Assistant\\Export_Import\:\:export_knowledge\(\) return type has no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
@@ -81,12 +45,6 @@ parameters:
 		-
 			message: '#^Method Convoca\\Assistant\\Graph_Builder\:\:load\(\) return type has no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
-			count: 1
-			path: ../includes/Graph_Builder.php
-
-		-
-			message: '#^Parameter \#1 \$json of function json_decode expects string, string\|false given\.$#'
-			identifier: argument.type
 			count: 1
 			path: ../includes/Graph_Builder.php
 
@@ -223,12 +181,6 @@ parameters:
 			path: ../includes/Searcher.php
 
 		-
-			message: '#^Method Convoca\\Assistant\\Searcher\:\:stem_spanish\(\) should return string but returns string\|null\.$#'
-			identifier: return.type
-			count: 1
-			path: ../includes/Searcher.php
-
-		-
 			message: '#^Method Convoca\\Assistant\\Searcher\:\:synonym_bonus\(\) has parameter \$expanded with no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
@@ -237,24 +189,6 @@ parameters:
 		-
 			message: '#^Method Convoca\\Assistant\\Searcher\:\:synonym_bonus\(\) has parameter \$tokens with no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
-			count: 1
-			path: ../includes/Searcher.php
-
-		-
-			message: '#^Parameter \#1 \$string of function strlen expects string, string\|null given\.$#'
-			identifier: argument.type
-			count: 1
-			path: ../includes/Searcher.php
-
-		-
-			message: '#^Parameter \#1 \$string of function trim expects string, string\|null given\.$#'
-			identifier: argument.type
-			count: 1
-			path: ../includes/Searcher.php
-
-		-
-			message: '#^Parameter \#3 \$subject of function preg_replace expects array\<float\|int\|string\>\|string, string\|null given\.$#'
-			identifier: argument.type
 			count: 1
 			path: ../includes/Searcher.php
 

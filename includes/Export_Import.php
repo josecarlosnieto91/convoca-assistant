@@ -215,7 +215,13 @@ class Export_Import {
 			)
 		);
 
-		foreach ( $faq_query->posts as $post ) {
+		/**
+		 * WP_Query::$posts contiene WP_Post: el stub oficial lo declara int|WP_Post y añade null.
+		 *
+		 * @var \WP_Post[] $faqs
+		 */
+		$faqs = (array) $faq_query->posts;
+		foreach ( $faqs as $post ) {
 			$exclude        = (bool) get_post_meta( $post->ID, '_convoca_assistant_exclude', true );
 			$data['faqs'][] = array(
 				'title'    => $post->post_title,
@@ -236,7 +242,13 @@ class Export_Import {
 			)
 		);
 
-		foreach ( $kb_query->posts as $post ) {
+		/**
+		 * WP_Query::$posts contiene WP_Post: el stub oficial lo declara int|WP_Post y añade null.
+		 *
+		 * @var \WP_Post[] $articulos
+		 */
+		$articulos = (array) $kb_query->posts;
+		foreach ( $articulos as $post ) {
 			$exclude      = (bool) get_post_meta( $post->ID, '_convoca_assistant_exclude', true );
 			$data['kb'][] = array(
 				'title'    => $post->post_title,

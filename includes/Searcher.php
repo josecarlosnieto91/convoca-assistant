@@ -601,7 +601,7 @@ class Searcher {
 
 		$stemmed = mb_strtolower( $word );
 		foreach ( $patterns as $pattern ) {
-			$candidate = preg_replace( $pattern, '', $stemmed );
+			$candidate = (string) preg_replace( $pattern, '', $stemmed );
 			if ( $candidate !== $stemmed && strlen( $candidate ) >= 3 ) {
 				$stemmed = $candidate;
 				break;
@@ -620,8 +620,8 @@ class Searcher {
 	private static function normalize( string $text ): string {
 		$text = mb_strtolower( trim( $text ) );
 		$text = remove_accents( $text );
-		$text = preg_replace( '/[¿?!¡,.;:\-\'"«»()\[\]{}]/u', ' ', $text );
-		$text = preg_replace( '/\s+/u', ' ', $text );
+		$text = (string) preg_replace( '/[¿?!¡,.;:\-\'"«»()\[\]{}]/u', ' ', $text );
+		$text = (string) preg_replace( '/\s+/u', ' ', $text );
 		return trim( $text );
 	}
 

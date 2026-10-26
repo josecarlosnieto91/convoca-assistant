@@ -42,7 +42,8 @@ class Graph_Builder {
 		$index_path = Indexer::get_index_path();
 		if ( file_exists( $index_path ) ) {
 			// phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
-			$index_data = json_decode( file_get_contents( $index_path ), true );
+			$index_json = file_get_contents( $index_path );
+			$index_data = false === $index_json ? null : json_decode( $index_json, true );
 			$by_type    = array();
 			if ( ! empty( $index_data['entries'] ) ) {
 				foreach ( $index_data['entries'] as $entry ) {
