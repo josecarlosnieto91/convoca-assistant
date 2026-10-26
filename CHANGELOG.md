@@ -1,3 +1,12 @@
+## [0.2.23] — 2026-10-26
+
+### Cambiado
+
+- **buscador, columnas y grafo**
+- El buscador encuentra una pregunta natural sobre una entrada.
+- La columna de fecha deja de inventarse cuando el listado no la tiene.
+- El grafo tolera una relacion sin peso.
+
 ## [0.2.22] — 2026-10-21
 
 ### Cambiado
