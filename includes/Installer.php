@@ -27,6 +27,8 @@ class Installer {
 
 	/**
 	 * Get default settings.
+	 *
+	 * @return array<string, mixed>
 	 */
 	public static function default_settings(): array {
 		return array(
@@ -95,6 +97,8 @@ class Installer {
 
 	/**
 	 * Get default stop words.
+	 *
+	 * @return array<int, string>
 	 */
 	public static function default_stop_words(): array {
 		return array(

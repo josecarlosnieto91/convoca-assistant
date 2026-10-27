@@ -227,8 +227,8 @@ class Widget {
 	 * Shortcode: [convoca_assistant]
 	 * Embeds the chat inline instead of floating.
 	 *
-	 * @param array  $atts    Shortcode attributes.
-	 * @param string $content Shortcode content.
+	 * @param array<string, mixed>|string $atts Shortcode attributes.
+	 * @param string                      $content Shortcode content.
 	 * @return string
 	 */
 	public static function shortcode( $atts, ?string $content = null ): string {

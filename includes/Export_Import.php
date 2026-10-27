@@ -189,7 +189,7 @@ class Export_Import {
 	/**
 	 * Export knowledge: FAQs, KB articles, synonyms, stop words.
 	 *
-	 * @return array
+	 * @return array<string, mixed>
 	 */
 	private static function export_knowledge(): array {
 		$data = array(
@@ -267,7 +267,7 @@ class Export_Import {
 	/**
 	 * Export plugin settings.
 	 *
-	 * @return array
+	 * @return array<string, mixed>
 	 */
 	private static function export_settings(): array {
 		return array(
@@ -286,7 +286,7 @@ class Export_Import {
 	/**
 	 * Import knowledge from JSON data.
 	 *
-	 * @param array $data Structured import data.
+	 * @param array<string, mixed> $data Structured import data.
 	 * @return void
 	 */
 	private static function import_knowledge( array $data ): void {
@@ -366,7 +366,7 @@ class Export_Import {
 	/**
 	 * Import settings from JSON data.
 	 *
-	 * @param array $data Structured import data.
+	 * @param array<string, mixed> $data Structured import data.
 	 * @return void
 	 */
 	private static function import_settings( array $data ): void {

@@ -20,7 +20,7 @@ class Graph_Builder {
 	 * Collects edges from all active providers, deduplicates,
 	 * and returns the graph structure.
 	 *
-	 * @return array{version: string, generated: int, nodes: int, edges: array}
+	 * @return array{version: string, generated: int, nodes: int, edges: array<int, array<string, mixed>>}
 	 */
 	public static function build(): array {
 		/**
@@ -124,7 +124,7 @@ class Graph_Builder {
 	/**
 	 * Load graph.json from disk.
 	 *
-	 * @return array|null
+	 * @return array<string, array<int, array<string, mixed>>>|null
 	 */
 	public static function load(): ?array {
 		$file = CONVOCA_ASSISTANT_INDEX_DIR . 'graph.json';
@@ -143,8 +143,8 @@ class Graph_Builder {
 	 *
 	 * How many edges connect to this node, normalized.
 	 *
-	 * @param int   $entry_id Entry post ID.
-	 * @param array $graph    Loaded graph data.
+	 * @param int                                             $entry_id Entry post ID.
+	 * @param array<string, array<int, array<string, mixed>>> $graph Loaded graph data.
 	 * @return float Score 0-1.
 	 */
 	public static function get_node_score( int $entry_id, array $graph ): float {
@@ -167,9 +167,9 @@ class Graph_Builder {
 	/**
 	 * Get related entry IDs for a given entry from the graph.
 	 *
-	 * @param int   $entry_id Post ID.
-	 * @param array $graph    Loaded graph.
-	 * @param int   $limit    Max related entries.
+	 * @param int                                             $entry_id Post ID.
+	 * @param array<string, array<int, array<string, mixed>>> $graph Loaded graph.
+	 * @param int                                             $limit    Max related entries.
 	 * @return array<int, array{id: int, type: string, weight: float}>
 	 */
 	public static function get_related( int $entry_id, array $graph, int $limit = 5 ): array {

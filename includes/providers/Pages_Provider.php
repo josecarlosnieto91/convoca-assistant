@@ -94,7 +94,7 @@ class Pages_Provider extends Posts_Provider {
 	 * Get relations for a page (pages typically have fewer relations).
 	 *
 	 * @param int $entry_id Post ID.
-	 * @return array
+	 * @return array<int, array{to: int, type: string, weight: float}>
 	 */
 	public function get_relations( int $entry_id ): array {
 		return array(); // Pages don't have categories/tags by default.

@@ -125,7 +125,7 @@ class WooCommerce_Provider implements Knowledge_Provider_Interface {
 	 * Get relations for a product.
 	 *
 	 * @param int $entry_id Product ID.
-	 * @return array
+	 * @return array<int, array{to: int, type: string, weight: float}>
 	 */
 	public function get_relations( int $entry_id ): array {
 		$relations = array();
@@ -247,12 +247,12 @@ class WooCommerce_Provider implements Knowledge_Provider_Interface {
 	 * @return string
 	 */
 	private function clean_content( string $raw ): string {
-		$text = preg_replace( '/<!--\s*wp:.*?-->/s', '', $raw );
-		$text = preg_replace( '/<!--\s*\/wp:.*?-->/s', '', $text );
+		$text = (string) preg_replace( '/<!--\s*wp:.*?-->/s', '', $raw );
+		$text = (string) preg_replace( '/<!--\s*\/wp:.*?-->/s', '', $text );
 		$text = strip_shortcodes( $text ?? '' );
 		$text = wp_strip_all_tags( $text ?? '' );
 		$text = html_entity_decode( $text, ENT_QUOTES, 'UTF-8' );
-		$text = preg_replace( '/\s+/u', ' ', $text );
+		$text = (string) preg_replace( '/\s+/u', ' ', $text );
 		return trim( $text ?? '' );
 	}
 

@@ -244,12 +244,12 @@ class Searcher {
 	 * Formula: same as client-side JS engine. Ranking weights are configurable
 	 * via the convoca_assistant settings (weights_*).
 	 *
-	 * @param array      $entry     Knowledge entry.
-	 * @param string     $query     Normalized query string.
-	 * @param array      $tokens    Tokenized query words.
-	 * @param array      $expanded  Query words expanded with synonyms.
-	 * @param array|null $weights   Ranking weights (defaults to get_weights()).
-	 * @param array|null $weight_defaults Pesos normales por tipo (defaults to get_weight_defaults()).
+	 * @param array<string, mixed>      $entry Knowledge entry.
+	 * @param string                    $query     Normalized query string.
+	 * @param array<int, string>        $tokens Tokenized query words.
+	 * @param array<int, string>        $expanded Query words expanded with synonyms.
+	 * @param array<string, float>|null $weights Ranking weights (defaults to get_weights()).
+	 * @param array<string, float>|null $weight_defaults Pesos normales por tipo (defaults to get_weight_defaults()).
 	 * @return float Score 0-1.
 	 */
 	private static function calculate_score(
@@ -400,8 +400,8 @@ class Searcher {
 	/**
 	 * Levenshtein fuzzy matching on title.
 	 *
-	 * @param string $title  Title text (lowercase).
-	 * @param array  $tokens Tokenized query words.
+	 * @param string             $title  Title text (lowercase).
+	 * @param array<int, string> $tokens Tokenized query words.
 	 * @return float Score 0-1.
 	 */
 	private static function fuzzy_match( string $title, array $tokens ): float {
@@ -432,9 +432,9 @@ class Searcher {
 	/**
 	 * Bonus when synonyms appear in content.
 	 *
-	 * @param string $text     Combined text.
-	 * @param array  $tokens   Original words.
-	 * @param array  $expanded Expanded words.
+	 * @param string             $text     Combined text.
+	 * @param array<int, string> $tokens Original words.
+	 * @param array<int, string> $expanded Expanded words.
 	 * @return float
 	 */
 	private static function synonym_bonus( string $text, array $tokens, array $expanded ): float {
@@ -456,10 +456,10 @@ class Searcher {
 	/**
 	 * Stem matching bonus.
 	 *
-	 * @param array  $tokens        Query words.
-	 * @param string $title         Lowercase title.
-	 * @param string $content       Lowercase content.
-	 * @param string $keywords      Lowercase keywords.
+	 * @param array<int, string> $tokens Query words.
+	 * @param string             $title         Lowercase title.
+	 * @param string             $content       Lowercase content.
+	 * @param string             $keywords      Lowercase keywords.
 	 * @return float
 	 */
 	private static function stem_bonus( array $tokens, string $title, string $content, string $keywords ): float {
@@ -482,13 +482,13 @@ class Searcher {
 	/**
 	 * Coverage: how many query words appear in the entry.
 	 *
-	 * @param array  $tokens   Query words.
-	 * @param string $title    Title.
-	 * @param string $content  Content.
-	 * @param string $keywords Keywords.
-	 * @param string $cats     Categories.
-	 * @param string $tags     Tags.
-	 * @param string $excerpt  Excerpt.
+	 * @param array<int, string> $tokens Query words.
+	 * @param string             $title    Title.
+	 * @param string             $content  Content.
+	 * @param string             $keywords Keywords.
+	 * @param string             $cats     Categories.
+	 * @param string             $tags     Tags.
+	 * @param string             $excerpt  Excerpt.
 	 * @return float
 	 */
 	private static function coverage_score(
@@ -672,7 +672,7 @@ class Searcher {
 	/**
 	 * Load the knowledge index from disk.
 	 *
-	 * @return array|null
+	 * @return array<string, mixed>|null
 	 */
 	private static function load_index(): ?array {
 		$dir  = CONVOCA_ASSISTANT_INDEX_DIR;

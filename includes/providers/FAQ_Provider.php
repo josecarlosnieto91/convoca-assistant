@@ -120,7 +120,7 @@ class FAQ_Provider extends Posts_Provider {
 	 * Get relations for a FAQ entry (via convoca_faq_cat taxonomy).
 	 *
 	 * @param int $entry_id Post ID.
-	 * @return array
+	 * @return array<int, array{to: int, type: string, weight: float}>
 	 */
 	public function get_relations( int $entry_id ): array {
 		$relations = array();

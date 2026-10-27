@@ -273,8 +273,8 @@ class Knowledge_Base {
 	/**
 	 * Add custom columns to FAQ and KB list tables.
 	 *
-	 * @param array $columns Existing columns.
-	 * @return array
+	 * @param array<string, string> $columns Existing columns.
+	 * @return array<string, string>
 	 */
 	public static function add_admin_columns( array $columns ): array {
 		// **Solo se repone la fecha si ya estaba.** Antes se guardaba, se quitaba y se volvía a poner *siempre*: en
@@ -338,8 +338,8 @@ class Knowledge_Base {
 	/**
 	 * Make weight column sortable.
 	 *
-	 * @param array $columns Sortable columns.
-	 * @return array
+	 * @param array<string, string|array{0: string, 1: bool}> $columns Sortable columns.
+	 * @return array<string, string|array{0: string, 1: bool}>
 	 */
 	public static function sortable_columns( array $columns ): array {
 		$columns['assistant_weight'] = array( '_convoca_assistant_weight', false );
@@ -351,8 +351,8 @@ class Knowledge_Base {
 	/**
 	 * Add a compact assistant column to post/page list tables.
 	 *
-	 * @param array $columns Existing columns.
-	 * @return array
+	 * @param array<string, string> $columns Existing columns.
+	 * @return array<string, string>
 	 */
 	public static function add_assistant_column( array $columns ): array {
 		$columns['assistant_status'] = __( 'Asistente', 'convoca-assistant' );

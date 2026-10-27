@@ -85,7 +85,7 @@ class Indexer {
 	 * Register the every_5_minutes cron schedule.
 	 *
 	 * @param array<string, array{interval: int, display: string}> $schedules Existing schedules.
-	 * @return array
+	 * @return array<string, array{interval: int, display: string}>
 	 */
 	public static function add_cron_interval( array $schedules ): array {
 		$schedules['every_5_minutes'] = array(
@@ -100,7 +100,7 @@ class Indexer {
 	/**
 	 * Rebuild the index only if dirty.
 	 *
-	 * @return array
+	 * @return array<string, mixed>
 	 */
 	public static function maybe_regenerate(): array {
 		if ( ! self::is_dirty() && self::index_exists() ) {

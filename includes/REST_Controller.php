@@ -208,7 +208,7 @@ class REST_Controller {
 	/**
 	 * Search endpoint argument schema.
 	 *
-	 * @return array
+	 * @return array<string, array<string, mixed>>
 	 */
 	private static function search_args(): array {
 		return array(
@@ -225,7 +225,7 @@ class REST_Controller {
 	/**
 	 * Log endpoint argument schema.
 	 *
-	 * @return array
+	 * @return array<string, array<string, mixed>>
 	 */
 	private static function log_args(): array {
 		return array(
