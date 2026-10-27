@@ -304,6 +304,11 @@ class REST_Controller {
 		$response = new \WP_REST_Response( $decoded, 200 );
 		$response->header( 'Content-Type', 'application/json; charset=utf-8' );
 		$response->header( 'Cache-Control', 'public, max-age=300' );
+		// El origen abierto es deliberado: este endpoint sirve el índice de conocimiento, que solo
+		// contiene contenido **publicado** (todos los providers consultan con `post_status=publish`),
+		// no lleva cookies ni datos de usuario, y así el widget puede consumirlo desde cualquier sitio.
+		// Si algún día el índice incluyera contenido privado, esto pasa a ser una fuga: el test
+		// `IndiceSoloPublicoTest` vigila la premisa.
 		$response->header( 'Access-Control-Allow-Origin', '*' );
 
 		return $response;
