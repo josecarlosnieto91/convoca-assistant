@@ -52,7 +52,7 @@ class Provider_Registry {
 			self::$providers = $filtered;
 		}
 
-		return self::$providers;
+		return self::$providers ?? array();
 	}
 
 	/**

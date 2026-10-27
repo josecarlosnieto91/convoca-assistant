@@ -91,7 +91,7 @@ class WooCommerce_Provider implements Knowledge_Provider_Interface {
 
 			// WooCommerce extras.
 			$product = \wc_get_product( $post_id );
-			if ( $product ) {
+			if ( is_object( $product ) && method_exists( $product, 'get_price' ) && method_exists( $product, 'get_sku' ) ) {
 				$entry['price'] = \wc_price( $product->get_price() );
 				$entry['sku']   = $product->get_sku();
 			}
@@ -153,7 +153,7 @@ class WooCommerce_Provider implements Knowledge_Provider_Interface {
 			);
 			foreach ( $related->posts as $rid ) {
 				$relations[] = array(
-					'to'     => (int) $rid,
+					'to'     => (int) ( $rid instanceof \WP_Post ? $rid->ID : $rid ),
 					'type'   => 'same_product_category',
 					'weight' => 0.3,
 				);
@@ -183,7 +183,7 @@ class WooCommerce_Provider implements Knowledge_Provider_Interface {
 			);
 			foreach ( $related->posts as $rid ) {
 				$relations[] = array(
-					'to'     => (int) $rid,
+					'to'     => (int) ( $rid instanceof \WP_Post ? $rid->ID : $rid ),
 					'type'   => 'same_product_tag',
 					'weight' => 0.4,
 				);

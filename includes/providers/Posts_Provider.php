@@ -143,7 +143,7 @@ class Posts_Provider implements Knowledge_Provider_Interface {
 			);
 			foreach ( $cat_query->posts as $related_id ) {
 				$relations[] = array(
-					'to'     => (int) $related_id,
+					'to'     => (int) ( $related_id instanceof \WP_Post ? $related_id->ID : $related_id ),
 					'type'   => 'same_category',
 					'weight' => 0.3,
 				);
@@ -167,7 +167,7 @@ class Posts_Provider implements Knowledge_Provider_Interface {
 			);
 			foreach ( $tag_query->posts as $related_id ) {
 				$relations[] = array(
-					'to'     => (int) $related_id,
+					'to'     => (int) ( $related_id instanceof \WP_Post ? $related_id->ID : $related_id ),
 					'type'   => 'same_tag',
 					'weight' => 0.4,
 				);
@@ -231,8 +231,8 @@ class Posts_Provider implements Knowledge_Provider_Interface {
 	 * @return string
 	 */
 	private static function clean_content( string $raw ): string {
-		$text = preg_replace( '/<!--\s*wp:.*?-->/s', '', $raw );
-		$text = preg_replace( '/<!--\s*\/wp:.*?-->/s', '', $text );
+		$text = (string) preg_replace( '/<!--\s*wp:.*?-->/s', '', $raw );
+		$text = (string) preg_replace( '/<!--\s*\/wp:.*?-->/s', '', $text );
 		$text = strip_shortcodes( $text ?? '' );
 		$text = wp_strip_all_tags( $text ?? '' );
 		$text = html_entity_decode( $text, ENT_QUOTES, 'UTF-8' );

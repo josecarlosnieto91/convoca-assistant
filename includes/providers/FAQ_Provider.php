@@ -151,7 +151,7 @@ class FAQ_Provider extends Posts_Provider {
 
 		foreach ( $related->posts as $rid ) {
 			$relations[] = array(
-				'to'     => (int) $rid,
+				'to'     => (int) ( $rid instanceof \WP_Post ? $rid->ID : $rid ),
 				'type'   => 'same_faq_category',
 				'weight' => 0.3,
 			);
