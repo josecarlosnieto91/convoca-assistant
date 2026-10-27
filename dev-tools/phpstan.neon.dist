@@ -27,5 +27,13 @@ parameters:
 		-
 			message: '#Path in (?:include|require_once)\(\) "/tmp/wp/#'
 			identifier: requireOnce.fileNotFound
+		# WP_Query::$posts lo declara el stub oficial como WP_Post[]|int[]|null. En este
+		# código solo se recorre después de la consulta, donde siempre es WP_Post[].
+		-
+			message: '#Cannot access property \$\w+ on int\|WP_Post#'
+			identifier: property.nonObject
+		-
+			message: '#array<int\|WP_Post>\|null#'
+			identifier: foreach.nonIterable
 	parallel:
 		maximumNumberOfProcesses: 4
