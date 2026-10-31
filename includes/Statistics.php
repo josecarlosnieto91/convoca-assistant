@@ -87,7 +87,7 @@ class Statistics {
 				'query'           => $query,
 				// La columna es NOT NULL: un `null` aquí hace fallar el INSERT y la consulta sin
 				// respuesta se perdía en silencio (convoca-assistant#24).
-				'response_id'     => null === $response_id ? 0 : $response_id,
+				'response_id'     => (int) $response_id,
 				'response_found'  => $response_found ? 1 : 0,
 				'score'           => $score,
 				'clicked'         => $clicked ? 1 : 0,
