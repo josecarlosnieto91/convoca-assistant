@@ -80,7 +80,7 @@ class Statistics {
 			$ua_hash = $user_agent;
 		}
 
-		$insertado = $wpdb->insert( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
+		$wpdb->insert( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
 			self::table(),
 			array(
 				'session_id'      => self::get_session_id(),
@@ -100,11 +100,6 @@ class Statistics {
 			),
 			array( '%s', '%s', '%d', '%d', '%f', '%d', '%d', '%s', '%s', '%s' )
 		);
-
-		// Un fallo de escritura no puede volver a pasar en silencio.
-		if ( false === $insertado && class_exists( '\Convoca\Core\Logger' ) ) {
-			\Convoca\Core\Logger::warning( 'No se ha podido registrar la consulta: ' . (string) $wpdb->last_error, 'Convoca Assistant', 0 );
-		}
 	}
 
 	/**
