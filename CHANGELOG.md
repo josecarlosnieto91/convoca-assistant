@@ -1,3 +1,9 @@
+## [0.2.24] — 2026-10-31
+
+### Cambiado
+
+- **registro de consultas sin respuesta**
+
 ## [0.2.23] — 2026-10-26
 
 ### Cambiado

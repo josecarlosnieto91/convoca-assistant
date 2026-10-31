@@ -80,16 +80,18 @@ class Statistics {
 			$ua_hash = $user_agent;
 		}
 
-		$wpdb->insert( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
+		$insertado = $wpdb->insert( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
 			self::table(),
 			array(
 				'session_id'      => self::get_session_id(),
 				'query'           => $query,
-				'response_id'     => $response_id,
+				// La columna es NOT NULL: un `null` aquí hace fallar el INSERT y la consulta sin
+				// respuesta se perdía en silencio (convoca-assistant#24).
+				'response_id'     => null === $response_id ? 0 : $response_id,
 				'response_found'  => $response_found ? 1 : 0,
 				'score'           => $score,
 				'clicked'         => $clicked ? 1 : 0,
-				'query_time_ms'   => $time_ms,
+				'query_time_ms'   => null === $time_ms ? 0 : $time_ms,
 				'page_url'        => $page_url ? esc_url_raw( $page_url ) : '',
 				'user_agent_hash' => $ua_hash,
 				// Explicit UTC: analytics/cleanup filter with gmdate(), so never rely on
@@ -98,6 +100,11 @@ class Statistics {
 			),
 			array( '%s', '%s', '%d', '%d', '%f', '%d', '%d', '%s', '%s', '%s' )
 		);
+
+		// Un fallo de escritura no puede volver a pasar en silencio.
+		if ( false === $insertado && class_exists( '\Convoca\Core\Logger' ) ) {
+			\Convoca\Core\Logger::warning( 'No se ha podido registrar la consulta: ' . (string) $wpdb->last_error, 'Convoca Assistant', 0 );
+		}
 	}
 
 	/**
