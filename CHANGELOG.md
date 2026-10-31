@@ -1,3 +1,9 @@
+## [0.2.25] — 2026-11-01
+
+### Cambiado
+
+- **umbral del buscador a 0.35**
+
 ## [0.2.24] — 2026-10-31
 
 ### Cambiado

@@ -18,7 +18,7 @@ class Installer {
 	 * Bump when the log table schema changes so existing installs migrate
 	 * through Installer::maybe_upgrade() instead of silently failing queries.
 	 */
-	public const DB_VERSION = '2026-09-10-2';
+	public const DB_VERSION = '2026-10-31-1';
 
 	/**
 	 * Option storing the installed schema version.
@@ -362,6 +362,31 @@ class Installer {
 		}
 
 		self::create_log_table( self::log_table() );
+		self::migrar_umbral();
 		update_option( self::DB_VERSION_OPTION, self::DB_VERSION );
+	}
+
+	/**
+	 * Sube el umbral por defecto de 0.10 a 0.35.
+	 *
+	 * Con 0.10 cualquier coincidencia floja contaba como respuesta: el panel de «sin respuesta» se
+	 * vaciaba y el widget contestaba vaguedades (assistant#24). Se sube **solo** si sigue en el
+	 * valor viejo: un umbral elegido a mano se respeta.
+	 *
+	 * @return void
+	 */
+	public static function migrar_umbral(): void {
+		$ajustes = get_option( 'convoca_assistant_settings', array() );
+
+		if ( ! is_array( $ajustes ) || ! isset( $ajustes['search_threshold'] ) ) {
+			return;
+		}
+
+		if ( 0.1 !== (float) $ajustes['search_threshold'] ) {
+			return;
+		}
+
+		$ajustes['search_threshold'] = 0.35;
+		update_option( 'convoca_assistant_settings', $ajustes );
 	}
 }

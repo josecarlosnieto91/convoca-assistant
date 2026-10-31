@@ -528,6 +528,15 @@ namespace {
 			public $options = 'wp_options';
 
 			/**
+			 * Cotejamiento para dbDelta.
+			 *
+			 * @return string
+			 */
+			public function get_charset_collate() {
+				return '';
+			}
+
+			/**
 			 * Respuestas preparadas por la prueba para get_var().
 			 *
 			 * @var array<int, mixed>

@@ -30,7 +30,7 @@ class Searcher {
 	 * @return float
 	 */
 	public static function umbral_configurado(): float {
-		return (float) Settings::get( 'search_threshold', 0.10 );
+		return (float) Settings::get( 'search_threshold', 0.35 );
 	}
 
 	/**
@@ -41,7 +41,7 @@ class Searcher {
 	 * @param float  $threshold   Minimum score threshold override.
 	 * @return array<int, array<string, mixed>>
 	 */
-	public static function search( string $query, int $max_results = 10, float $threshold = 0.10 ): array {
+	public static function search( string $query, int $max_results = 10, float $threshold = 0.35 ): array {
 		/**
 		 * Fires before a search is executed.
 		 *
