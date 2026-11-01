@@ -148,6 +148,13 @@ jobs:
           mkdir -p "$RUNNER_TEMP/wp"
           unzip -oq "$RUNNER_TEMP/pcp-archivos/wordpress.zip" -d "$RUNNER_TEMP/wp"
           cp -r build-dir/convoca-assistant "$RUNNER_TEMP/wp/wordpress/wp-content/plugins/convoca-assistant"
+          # El plugin declara `Requires Plugins: convoca-core`: sin Core presente el arranque
+          # falla y PCP se queda sin nada que comprobar ("No plugins activated"). Se trae Core
+          # desde su repositorio, con su vendor de produccion, que es como viaja de verdad.
+          git clone --depth 1 https://github.com/josecarlosnieto91/convoca-core.git "$RUNNER_TEMP/convoca-core"
+          ( cd "$RUNNER_TEMP/convoca-core" \
+            && composer install --no-dev --no-interaction --ignore-platform-req=ext-iconv --optimize-autoloader >/dev/null )
+          cp -r "$RUNNER_TEMP/convoca-core" "$RUNNER_TEMP/wp/wordpress/wp-content/plugins/convoca-core"
           wp config create --path="$RUNNER_TEMP/wp/wordpress" --dbname=wordpress \
             --dbuser=root --dbpass=root --dbhost=127.0.0.1
           wp core install --path="$RUNNER_TEMP/wp/wordpress" --url=http://localhost:8880 \
@@ -157,6 +164,8 @@ jobs:
       - name: Run Plugin Check (WordPress.org, version fijada)
         run: |
           wp plugin install "$RUNNER_TEMP/pcp-archivos/plugin-check.zip" --activate --path="$RUNNER_TEMP/wp/wordpress"
+          # El orden importa: Core primero, o WordPress rechaza activar el asistente.
+          wp plugin activate convoca-core --path="$RUNNER_TEMP/wp/wordpress"
           wp plugin activate convoca-assistant --path="$RUNNER_TEMP/wp/wordpress"
           wp plugin check convoca-assistant \
             --path="$RUNNER_TEMP/wp/wordpress" \
