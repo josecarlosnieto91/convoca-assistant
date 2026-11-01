@@ -4,7 +4,7 @@
     "license": "GPL-2.0-or-later",
     "description": "Asistente conversacional local sin IA para WordPress. Búsqueda difusa con Fuse.js.",
     "require": {
-        "php": ">=8.1"
+        "php": ">=8.2"
     },
     "require-dev": {
         "phpstan/phpstan": "^2.2",

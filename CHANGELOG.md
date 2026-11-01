@@ -1,3 +1,9 @@
+## [0.2.27] — 2026-11-02
+
+### Cambiado
+
+- **suelo de PHP a 8.2**: Core lo exige desde 2.3.55 (la librería de QR que ahora comparte pide 8.2). Declararlo evita prometer una versión en la que el plugin no puede funcionar.
+
 ## [0.2.26] — 2026-11-01
 
 ### Corregido
