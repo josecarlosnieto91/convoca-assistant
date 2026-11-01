@@ -1,3 +1,11 @@
+## [0.2.26] — 2026-11-01
+
+### Corregido
+
+- **dependencia declarada**: el plugin usa `Convoca\Core\Logger` y
+  `Convoca\Core\Utils`, pero no declaraba `Requires Plugins: convoca-core`.
+  Con Core desactivado, la ruta REST del asistente producía error fatal.
+
 ## [0.2.25] — 2026-11-01
 
 ### Cambiado
