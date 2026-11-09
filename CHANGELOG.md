@@ -1,3 +1,11 @@
+## [0.2.28] — 2026-11-09
+
+### Seguridad
+
+- La sesión del asistente endurece su cookie antes de `session_start()`: `HttpOnly`, `Secure`
+  cuando el sitio va por HTTPS y `SameSite=Lax`. Antes heredaba los valores de php.ini, que dejan
+  el identificador de sesión legible por JavaScript y viajando en peticiones cruzadas.
+
 ## [0.2.27] — 2026-11-02
 
 ### Cambiado

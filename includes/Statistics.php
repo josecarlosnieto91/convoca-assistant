@@ -313,6 +313,21 @@ class Statistics {
 	 */
 	private static function get_session_id(): string {
 		if ( ! session_id() ) {
+			if ( ! headers_sent() ) {
+				$path   = defined( 'COOKIEPATH' ) && COOKIEPATH ? COOKIEPATH : '/';
+				$domain = defined( 'COOKIE_DOMAIN' ) && COOKIE_DOMAIN ? COOKIE_DOMAIN : '';
+
+				session_set_cookie_params(
+					array(
+						'lifetime' => 0,
+						'path'     => $path,
+						'domain'   => $domain,
+						'secure'   => function_exists( 'is_ssl' ) ? is_ssl() : false,
+						'httponly' => true,
+						'samesite' => 'Lax',
+					)
+				);
+			}
 			session_start();
 		}
 		if ( empty( $_SESSION['convoca_assistant_session'] ) ) {
