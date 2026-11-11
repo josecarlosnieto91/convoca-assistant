@@ -75,6 +75,10 @@ class Indexer {
 		add_action( 'updated_post_meta', array( __CLASS__, 'on_meta_change' ), 10, 4 );
 		add_action( 'added_post_meta', array( __CLASS__, 'on_meta_change' ), 10, 4 );
 
+		// Un cambio de dominio invalida las URLs absolutas guardadas en el índice (issue #26).
+		add_action( 'update_option_home', array( __CLASS__, 'mark_dirty' ) );
+		add_action( 'update_option_siteurl', array( __CLASS__, 'mark_dirty' ) );
+
 		// Taxonomy changes.
 		add_action( 'set_object_terms', array( __CLASS__, 'mark_dirty' ), 10, 1 );
 
@@ -229,10 +233,12 @@ class Indexer {
 			}
 		}
 
-		// Protect with .htaccess.
-		if ( ! file_exists( $dir . '.htaccess' ) ) {
-			// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents
-			file_put_contents( $dir . '.htaccess', "Deny from all\n" );
+		// El índice y el grafo son contenido público: el widget los carga directamente desde
+		// `uploads/`. Un `.htaccess` con `Deny from all` los bloqueaba en Apache (issue #25).
+		// Se retira también en instalaciones que ya lo tengan de versiones anteriores.
+		$htaccess = $dir . '.htaccess';
+		if ( file_exists( $htaccess ) ) {
+			wp_delete_file( $htaccess );
 		}
 
 		// Write uncompressed JSON.
