@@ -45,6 +45,18 @@ namespace {
 		}
 	}
 
+	if ( ! function_exists( 'wp_delete_file' ) ) {
+		/**
+		 * Borra un fichero (doble de WordPress).
+		 *
+		 * @param string $file Ruta.
+		 * @return bool
+		 */
+		function wp_delete_file( $file ) {
+			return file_exists( $file ) ? @unlink( $file ) : true;
+		}
+	}
+
 	if ( ! function_exists( '__' ) ) {
 		function __( $text, $domain = 'default' ) {
 			return $text;

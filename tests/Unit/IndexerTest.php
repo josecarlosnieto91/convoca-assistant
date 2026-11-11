@@ -69,6 +69,29 @@ class IndexerTest extends TestCase {
 	}
 
 	/**
+	 * Un cambio de dominio debe invalidar el índice: las URLs son absolutas (issue #26).
+	 */
+	public function test_los_cambios_de_dominio_marcan_el_indice_sucio(): void {
+		Indexer::init();
+
+		$this->assertArrayHasKey(
+			'update_option_home',
+			$GLOBALS['convoca_as_acciones_lista'],
+			'home debe engancharse a mark_dirty.'
+		);
+		$this->assertContains(
+			array( Indexer::class, 'mark_dirty' ),
+			$GLOBALS['convoca_as_acciones_lista']['update_option_home'],
+			'home debe reconstruir el índice, no solo cambiar la opción.'
+		);
+		$this->assertArrayHasKey(
+			'update_option_siteurl',
+			$GLOBALS['convoca_as_acciones_lista'],
+			'siteurl debe engancharse a mark_dirty.'
+		);
+	}
+
+	/**
 	 * mark_dirty() sets the dirty flag and schedules a one-shot regeneration.
 	 */
 	public function test_mark_dirty_sets_flag_and_schedules_immediate_regeneration(): void {
