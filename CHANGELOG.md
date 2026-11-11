@@ -1,3 +1,10 @@
+## [0.2.29] — 2026-11-11
+
+### Corregido
+
+- **El índice público se sirve sin htaccess y se invalida al cambiar el dominio**
+- Se elimina la regla Deny y home/siteurl marcan el índice como sucio.
+
 ## [0.2.28] — 2026-11-09
 
 ### Seguridad
