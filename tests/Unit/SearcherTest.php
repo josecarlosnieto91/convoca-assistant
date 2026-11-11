@@ -21,7 +21,6 @@ class SearcherTest extends TestCase {
 	 */
 	public function test_low_score_for_unrelated(): void {
 		$ref = new \ReflectionMethod( Searcher::class, 'calculate_score' );
-		$ref->setAccessible( true );
 
 		$entry = array(
 			'title'      => 'Historia del club de lectura',
